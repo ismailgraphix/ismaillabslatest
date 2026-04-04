@@ -160,20 +160,7 @@ export default function Hero() {
                 </div>
 
                 {/* Brand logos strip at bottom */}
-                <div
-                    className={`mt-16 pt-8 border-t border-gray-300/50 transition-all duration-700 delay-[680ms] ${
-                        loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-                    }`}
-                >
-                    <p className="font-body text-xs text-gray-400 uppercase tracking-widest mb-5">We Worked With Global Largest Brands</p>
-                    <div className="flex items-center gap-8 flex-wrap">
-                        {["Figma", "Webflow", "Shopify", "Stripe", "Vercel", "Notion"].map((brand) => (
-                            <span key={brand} className="font-heading font-black text-sm text-gray-300 uppercase tracking-widest hover:text-[#4353FF] transition-colors cursor-pointer">
-                {brand}
-              </span>
-                        ))}
-                    </div>
-                </div>
+
             </div>
 
             {/* Ring pulse keyframe */}
