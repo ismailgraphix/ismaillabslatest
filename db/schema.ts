@@ -1,11 +1,11 @@
-import { pgTable, uuid, varchar, text, boolean, timestamp, pgEnum, integer } from "drizzle-orm/pg-core";
+import { pgTable, uuid, varchar, text, boolean, timestamp, pgEnum, integer, jsonb } from "drizzle-orm/pg-core";
 
-// ─── Enums ───
 export const roleEnum = pgEnum("role", ["super_admin", "admin", "editor", "viewer"]);
 export const statusEnum = pgEnum("status", ["active", "inactive", "suspended"]);
 export const clientStatusEnum = pgEnum("client_status", ["lead", "active", "completed", "archived"]);
+export const messageStatusEnum = pgEnum("message_status", ["unread", "read", "replied", "archived"]);
 
-// ─── Users / Admins table ───
+// ── Users ──
 export const users = pgTable("users", {
     id: uuid("id").defaultRandom().primaryKey(),
     name: varchar("name", { length: 255 }).notNull(),
@@ -14,36 +14,69 @@ export const users = pgTable("users", {
     role: roleEnum("role").notNull().default("viewer"),
     status: statusEnum("status").notNull().default("active"),
     avatar: text("avatar"),
+    permissions: jsonb("permissions").$type<string[]>().default([]),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
     lastLoginAt: timestamp("last_login_at"),
 });
 
-// ─── Permissions table ───
-export const permissions = pgTable("permissions", {
+// ── Portfolio items (projects shown on frontend) ──
+export const portfolioItems = pgTable("portfolio_items", {
     id: uuid("id").defaultRandom().primaryKey(),
-    name: varchar("name", { length: 100 }).notNull().unique(), // e.g. "clients.create"
-    label: varchar("label", { length: 200 }).notNull(),         // e.g. "Create Clients"
-    module: varchar("module", { length: 100 }).notNull(),       // e.g. "clients"
+    title: varchar("title", { length: 255 }).notNull(),
+    category: varchar("category", { length: 100 }).notNull(),
     description: text("description"),
+    image: text("image"),
+    tags: jsonb("tags").$type<string[]>().default([]),
+    liveUrl: text("live_url"),
+    featured: boolean("featured").default(false),
+    order: integer("order").default(0),
+    published: boolean("published").default(true),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-// ─── Role permissions (which roles get which permissions) ───
-export const rolePermissions = pgTable("role_permissions", {
+// ── Team members (shown on frontend) ──
+export const teamMembers = pgTable("team_members", {
     id: uuid("id").defaultRandom().primaryKey(),
-    role: roleEnum("role").notNull(),
-    permissionId: uuid("permission_id").notNull().references(() => permissions.id, { onDelete: "cascade" }),
+    name: varchar("name", { length: 255 }).notNull(),
+    role: varchar("role", { length: 255 }).notNull(),
+    bio: text("bio"),
+    image: text("image"),
+    email: varchar("email", { length: 255 }),
+    linkedin: text("linkedin"),
+    twitter: text("twitter"),
+    order: integer("order").default(0),
+    published: boolean("published").default(true),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-// ─── User permissions (overrides per user) ───
-export const userPermissions = pgTable("user_permissions", {
+// ── Services (shown on frontend) ──
+export const services = pgTable("services", {
     id: uuid("id").defaultRandom().primaryKey(),
-    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-    permissionId: uuid("permission_id").notNull().references(() => permissions.id, { onDelete: "cascade" }),
-    granted: boolean("granted").notNull().default(true), // false = explicitly denied
+    title: varchar("title", { length: 255 }).notNull(),
+    description: text("description"),
+    icon: text("icon"),
+    image: text("image"),
+    order: integer("order").default(0),
+    published: boolean("published").default(true),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-// ─── Clients ───
+// ── Contact messages ──
+export const messages = pgTable("messages", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    name: varchar("name", { length: 255 }).notNull(),
+    email: varchar("email", { length: 255 }).notNull(),
+    subject: varchar("subject", { length: 500 }),
+    message: text("message").notNull(),
+    status: messageStatusEnum("status").default("unread").notNull(),
+    ipAddress: varchar("ip_address", { length: 50 }),
+    repliedAt: timestamp("replied_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// ── Clients ──
 export const clients = pgTable("clients", {
     id: uuid("id").defaultRandom().primaryKey(),
     name: varchar("name", { length: 255 }).notNull(),
@@ -58,7 +91,7 @@ export const clients = pgTable("clients", {
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-// ─── Audit log ───
+// ── Audit logs ──
 export const auditLogs = pgTable("audit_logs", {
     id: uuid("id").defaultRandom().primaryKey(),
     userId: uuid("user_id").references(() => users.id),
@@ -71,5 +104,8 @@ export const auditLogs = pgTable("audit_logs", {
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
-export type Permission = typeof permissions.$inferSelect;
+export type PortfolioItem = typeof portfolioItems.$inferSelect;
+export type TeamMember = typeof teamMembers.$inferSelect;
+export type Service = typeof services.$inferSelect;
+export type Message = typeof messages.$inferSelect;
 export type Client = typeof clients.$inferSelect;

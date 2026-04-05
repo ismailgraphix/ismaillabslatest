@@ -32,10 +32,8 @@ export async function POST(req: NextRequest) {
         const parsed = setupSchema.safeParse(body);
 
         if (!parsed.success) {
-            return NextResponse.json(
-                { error: parsed.error.errors[0].message },
-                { status: 400 }
-            );
+            const message = parsed.error.issues[0]?.message ?? "Invalid input";
+            return NextResponse.json({ error: message }, { status: 400 });
         }
 
         const { setupToken, name, email, password } = parsed.data;

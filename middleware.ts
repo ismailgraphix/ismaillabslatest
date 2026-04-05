@@ -3,7 +3,7 @@ import { verifyToken } from "@/lib/auth";
 
 const PUBLIC_ADMIN_PATHS = ["/admin/login", "/admin/setup"];
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
 
     // Only run on /admin routes
@@ -18,7 +18,7 @@ export function middleware(req: NextRequest) {
         return NextResponse.redirect(new URL("/admin/login", req.url));
     }
 
-    const payload = verifyToken(token);
+    const payload = await verifyToken(token);
     if (!payload) {
         const res = NextResponse.redirect(new URL("/admin/login", req.url));
         res.cookies.delete("ismaillabs_admin_token");
