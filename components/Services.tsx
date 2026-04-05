@@ -153,7 +153,7 @@ export default function Services() {
                                 <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-[#4353FF] group-hover:w-full transition-all duration-500" />
                             </div>
                         ))}
-                    </div>
+                    </div> 
                 </div>
             </div>
         </section>
