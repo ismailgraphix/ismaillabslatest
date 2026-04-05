@@ -68,7 +68,7 @@ export default function UsersPage() {
         setSaving(false); setShowPermModal(null); loadUsers();
     }
 
-    const modules = [...new Set(Object.entries(ROLE_PERMISSIONS).flatMap(([,v]) => v).map(p => p.split(".")[0]))];
+    const modules = Array.from(new Set(Object.entries(ROLE_PERMISSIONS).flatMap(([,v]) => v).map(p => p.split(".")[0])));
 
     return (
         <div className="flex h-screen bg-[#0a0a0a] overflow-hidden">
