@@ -1,88 +1,119 @@
-// All permissions in the system
+// ── All permissions in the system ──────────────────────────────────────────
 export const ALL_PERMISSIONS = [
     // Dashboard
-    { name: "dashboard.view", label: "View Dashboard", module: "dashboard" },
+    { name: "dashboard.view",    label: "View Dashboard",       module: "dashboard" },
+
+    // Messages
+    { name: "messages.view",     label: "View Messages",        module: "messages"  },
+    { name: "messages.reply",    label: "Reply to Messages",    module: "messages"  },
+    { name: "messages.delete",   label: "Delete Messages",      module: "messages"  },
 
     // Clients
-    { name: "clients.view",   label: "View Clients",   module: "clients" },
-    { name: "clients.create", label: "Create Clients", module: "clients" },
-    { name: "clients.edit",   label: "Edit Clients",   module: "clients" },
-    { name: "clients.delete", label: "Delete Clients", module: "clients" },
+    { name: "clients.view",      label: "View Clients",         module: "clients"   },
+    { name: "clients.create",    label: "Create Clients",       module: "clients"   },
+    { name: "clients.edit",      label: "Edit Clients",         module: "clients"   },
+    { name: "clients.delete",    label: "Delete Clients",       module: "clients"   },
 
-    // Projects / Services
-    { name: "projects.view",   label: "View Projects",   module: "projects" },
-    { name: "projects.create", label: "Create Projects", module: "projects" },
-    { name: "projects.edit",   label: "Edit Projects",   module: "projects" },
-    { name: "projects.delete", label: "Delete Projects", module: "projects" },
-
-    // Blog
-    { name: "blog.view",      label: "View Blog Posts",   module: "blog" },
-    { name: "blog.create",    label: "Create Blog Posts", module: "blog" },
-    { name: "blog.edit",      label: "Edit Blog Posts",   module: "blog" },
-    { name: "blog.delete",    label: "Delete Blog Posts", module: "blog" },
-    { name: "blog.publish",   label: "Publish Blog Posts",module: "blog" },
+    // Portfolio
+    { name: "portfolio.view",    label: "View Portfolio",       module: "portfolio" },
+    { name: "portfolio.create",  label: "Add Portfolio Items",  module: "portfolio" },
+    { name: "portfolio.edit",    label: "Edit Portfolio Items", module: "portfolio" },
+    { name: "portfolio.delete",  label: "Delete Portfolio",     module: "portfolio" },
+    { name: "portfolio.publish", label: "Publish / Unpublish",  module: "portfolio" },
 
     // Team
-    { name: "team.view",   label: "View Team Members",   module: "team" },
-    { name: "team.create", label: "Add Team Members",    module: "team" },
-    { name: "team.edit",   label: "Edit Team Members",   module: "team" },
-    { name: "team.delete", label: "Remove Team Members", module: "team" },
+    { name: "team.view",         label: "View Team",            module: "team"      },
+    { name: "team.create",       label: "Add Team Members",     module: "team"      },
+    { name: "team.edit",         label: "Edit Team Members",    module: "team"      },
+    { name: "team.delete",       label: "Remove Team Members",  module: "team"      },
 
-    // Admin Users
-    { name: "users.view",   label: "View Admin Users",   module: "users" },
-    { name: "users.create", label: "Create Admin Users", module: "users" },
-    { name: "users.edit",   label: "Edit Admin Users",   module: "users" },
-    { name: "users.delete", label: "Delete Admin Users", module: "users" },
+    // Services
+    { name: "services.view",     label: "View Services",        module: "services"  },
+    { name: "services.create",   label: "Create Services",      module: "services"  },
+    { name: "services.edit",     label: "Edit Services",        module: "services"  },
+    { name: "services.delete",   label: "Delete Services",      module: "services"  },
 
-    // Settings
-    { name: "settings.view", label: "View Settings", module: "settings" },
-    { name: "settings.edit", label: "Edit Settings", module: "settings" },
+    // Blog
+    { name: "blog.view",         label: "View Blog Posts",      module: "blog"      },
+    { name: "blog.create",       label: "Create Blog Posts",    module: "blog"      },
+    { name: "blog.edit",         label: "Edit Blog Posts",      module: "blog"      },
+    { name: "blog.delete",       label: "Delete Blog Posts",    module: "blog"      },
+    { name: "blog.publish",      label: "Publish Blog Posts",   module: "blog"      },
 
-    // Audit Logs
-    { name: "audit.view", label: "View Audit Logs", module: "audit" },
+    // Users — super_admin only
+    { name: "users.view",        label: "View Admin Users",     module: "users"     },
+    { name: "users.create",      label: "Create Admin Users",   module: "users"     },
+    { name: "users.edit",        label: "Edit Admin Users",     module: "users"     },
+    { name: "users.delete",      label: "Delete Admin Users",   module: "users"     },
+
+    // Settings — super_admin only
+    { name: "settings.view",     label: "View Settings",        module: "settings"  },
+    { name: "settings.edit",     label: "Edit Settings",        module: "settings"  },
 ] as const;
-
-// Default permissions per role
-export const ROLE_PERMISSIONS: Record<string, string[]> = {
-    super_admin: ALL_PERMISSIONS.map(p => p.name), // gets everything
-    admin: [
-        "dashboard.view",
-        "clients.view", "clients.create", "clients.edit",
-        "projects.view", "projects.create", "projects.edit",
-        "blog.view", "blog.create", "blog.edit", "blog.publish",
-        "team.view", "team.create", "team.edit",
-        "users.view",
-        "settings.view",
-        "audit.view",
-    ],
-    editor: [
-        "dashboard.view",
-        "clients.view",
-        "projects.view", "projects.create", "projects.edit",
-        "blog.view", "blog.create", "blog.edit",
-        "team.view",
-    ],
-    viewer: [
-        "dashboard.view",
-        "clients.view",
-        "projects.view",
-        "blog.view",
-        "team.view",
-    ],
-};
 
 export type PermissionName = typeof ALL_PERMISSIONS[number]["name"];
 
-export function hasPermission(userRole: string, userPerms: string[], permission: PermissionName): boolean {
-    if (userRole === "super_admin") return true;
-    return userPerms.includes(permission);
+// ── Default permissions per role ───────────────────────────────────────────
+// super_admin: skips this list — hasPermission() returns true unconditionally
+export const ROLE_DEFAULT_PERMISSIONS: Record<string, PermissionName[]> = {
+    super_admin: ALL_PERMISSIONS.map(p => p.name),
+
+    admin: [],
+    editor: [],
+    viewer: [],
+};
+
+// ── Core permission check ──────────────────────────────────────────────────
+export function hasPermission(
+    role: string,
+    userExtraPerms: string[] | null | undefined,
+    permission: PermissionName
+): boolean {
+    if (role === "super_admin") return true;
+    const defaults = ROLE_DEFAULT_PERMISSIONS[role] ?? [];
+    if ((defaults as string[]).includes(permission)) return true;
+    if (userExtraPerms?.includes(permission)) return true;
+    return false;
 }
 
-export function getModules() {
-    const modules = new Map<string, typeof ALL_PERMISSIONS[number][]>();
-    for (const perm of ALL_PERMISSIONS) {
-        if (!modules.has(perm.module)) modules.set(perm.module, []);
-        modules.get(perm.module)!.push(perm);
+// ── Effective permissions (no Set spread — avoids TS2802) ─────────────────
+export function getEffectivePermissions(
+    role: string,
+    userExtraPerms: string[] | null | undefined
+): PermissionName[] {
+    if (role === "super_admin") return ALL_PERMISSIONS.map(p => p.name);
+
+    const defaults = (ROLE_DEFAULT_PERMISSIONS[role] ?? []) as PermissionName[];
+    const extra    = (userExtraPerms ?? []) as PermissionName[];
+
+    // Deduplicate without Set spread
+    const seen: Record<string, boolean> = {};
+    const result: PermissionName[] = [];
+    for (const p of defaults.concat(extra)) {
+        if (!seen[p]) { seen[p] = true; result.push(p); }
     }
-    return modules;
+    return result;
 }
+
+// ── Group permissions by module (for the permissions UI) ──────────────────
+export function getPermissionsByModule(): Map<string, typeof ALL_PERMISSIONS[number][]> {
+    const map = new Map<string, typeof ALL_PERMISSIONS[number][]>();
+    for (const perm of ALL_PERMISSIONS) {
+        if (!map.has(perm.module)) map.set(perm.module, []);
+        map.get(perm.module)!.push(perm);
+    }
+    return map;
+}
+
+// ── Nav Permissions Mapping ───────────────────────────────────────────────
+export const NAV_PERMISSIONS: Record<string, PermissionName> = {
+    "/admin/dashboard": "dashboard.view",
+    "/admin/messages":  "messages.view",
+    "/admin/clients":   "clients.view",
+    "/admin/portfolio": "portfolio.view",
+    "/admin/team":      "team.view",
+    "/admin/services":  "services.view",
+    "/admin/blog":      "blog.view",
+    "/admin/users":     "users.view",
+    "/admin/settings":  "settings.view",
+};

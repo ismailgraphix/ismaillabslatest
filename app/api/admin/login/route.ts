@@ -4,12 +4,12 @@ import { verifyPassword, signToken } from "@/lib/auth";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 
+const COOKIE_NAME = "ismaillabs_admin_token";
+
 const loginSchema = z.object({
     email: z.string().email(),
     password: z.string().min(1),
 });
-
-const COOKIE_NAME = "ismaillabs_admin_token";
 
 export async function POST(req: NextRequest) {
     try {
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
         const parsed = loginSchema.safeParse(body);
 
         if (!parsed.success) {
-            return NextResponse.json({ error: "Invalid credentials" }, { status: 400 });
+            return NextResponse.json({ error: "Invalid input" }, { status: 400 });
         }
 
         const { email, password } = parsed.data;
@@ -31,12 +31,8 @@ export async function POST(req: NextRequest) {
         if (!user) {
             return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
         }
-
         if (user.status !== "active") {
-            return NextResponse.json(
-                { error: "Your account has been suspended. Contact the super admin." },
-                { status: 403 }
-            );
+            return NextResponse.json({ error: "Account suspended. Contact super admin." }, { status: 403 });
         }
 
         const valid = await verifyPassword(password, user.passwordHash);
@@ -44,40 +40,38 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
         }
 
-        await db
-            .update(users)
+        await db.update(users)
             .set({ lastLoginAt: new Date(), updatedAt: new Date() })
             .where(eq(users.id, user.id));
 
-        const token = await signToken({
+        const token = signToken({
             userId: user.id,
-            email: user.email,
-            role: user.role,
-            name: user.name,
+            email:  user.email,
+            role:   user.role,
+            name:   user.name,
+            permissions: (user.permissions as string[]) ?? [],
         });
 
-        // ✅ THE FIX: return a redirect response WITH the cookie set on it.
-        // When the browser follows this redirect, the cookie is already committed
-        // so the middleware sees it immediately on the /admin/dashboard request.
-        const response = NextResponse.redirect(
-            new URL("/admin/dashboard", req.url),
-            { status: 303 } // 303 See Other — correct for POST → GET redirect
-        );
+        const response = NextResponse.json({
+            success: true,
+            user: { id: user.id, name: user.name, email: user.email, role: user.role },
+        });
 
+        // Set cookie directly on the JSON response
+        // sameSite: "lax" works for both localhost and production
         response.cookies.set({
-            name: COOKIE_NAME,
-            value: token,
+            name:     COOKIE_NAME,
+            value:    token,
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
+            secure:   process.env.NODE_ENV === "production",
             sameSite: "lax",
-            maxAge: 60 * 60 * 24 * 7,
-            path: "/",
+            maxAge:   60 * 60 * 24 * 7, // 7 days
+            path:     "/",
         });
 
         return response;
-
-    } catch (error) {
-        console.error("Login error:", error);
+    } catch (err) {
+        console.error("[login] error:", err);
         return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
     }
 }
