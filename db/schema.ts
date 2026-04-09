@@ -163,6 +163,7 @@ export const pageViews = pgTable("page_views", {
     referrer: text("referrer"),
     userAgent: text("user_agent"),
     ip: varchar("ip", { length: 100 }),
+    country: varchar("country", { length: 100 }), // ← new
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
