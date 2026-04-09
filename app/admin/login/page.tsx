@@ -236,12 +236,13 @@ export default function AdminLogin() {
                     </form>
 
                     <div className="mt-8 pt-6 border-t border-white/[0.06] text-center space-y-3">
-                        <p className="font-body text-gray-600 text-xs">
+                        {/*<p className="font-body text-gray-600 text-xs">
                             First time?{" "}
                             <a href="/admin/setup" className="text-[#4353FF] hover:text-white transition-colors font-semibold">
                                 Create super admin →
                             </a>
                         </p>
+                        */}
                         <a href="/" className="block font-body text-gray-700 text-xs hover:text-gray-400 transition-colors">
                             ← Back to main site
                         </a>

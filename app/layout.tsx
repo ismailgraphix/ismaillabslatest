@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Redox – Creative Web Development Agency",
+  title: "Ismail Labs",
   description: "We bring business and the digital world together with passion for creative problem solving.",
 };
 

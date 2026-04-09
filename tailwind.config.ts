@@ -9,8 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        heading: ["'Syne'", "sans-serif"],
-        body: ["'DM Sans'", "sans-serif"],
+        heading: ["'Montserrat'", "sans-serif"],
+        body: ["'Montserrat'", "sans-serif"],
       },
       colors: {
         accent: "#FF4D00",
@@ -18,6 +18,8 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+      require("@tailwindcss/typography"),
+  ],
 };
 export default config;

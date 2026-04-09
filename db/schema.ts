@@ -51,11 +51,12 @@ export const teamMembers = pgTable("team_members", {
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-// ── Services (shown on frontend) ──
 export const services = pgTable("services", {
     id: uuid("id").defaultRandom().primaryKey(),
     title: varchar("title", { length: 255 }).notNull(),
+    slug: varchar("slug", { length: 255 }).notNull().unique(),
     description: text("description"),
+    content: text("content"),
     icon: text("icon"),
     image: text("image"),
     order: integer("order").default(0),
@@ -109,3 +110,49 @@ export type TeamMember = typeof teamMembers.$inferSelect;
 export type Service = typeof services.$inferSelect;
 export type Message = typeof messages.$inferSelect;
 export type Client = typeof clients.$inferSelect;
+
+// ── Blog Categories ──
+export const blogCategories = pgTable("blog_categories", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    name: varchar("name", { length: 255 }).notNull(),
+    slug: varchar("slug", { length: 255 }).notNull().unique(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// ── Blog Posts ──
+export const blogPosts = pgTable("blog_posts", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    title: varchar("title", { length: 255 }).notNull(),
+    slug: varchar("slug", { length: 255 }).notNull().unique(),
+    excerpt: text("excerpt"),
+    content: text("content").notNull(),
+    image: text("image"),
+    categoryId: uuid("category_id").references(() => blogCategories.id),
+    authorId: uuid("author_id").references(() => users.id),
+    published: boolean("published").default(false),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export type BlogCategory = typeof blogCategories.$inferSelect;
+export type BlogPost = typeof blogPosts.$inferSelect;
+// ── Project type enum ──
+export const projectTypeEnum = pgEnum("project_type", ["web", "landing", "mobile_app"]);
+
+// ── Projects (agency work — separate from personal portfolio) ──
+export const projects = pgTable("projects", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    title: varchar("title", { length: 255 }).notNull(),
+    description: text("description"),
+    image: text("image"),
+    techStack: jsonb("tech_stack").$type<string[]>().default([]),
+    type: projectTypeEnum("type").notNull().default("web"),
+    link: text("link"),
+    published: boolean("published").default(false),
+    order: integer("order").default(0),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export type Project = typeof projects.$inferSelect;
+export type NewProject = typeof projects.$inferInsert;

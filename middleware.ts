@@ -45,6 +45,11 @@ export function middleware(req: NextRequest) {
         return NextResponse.next();
     }
 
+    // Allow public contact form submissions
+    if (req.method === "POST" && pathname === "/api/admin/messages") {
+        return NextResponse.next();
+    }
+
     // From here: protected admin pages + protected API routes
     const token = req.cookies.get(COOKIE_NAME)?.value;
 

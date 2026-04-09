@@ -1,30 +1,36 @@
-const posts = [
-  {
-    date: "25 June, 2024",
-    author: "Admin",
-    title: "Redefining User Experience with Our Web Design Agency",
-    img: "https://html.ravextheme.com/redox/light/assets/imgs/web-development/post-6.webp",
-    tag: "Design",
-  },
-  {
-    date: "25 June, 2024",
-    author: "Admin",
-    title: "Why Prioritizing User Experience in Every Web Design Project Matters",
-    img: "https://html.ravextheme.com/redox/light/assets/imgs/web-development/post-7.webp",
-    tag: "UX",
-  },
-  {
-    date: "25 June, 2024",
-    author: "Admin",
-    title: "Demystifying the Wizardry of Our Web Design Agency",
-    img: "https://html.ravextheme.com/redox/light/assets/imgs/web-development/post-8.webp",
-    tag: "Agency",
-  },
-];
+import { db, blogPosts, users, blogCategories } from "@/db";
+import { eq, desc } from "drizzle-orm";
+import Link from "next/link";
+import { unstable_noStore as noStore } from 'next/cache';
+import DatabaseErrorModal from "./DatabaseErrorModal";
 
-export default function Blog() {
+export default async function Blog() {
+  noStore();
+  
+  let posts: any[] = [];
+  let dbError = null;
+
+  try {
+      posts = await db
+          .select({
+              post: blogPosts,
+              author: { name: users.name },
+              category: { name: blogCategories.name }
+          })
+          .from(blogPosts)
+          .leftJoin(users, eq(users.id, blogPosts.authorId))
+          .leftJoin(blogCategories, eq(blogCategories.id, blogPosts.categoryId))
+          .where(eq(blogPosts.published, true))
+          .orderBy(desc(blogPosts.createdAt))
+          .limit(3);
+  } catch (err: any) {
+      console.error("Blog component fetch error:", err);
+      dbError = "Failed to load blog posts due to a database connection error.";
+  }
+
   return (
     <section className="py-28 bg-white">
+      {dbError && <DatabaseErrorModal error={dbError} />}
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-14">
           <div className="inline-flex items-center gap-2 bg-[#4A6CF7]/10 rounded-full px-4 py-2 mb-4">
@@ -37,29 +43,33 @@ export default function Blog() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {posts.map((post, i) => (
-            <article key={i} className="group rounded-2xl overflow-hidden border border-gray-100 hover:shadow-xl transition-shadow duration-300 cursor-pointer">
+          {posts.map(({ post, author, category }) => (
+            <Link href={`/blog/${post.slug}`} key={post.id} className="group rounded-2xl overflow-hidden border border-gray-100 hover:shadow-xl transition-shadow duration-300 cursor-pointer block bg-white">
               <div className="relative aspect-video overflow-hidden bg-gray-100">
-                <img
-                  src={post.img}
-                  alt={post.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+                {post.image ? (
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-[#f1f1f1] flex items-center justify-center font-heading text-gray-300 font-black text-2xl">NO IMAGE</div>
+                )}
                 <div className="absolute top-4 left-4">
-                  <span className="bg-[#4A6CF7] text-white font-heading font-bold text-xs px-3 py-1.5 rounded-full">
-                    {post.tag}
+                  <span className="bg-[#4A6CF7] text-white font-heading font-bold text-xs px-3 py-1.5 rounded-full uppercase tracking-wider">
+                    {category?.name || "General"}
                   </span>
                 </div>
               </div>
 
               <div className="p-6">
                 <div className="flex items-center gap-3 text-gray-400 text-xs font-body mb-4">
-                  <span>{post.date}</span>
+                  <span>{new Date(post.createdAt).toLocaleDateString()}</span>
                   <span className="w-1 h-1 rounded-full bg-gray-300" />
-                  <span>By {post.author}</span>
+                  <span>By {author?.name || "Admin"}</span>
                 </div>
 
-                <h3 className="font-heading font-black text-[#0A0A0A] text-lg leading-snug mb-4 group-hover:text-[#4A6CF7] transition-colors">
+                <h3 className="font-heading font-black text-[#0A0A0A] text-lg leading-snug mb-4 group-hover:text-[#4A6CF7] transition-colors line-clamp-2">
                   {post.title}
                 </h3>
 
@@ -70,8 +80,14 @@ export default function Blog() {
                   </svg>
                 </div>
               </div>
-            </article>
+            </Link>
           ))}
+        </div>
+
+        <div className="mt-16 text-center">
+          <Link href="/blog" className="inline-flex items-center justify-center bg-[#4A6CF7] text-white font-heading font-black px-8 py-4 uppercase tracking-wider text-sm hover:bg-[#0A0A0A] hover:-translate-y-1 transition-all duration-300">
+            View All News
+          </Link>
         </div>
       </div>
     </section>
