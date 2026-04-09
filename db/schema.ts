@@ -156,3 +156,14 @@ export const projects = pgTable("projects", {
 
 export type Project = typeof projects.$inferSelect;
 export type NewProject = typeof projects.$inferInsert;
+
+export const pageViews = pgTable("page_views", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    path: varchar("path", { length: 500 }).notNull(),
+    referrer: text("referrer"),
+    userAgent: text("user_agent"),
+    ip: varchar("ip", { length: 100 }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type PageView = typeof pageViews.$inferSelect;

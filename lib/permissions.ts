@@ -55,6 +55,9 @@ export const ALL_PERMISSIONS = [
     { name: "users.edit", label: "Edit Admin Users", module: "users" },
     { name: "users.delete", label: "Delete Admin Users", module: "users" },
 
+    // Analytics
+    { name: "analytics.view", label: "View Analytics", module: "analytics" },
+
     // Settings — super_admin only
     { name: "settings.view", label: "View Settings", module: "settings" },
     { name: "settings.edit", label: "Edit Settings", module: "settings" },
@@ -126,4 +129,5 @@ export const NAV_PERMISSIONS: Record<string, PermissionName> = {
     "/admin/users": "users.view",
     "/admin/settings": "settings.view",
     "/admin/projects": "projects.view",
+    "/admin/analytics": "analytics.view",
 };

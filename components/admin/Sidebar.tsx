@@ -15,6 +15,7 @@ const ALL_NAV = [
     { href: "/admin/blog", label: "Blog", icon: "edit" },
     { href: "/admin/users", label: "Users", icon: "shield" },
     { href: "/admin/settings", label: "Settings", icon: "cog" },
+    { href: "/admin/analytics", label: "Analytics", icon: "chart" },
 ];
 
 const ICONS: Record<string, JSX.Element> = {
@@ -26,6 +27,12 @@ const ICONS: Record<string, JSX.Element> = {
     star: <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 1l1.8 4H14l-3.5 2.6 1.4 4.4L8 9.4 4.1 12 5.5 7.6 2 5h4.2L8 1z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" /></svg>,
     edit: <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M2 12.5L10.5 4l2 2L4 14.5H2v-2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" /><path d="M9 5l2 2" stroke="currentColor" strokeWidth="1.5" /></svg>,
     shield: <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 1l6 2.5v5C14 11.5 11 14.5 8 15c-3-.5-6-3.5-6-6.5v-5L8 1z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" /><path d="M5.5 8l2 2 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>,
+    chart: (
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+            <path d="M1 12l4-4 3 2 4-5 3 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M1 15h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+    ),
     layers: (
         <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
             <path d="M8 1L15 5l-7 4L1 5l7-4z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
