@@ -1,5 +1,3 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { db, services } from "@/db";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
@@ -17,7 +15,7 @@ export default async function ServiceDetailsPage({ params }: { params: { slug: s
 
     return (
         <main className="bg-[#0A0A0A] min-h-screen flex flex-col">
-            <Navbar />
+
 
             <article className="pt-32 pb-20 flex-1 relative">
                 {/* Hero Header */}
@@ -66,7 +64,7 @@ export default async function ServiceDetailsPage({ params }: { params: { slug: s
                 </div>
             </article>
 
-            <Footer />
+
         </main>
     );
 }

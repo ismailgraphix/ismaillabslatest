@@ -34,7 +34,7 @@ export default function DatabaseErrorModal({ error }: { error?: string }) {
         </div>
         <h3 className="text-2xl font-heading font-black text-center text-gray-900 mb-3">Connection Error</h3>
         <p className="text-gray-600 text-center text-sm leading-relaxed mb-8">
-          {error || "Failed to connect to the database. Some content could not be loaded."}
+          {error || "Failed to connect. Some content could not be loaded."}
         </p>
         <button onClick={() => setOpen(false)} className="w-full bg-[#0A0A0A] hover:bg-[#4A6CF7] text-white font-heading font-bold py-4 rounded-xl transition-colors duration-300 uppercase tracking-widest text-sm shadow-lg shadow-gray-200">
           Dismiss

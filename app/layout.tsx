@@ -2,10 +2,20 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { PageViewTracker } from "@/components/PageViewTracker";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Ismail Labs",
-  description: "We bring business and the digital world together with passion for creative problem solving.",
+  title: "Ismail Labs — Digital Agency",
+  description: "We build the digital side of your business. Web design, development & brand strategy.",
+  icons: {
+    icon: [
+      { url: "/logo.svg", type: "image/svg+xml" },
+      { url: "/logo.png", type: "image/png", sizes: "32x32" },
+      { url: "/logo.png", type: "image/png", sizes: "192x192" },
+    ],
+    apple: { url: "/logo.png", sizes: "180x180" },
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -13,8 +23,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <PageViewTracker />
+        <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );
-} 
+}

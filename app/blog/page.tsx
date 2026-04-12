@@ -1,5 +1,3 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { db, blogPosts, users, blogCategories } from "@/db";
 import { eq, desc, asc, and } from "drizzle-orm";
 import Link from "next/link";
@@ -16,8 +14,8 @@ export default async function PublicBlogPage({ searchParams }: { searchParams: {
     }
 
     // 3. Build order clause
-    const orderClause = searchParams.sort === "oldest" 
-        ? asc(blogPosts.createdAt) 
+    const orderClause = searchParams.sort === "oldest"
+        ? asc(blogPosts.createdAt)
         : desc(blogPosts.createdAt);
 
     // 4. Fetch the posts
@@ -35,8 +33,8 @@ export default async function PublicBlogPage({ searchParams }: { searchParams: {
 
     return (
         <main className="bg-[#0A0A0A] min-h-screen flex flex-col">
-            <Navbar />
-            
+
+
             <section className="pt-40 pb-20 px-6 relative flex-1">
                 <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#4353FF]/5 blur-[150px] rounded-full pointer-events-none" />
                 <div className="max-w-7xl mx-auto relative z-10">
@@ -104,7 +102,7 @@ export default async function PublicBlogPage({ searchParams }: { searchParams: {
                 </div>
             </section>
 
-            <Footer />
+
         </main>
     );
 }

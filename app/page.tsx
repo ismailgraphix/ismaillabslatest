@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import Brands from "@/components/Brands";
+
 import About from "@/components/About";
 import Services from "@/components/Services";
 import Portfolio from "@/components/Portfolio";
@@ -42,7 +42,7 @@ export default async function Home() {
             {dbError && <DatabaseErrorModal error={dbError} />}
             <Navbar />
             <Hero />
-            <Brands />
+
             <About />
             <Services services={servicesData} />
             <Portfolio />
@@ -50,7 +50,7 @@ export default async function Home() {
             <Testimonials />
             <Blog />
             <Contact />
-            <Footer />
+
         </main>
     );
 }

@@ -5,8 +5,8 @@
 @tailwind utilities;
 
 :root {
-  --accent: #4A6CF7;
-  --dark: #0A0A0A;
+  --accent: #10B981;
+  --dark: #242D2D;
 }
 
 * {
