@@ -1,4 +1,3 @@
-import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 
 import About from "@/components/About";
@@ -8,7 +7,6 @@ import Process from "@/components/Process";
 import Testimonials from "@/components/Testimonials";
 import Blog from "@/components/Blog";
 import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
 import DatabaseErrorModal from "@/components/DatabaseErrorModal";
 import { db, services } from "@/db";
 import { eq, asc } from "drizzle-orm";
@@ -40,7 +38,6 @@ export default async function Home() {
     return (
         <main>
             {dbError && <DatabaseErrorModal error={dbError} />}
-            <Navbar />
             <Hero />
 
             <About />

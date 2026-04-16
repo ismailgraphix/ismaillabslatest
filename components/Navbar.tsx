@@ -6,11 +6,11 @@ import Image from "next/image";
 
 const navLinks = [
     { label: "Home", href: "/" },
-    { label: "About", href: "/#about" },
-    { label: "Services", href: "/#services" },
+    { label: "About", href: "#about" },
+    { label: "Services", href: "#services" },
     { label: "Portfolio", href: "/portfolio" },
     { label: "Blog", href: "/blog" },
-    { label: "Contact", href: "/#contact" },
+    { label: "Contact", href: "#contact" },
 ];
 
 export default function Navbar() {
@@ -45,15 +45,6 @@ export default function Navbar() {
 
                     {/* ── Logo ── */}
                     <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
-                        <div className="transition-transform duration-300 group-hover:scale-95">
-                            <Image
-                                src="/logoo.png"
-                                alt="Ismail Labs logo"
-                                width={98}
-                                height={68}
-                                priority
-                            />
-                        </div>
                         <div className="leading-[1.15]">
                             <span className="block font-heading font-black text-[15px] text-[#0f0f0f] tracking-tight">
                                 Ismaillabs

@@ -2,8 +2,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { PageViewTracker } from "@/components/PageViewTracker";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+
 
 export const metadata: Metadata = {
   title: "Ismail Labs — Digital Agency",
@@ -23,9 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <PageViewTracker />
-        <Navbar />
         {children}
-        <Footer />
       </body>
     </html>
   );
