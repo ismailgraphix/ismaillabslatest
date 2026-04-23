@@ -48,7 +48,7 @@ export default function PortfolioPage() {
 
     useEffect(() => {
         setTimeout(() => setLoaded(true), 80);
-        fetch("/api/personal-portfolio").then(r => r.json()).then(setCfg);
+        fetch("/api/personal-portfolio").then(r => r.json()).then(d => setCfg(d || {}));
         fetch("/api/projects").then(r => r.json()).then(d => setProjects(d.items || []));
     }, []);
 
