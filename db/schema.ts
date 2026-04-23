@@ -168,3 +168,38 @@ export const pageViews = pgTable("page_views", {
 });
 
 export type PageView = typeof pageViews.$inferSelect;
+
+// ── Personal Portfolio Configuration (JSON based) ──
+export const personalPortfolio = pgTable("personal_portfolio", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    hero: jsonb("hero").$type<{
+        title: string;
+        shortTitle: string;
+        description: string;
+        tags: string[];
+        image: string;
+        resumeUrl: string;
+        yearsExp: number;
+        projectsCount: number;
+    }>().notNull(),
+    skills: jsonb("skills").$type<{ name: string; level: number }[]>().notNull().default([]),
+    otherSkills: jsonb("other_skills").$type<string[]>().notNull().default([]),
+    experiences: jsonb("experiences").$type<{
+        role: string;
+        company: string;
+        period: string;
+        desc: string;
+        tags: string[];
+    }[]>().notNull().default([]),
+    education: jsonb("education").$type<{
+        degree: string;
+        school: string;
+        period: string;
+        grade: string;
+    }[]>().notNull().default([]),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export type PersonalPortfolio = typeof personalPortfolio.$inferSelect;
+export type NewPersonalPortfolio = typeof personalPortfolio.$inferInsert;

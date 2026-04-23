@@ -1,51 +1,25 @@
 "use client";
-import { useState } from "react";
-
-const tabs = ["All", "Web Development", "Design", "Mobile", "Branding"];
-
-const projects = [
-  {
-    title: "Advertisement Design",
-    category: "Design",
-    img: "https://html.ravextheme.com/redox/light/assets/imgs/web-development/project-img-2.webp",
-    tag: "Design",
-  },
-  {
-    title: "Web Application Design",
-    category: "Web Development",
-    img: "https://html.ravextheme.com/redox/light/assets/imgs/web-development/project-img-3.webp",
-    tag: "Web Development",
-  },
-  {
-    title: "Medical Application Design",
-    category: "Mobile",
-    img: "https://html.ravextheme.com/redox/light/assets/imgs/web-development/project-img-4.webp",
-    tag: "Mobile",
-  },
-  {
-    title: "Brand Identity System",
-    category: "Branding",
-    img: "https://html.ravextheme.com/redox/light/assets/imgs/web-development/project-img-2.webp",
-    tag: "Branding",
-  },
-  {
-    title: "E-Commerce Platform",
-    category: "Web Development",
-    img: "https://html.ravextheme.com/redox/light/assets/imgs/web-development/project-img-3.webp",
-    tag: "Web Development",
-  },
-  {
-    title: "Mobile Banking App",
-    category: "Mobile",
-    img: "https://html.ravextheme.com/redox/light/assets/imgs/web-development/project-img-4.webp",
-    tag: "Mobile",
-  },
-];
+import { useState, useEffect } from "react";
 
 export default function Portfolio() {
   const [activeTab, setActiveTab] = useState("All");
+  const [projects, setProjects] = useState<any[]>([]);
+  const [tabs, setTabs] = useState<string[]>(["All"]);
 
-  const filtered = activeTab === "All" ? projects : projects.filter(p => p.category === activeTab);
+  useEffect(() => {
+    fetch("/api/projects")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.items) {
+          setProjects(data.items);
+          const categories: string[] = Array.from(new Set(data.items.map((p: any) => p.type).filter(Boolean)));
+          setTabs(["All", ...categories]);
+        }
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
+  const filtered = activeTab === "All" ? projects : projects.filter((p: any) => p.type === activeTab);
 
   return (
     <section id="portfolio" className="py-28 bg-white">
@@ -81,9 +55,9 @@ export default function Portfolio() {
         {/* Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map((p, i) => (
-            <div key={i} className="group relative rounded-2xl overflow-hidden bg-gray-100 aspect-[4/3] cursor-pointer">
+            <div key={p.id || i} className="group relative rounded-2xl overflow-hidden bg-gray-100 aspect-[4/3] cursor-pointer">
               <img
-                src={p.img}
+                src={p.image || p.img}
                 alt={p.title}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
@@ -93,7 +67,7 @@ export default function Portfolio() {
               {/* Content */}
               <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
                 <span className="inline-block bg-[#4A6CF7] text-white font-heading font-bold text-xs px-3 py-1 rounded-full mb-2">
-                  {p.tag}
+                  {p.techStack?.[0] || p.type}
                 </span>
                 <h3 className="font-heading font-black text-white text-xl">{p.title}</h3>
               </div>

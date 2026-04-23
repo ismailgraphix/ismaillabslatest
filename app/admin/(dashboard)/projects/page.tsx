@@ -177,8 +177,30 @@ function ProjectDrawer({ project, onClose, onSave }: {
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
     const titleRef = useRef<HTMLInputElement>(null);
+    const [uploading, setUploading] = useState(false);
+    const fileRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => { titleRef.current?.focus(); }, []);
+
+    async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setUploading(true);
+        const fd = new FormData(); fd.append("file", file);
+        try {
+            const r = await fetch("/api/admin/upload", { method: "POST", body: fd });
+            const d = await r.json();
+            if (d.url) {
+                setForm(f => ({ ...f, image: d.url }));
+            } else {
+                setError(d.error || "Upload failed");
+            }
+        } catch (err: any) {
+            setError(err.message || "Upload failed");
+        } finally {
+            setUploading(false);
+        }
+    }
 
     function addTech() {
         const trimmed = techInput.trim();
@@ -242,20 +264,34 @@ function ProjectDrawer({ project, onClose, onSave }: {
                         />
                     </div>
 
-                    {/* Image URL */}
+                    {/* Image Upload */}
                     <div>
-                        <label className="block text-[11px] font-body font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Image URL</label>
-                        <input
-                            type="text"
-                            value={form.image ?? ""}
-                            onChange={e => setForm(f => ({ ...f, image: e.target.value }))}
-                            placeholder="https://..."
-                            className="w-full bg-white/[0.04] border border-white/[0.08] text-white text-sm font-body placeholder:text-gray-700 px-3 py-2.5 rounded-sm focus:outline-none focus:border-[#4353FF]/50 transition-colors"
-                        />
+                        <label className="block text-[11px] font-body font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Project Image</label>
+                        <div className="border border-dashed border-white/10 hover:border-[#4353FF]/40 transition-colors cursor-pointer relative"
+                            onClick={() => fileRef.current?.click()}>
+                            {form.image ? (
+                                <img src={form.image} className="w-full h-36 object-cover" alt="preview" />
+                            ) : (
+                                <div className="h-36 flex flex-col items-center justify-center gap-2 text-gray-600">
+                                    {uploading ? (
+                                        <svg className="animate-spin w-6 h-6 text-[#4353FF]" viewBox="0 0 24 24" fill="none">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                                        </svg>
+                                    ) : (
+                                        <>
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 5v10M7 10l5-5 5 5M5 19h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                                            <span className="font-body text-xs">Click to upload image</span>
+                                        </>
+                                    )}
+                                </div>
+                            )}
+                            <input ref={fileRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
+                        </div>
                         {form.image && (
-                            <div className="mt-2 h-28 rounded-sm overflow-hidden border border-white/[0.06]">
-                                <img src={form.image} alt="preview" className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = "none"; }} />
-                            </div>
+                            <button type="button" onClick={() => setForm(f => ({ ...f, image: "" }))} className="font-body text-xs text-red-400 mt-1 hover:text-red-300">
+                                Remove image
+                            </button>
                         )}
                     </div>
 

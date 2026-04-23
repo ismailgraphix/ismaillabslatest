@@ -1,243 +1,258 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
+import { toast } from "react-hot-toast";
+import { Plus, Trash2, Save, Image as ImageIcon } from "lucide-react";
 
-
-interface PortfolioItem { id: string; title: string; category: string; description: string | null; image: string | null; tags: string[]; liveUrl: string | null; featured: boolean; published: boolean; order: number; }
-
-const CATEGORIES = ["Web Development", "Mobile Application", "Design & Branding", "App Development", "UI/UX Design"];
-
-const emptyForm = { title: "", category: "Web Development", description: "", image: "", tags: "", liveUrl: "", featured: false, published: true, order: 0 };
-
-export default function PortfolioPage() {
-    const [items, setItems] = useState<PortfolioItem[]>([]);
-    const [session, setSession] = useState<any>(null);
-    const [showModal, setShowModal] = useState(false);
-    const [editItem, setEditItem] = useState<PortfolioItem | null>(null);
-    const [form, setForm] = useState(emptyForm);
-    const [uploading, setUploading] = useState(false);
+export default function PersonalPortfolioAdmin() {
+    const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-    const [error, setError] = useState("");
-    const [preview, setPreview] = useState("");
-    const fileRef = useRef<HTMLInputElement>(null);
+    const [uploadingImage, setUploadingImage] = useState(false);
+    
+    // State
+    const [hero, setHero] = useState({ 
+        title: "", shortTitle: "", description: "", image: "", resumeUrl: "", projectsCount: 0, yearsExp: 0, tags: [] as string[] 
+    });
+    const [heroTags, setHeroTags] = useState("");
+    const [skills, setSkills] = useState<{name: string, level: number}[]>([]);
+    const [otherSkills, setOtherSkills] = useState("");
+    const [experiences, setExperiences] = useState<{role: string, company: string, period: string, desc: string, tags: string[]}[]>([]);
+    const [education, setEducation] = useState<{degree: string, school: string, period: string, grade: string}[]>([]);
 
     useEffect(() => {
-        fetch("/api/admin/me").then(r => r.json()).then(d => setSession(d.user));
-        loadItems();
+        fetch("/api/admin/personal-portfolio")
+        .then(res => res.json())
+        .then(data => {
+            if (data && !data.error) {
+                if (data.hero) {
+                    setHero(data.hero);
+                    setHeroTags(data.hero.tags?.join(", ") || "");
+                }
+                if (data.skills) setSkills(data.skills);
+                if (data.otherSkills) setOtherSkills(data.otherSkills.join(", "));
+                if (data.experiences) setExperiences(data.experiences);
+                if (data.education) setEducation(data.education);
+            }
+            setLoading(false);
+        })
+        .catch(err => {
+            console.error(err);
+            setLoading(false);
+        });
     }, []);
 
-    async function loadItems() {
-        const r = await fetch("/api/admin/portfolio");
-        const d = await r.json();
-        setItems(d.items || []);
-    }
-
-    function openAdd() { setEditItem(null); setForm(emptyForm); setPreview(""); setError(""); setShowModal(true); }
-    function openEdit(item: PortfolioItem) {
-        setEditItem(item);
-        setForm({ title: item.title, category: item.category, description: item.description || "", image: item.image || "", tags: (item.tags || []).join(", "), liveUrl: item.liveUrl || "", featured: item.featured, published: item.published, order: item.order });
-        setPreview(item.image || "");
-        setError("");
-        setShowModal(true);
-    }
+    const handleSave = async () => {
+        setSaving(true);
+        try {
+            const body = {
+                hero: { ...hero, tags: heroTags.split(",").map(t => t.trim()).filter(Boolean) },
+                skills: skills.map(s => ({ ...s, level: Number(s.level) })),
+                otherSkills: otherSkills.split(",").map(s => s.trim()).filter(Boolean),
+                experiences,
+                education
+            };
+            const r = await fetch("/api/admin/personal-portfolio", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+            });
+            if (r.ok) toast.success("Portfolio settings saved!");
+            else toast.error("Failed to save settings");
+        } catch (e) {
+            toast.error("Error saving");
+        }
+        setSaving(false);
+    };
 
     async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
         if (!file) return;
-        setUploading(true);
+        setUploadingImage(true);
         const fd = new FormData(); fd.append("file", file);
-        const r = await fetch("/api/upload", { method: "POST", body: fd });
-        const d = await r.json();
-        if (d.url) { setForm(f => ({ ...f, image: d.url })); setPreview(d.url); }
-        else setError(d.error || "Upload failed");
-        setUploading(false);
+        try {
+            const r = await fetch("/api/admin/upload", { method: "POST", body: fd });
+            const d = await r.json();
+            if (d.url) {
+                setHero(f => ({ ...f, image: d.url }));
+            }
+        } catch (error) {
+            toast.error("Upload failed");
+        }
+        setUploadingImage(false);
     }
 
-    async function handleSave() {
-        setSaving(true); setError("");
-        const payload = { ...form, tags: form.tags.split(",").map(t => t.trim()).filter(Boolean) };
-        const url = editItem ? `/api/admin/portfolio/${editItem.id}` : "/api/admin/portfolio";
-        const method = editItem ? "PATCH" : "POST";
-        const r = await fetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-        const d = await r.json();
-        if (!r.ok) { setError(d.error); setSaving(false); return; }
-        setShowModal(false); loadItems(); setSaving(false);
-    }
+    if (loading) return <div className="p-8">Loading configuration...</div>;
 
-    async function togglePublish(item: PortfolioItem) {
-        await fetch(`/api/admin/portfolio/${item.id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ published: !item.published }) });
-        loadItems();
-    }
-
-    async function handleDelete(id: string) {
-        if (!confirm("Delete this portfolio item?")) return;
-        await fetch(`/api/admin/portfolio/${id}`, { method: "DELETE" });
-        loadItems();
-    }
-
+    const inputClass = "w-full border-gray-200 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border";
+    
     return (
-        <div className="flex h-screen bg-[#0a0a0a] overflow-hidden">
+        <div className="max-w-[1200px] mx-auto p-6 space-y-12">
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl font-bold">Personal Portfolio Configurator</h1>
+                    <p className="text-gray-500 text-sm mt-1">Manage the details matching the /portfolio public view.</p>
+                </div>
+                <button
+                    onClick={handleSave}
+                    disabled={saving}
+                    className="flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-md hover:bg-gray-800 disabled:opacity-50"
+                >
+                    <Save size={18} />
+                    {saving ? "Saving..." : "Save Settings"}
+                </button>
+            </div>
 
-            <main className="flex-1 overflow-y-auto">
-                <div className="sticky top-0 z-10 bg-[#0a0a0a]/95 backdrop-blur border-b border-white/[0.06] px-8 py-4 flex items-center justify-between">
-                    <div>
-                        <h1 className="font-heading font-black text-white text-xl uppercase tracking-tight">Portfolio</h1>
-                        <p className="font-body text-gray-500 text-xs mt-0.5">{items.length} items · shown on frontend</p>
+            {/* HERO SETTINGS */}
+            <section className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                <h2 className="text-lg font-bold mb-4 border-b pb-2">Hero & Profile Details</h2>
+                <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                        <div><label className="block text-sm font-medium mb-1">Developer Short Title</label>
+                            <input value={hero.shortTitle} onChange={e => setHero(x => ({...x, shortTitle: e.target.value}))} className={inputClass} placeholder="e.g. ISMAIL LABS DEV." />
+                        </div>
+                        <div><label className="block text-sm font-medium mb-1">Full Title</label>
+                            <input value={hero.title} onChange={e => setHero(x => ({...x, title: e.target.value}))} className={inputClass} placeholder="e.g. ISMAIL LABS DEV." />
+                        </div>
+                        <div><label className="block text-sm font-medium mb-1">Description</label>
+                            <textarea rows={3} value={hero.description} onChange={e => setHero(x => ({...x, description: e.target.value}))} className={inputClass} />
+                        </div>
+                        <div><label className="block text-sm font-medium mb-1">Tags (comma separated)</label>
+                            <input value={heroTags} onChange={e => setHeroTags(e.target.value)} className={inputClass} placeholder="React, Next.js, Figma" />
+                        </div>
                     </div>
-                    <button onClick={openAdd}
-                        className="flex items-center gap-2 bg-[#4353FF] text-white font-body font-semibold text-sm px-5 py-2.5 hover:bg-white hover:text-[#0f0f0f] transition-all duration-200">
-                        + Add Project
+                    <div className="space-y-4">
+                        <div><label className="block text-sm font-medium mb-1">Resume / CV URL</label>
+                            <input value={hero.resumeUrl} onChange={e => setHero(x => ({...x, resumeUrl: e.target.value}))} className={inputClass} placeholder="/cv.pdf" />
+                        </div>
+                        <div className="flex flex-col gap-4">
+                            <label className="block text-sm font-medium">Hero Image Upload</label>
+                            <div className="flex items-start gap-4">
+                                {hero.image ? (
+                                    <div className="w-24 h-24 bg-gray-200 rounded overflow-hidden">
+                                        <img src={hero.image} alt="Hero" className="w-full h-full object-cover" />
+                                    </div>
+                                ) : (
+                                    <div className="w-24 h-24 bg-gray-100 rounded flex items-center justify-center border border-dashed border-gray-300">
+                                        <ImageIcon size={24} className="text-gray-400" />
+                                    </div>
+                                )}
+                                <div className="flex-1">
+                                    <input type="file" onChange={handleUpload} accept="image/*" className="text-sm" />
+                                    {uploadingImage && <p className="text-xs text-blue-500 mt-2">Uploading...</p>}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div><label className="block text-sm font-medium mb-1">Years Exp.</label>
+                                <input type="number" value={hero.yearsExp} onChange={e => setHero(x => ({...x, yearsExp: Number(e.target.value)}))} className={inputClass} />
+                            </div>
+                            <div><label className="block text-sm font-medium mb-1">Projects Count</label>
+                                <input type="number" value={hero.projectsCount} onChange={e => setHero(x => ({...x, projectsCount: Number(e.target.value)}))} className={inputClass} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* SKILLS SETTINGS */}
+            <section className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between border-b pb-2 mb-4">
+                    <h2 className="text-lg font-bold">Primary Skills</h2>
+                    <button onClick={() => setSkills(s => [...s, {name: "", level: 0}])} className="text-sm text-blue-600 flex items-center gap-1 hover:underline">
+                        <Plus size={16} /> Add Skill
                     </button>
                 </div>
-
-                <div className="p-8">
-                    {items.length === 0 ? (
-                        <div className="border border-dashed border-white/10 py-20 text-center">
-                            <p className="font-body text-gray-500 text-sm mb-4">No portfolio items yet</p>
-                            <button onClick={openAdd} className="font-body text-sm text-[#4353FF] hover:text-white transition-colors">+ Add your first project</button>
-                        </div>
-                    ) : (
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {items.map(item => (
-                                <div key={item.id} className="bg-[#111] border border-white/[0.06] overflow-hidden group hover:border-white/15 transition-all">
-                                    <div className="aspect-video bg-gray-900 relative overflow-hidden">
-                                        {item.image ? (
-                                            <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-gray-700">
-                                                <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="2" y="4" width="28" height="24" rx="3" stroke="currentColor" strokeWidth="1.5" /><circle cx="11" cy="13" r="3" stroke="currentColor" strokeWidth="1.5" /><path d="M2 22l8-6 6 5 4-3 10 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                                            </div>
-                                        )}
-                                        <div className="absolute top-2 right-2 flex gap-1">
-                                            {item.featured && <span className="font-body text-[10px] font-bold bg-yellow-400/90 text-black px-2 py-0.5">★ FEATURED</span>}
-                                            <span className={`font-body text-[10px] font-bold px-2 py-0.5 ${item.published ? "bg-green-500/90 text-white" : "bg-gray-700 text-gray-300"}`}>
-                                                {item.published ? "LIVE" : "DRAFT"}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div className="p-4">
-                                        <p className="font-body text-[10px] text-[#4353FF] uppercase tracking-widest mb-1">{item.category}</p>
-                                        <h3 className="font-heading font-black text-white text-base mb-2">{item.title}</h3>
-                                        {item.description && <p className="font-body text-gray-500 text-xs line-clamp-2 mb-3">{item.description}</p>}
-                                        {item.tags && item.tags.length > 0 && (
-                                            <div className="flex flex-wrap gap-1 mb-3">
-                                                {item.tags.map(t => <span key={t} className="font-body text-[10px] text-gray-500 bg-white/5 px-2 py-0.5">{t}</span>)}
-                                            </div>
-                                        )}
-                                        <div className="flex items-center gap-2 pt-3 border-t border-white/[0.06]">
-                                            <button onClick={() => openEdit(item)}
-                                                className="font-body text-xs text-gray-400 hover:text-white transition-colors px-2 py-1 border border-white/10 hover:border-white/30">
-                                                Edit
-                                            </button>
-                                            <button onClick={() => togglePublish(item)}
-                                                className={`font-body text-xs px-2 py-1 border transition-colors ${item.published ? "text-yellow-400 border-yellow-400/20 hover:bg-yellow-400 hover:text-black" : "text-green-400 border-green-400/20 hover:bg-green-400 hover:text-black"}`}>
-                                                {item.published ? "Unpublish" : "Publish"}
-                                            </button>
-                                            <button onClick={() => handleDelete(item.id)}
-                                                className="ml-auto font-body text-xs text-red-500 hover:text-white hover:bg-red-500 transition-all px-2 py-1 border border-red-500/20">
-                                                Delete
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            </main>
-
-            {/* Modal */}
-            {showModal && (
-                <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-[#111] border border-white/10 w-full max-w-xl max-h-[90vh] flex flex-col">
-                        <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
-                            <h3 className="font-heading font-black text-white uppercase tracking-tight">{editItem ? "Edit Project" : "Add Project"}</h3>
-                            <button onClick={() => setShowModal(false)} className="text-gray-500 hover:text-white transition-colors">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
+                <div className="grid md:grid-cols-2 gap-4">
+                    {skills.map((s, i) => (
+                        <div key={i} className="flex items-center gap-3 border p-3 rounded">
+                            <input value={s.name} onChange={e => setSkills(all => { const cl = [...all]; cl[i].name = e.target.value; return cl; })} placeholder="React / Next.js" className={inputClass} />
+                            <input type="number" min={0} max={100} value={s.level} onChange={e => setSkills(all => { const cl = [...all]; cl[i].level = Number(e.target.value); return cl; })} placeholder="92" className="w-20 p-2 border border-gray-200 rounded" />
+                            <strong className="text-gray-500">%</strong>
+                            <button onClick={() => setSkills(all => all.filter((_, idx) => idx !== i))} className="text-red-500 hover:text-red-700 p-2">
+                                <Trash2 size={16} />
                             </button>
                         </div>
-                        <div className="overflow-y-auto p-6 space-y-4 flex-1">
-                            {error && <p className="text-red-400 text-sm font-body bg-red-500/10 border border-red-500/20 px-4 py-3">{error}</p>}
-
-                            {/* Image upload */}
-                            <div>
-                                <label className="block font-body text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-2">Project Image</label>
-                                <div className="border border-dashed border-white/10 hover:border-[#4353FF]/40 transition-colors cursor-pointer relative"
-                                    onClick={() => fileRef.current?.click()}>
-                                    {preview ? (
-                                        <img src={preview} className="w-full h-36 object-cover" alt="preview" />
-                                    ) : (
-                                        <div className="h-36 flex flex-col items-center justify-center gap-2 text-gray-600">
-                                            {uploading ? (
-                                                <svg className="animate-spin w-6 h-6 text-[#4353FF]" viewBox="0 0 24 24" fill="none">
-                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                                                </svg>
-                                            ) : (
-                                                <>
-                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 5v10M7 10l5-5 5 5M5 19h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                                                    <span className="font-body text-xs">Click to upload image</span>
-                                                </>
-                                            )}
-                                        </div>
-                                    )}
-                                    <input ref={fileRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
-                                </div>
-                                {preview && <button onClick={() => { setForm(f => ({ ...f, image: "" })); setPreview(""); }} className="font-body text-xs text-red-400 mt-1 hover:text-red-300">Remove image</button>}
-                            </div>
-
-                            <div>
-                                <label className="block font-body text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-2">Title *</label>
-                                <input type="text" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="Project name"
-                                    className="w-full bg-white/5 border border-white/10 text-white font-body text-sm px-4 py-3 placeholder-gray-600 focus:outline-none focus:border-[#4353FF] transition-colors" />
-                            </div>
-
-                            <div>
-                                <label className="block font-body text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-2">Category</label>
-                                <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}
-                                    className="w-full bg-white/5 border border-white/10 text-white font-body text-sm px-4 py-3 focus:outline-none focus:border-[#4353FF] transition-colors">
-                                    {CATEGORIES.map(c => <option key={c} value={c} className="bg-[#111]">{c}</option>)}
-                                </select>
-                            </div>
-
-                            <div>
-                                <label className="block font-body text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-2">Description</label>
-                                <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3} placeholder="Brief project description..."
-                                    className="w-full bg-white/5 border border-white/10 text-white font-body text-sm px-4 py-3 placeholder-gray-600 focus:outline-none focus:border-[#4353FF] transition-colors resize-none" />
-                            </div>
-
-                            <div>
-                                <label className="block font-body text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-2">Tags (comma separated)</label>
-                                <input type="text" value={form.tags} onChange={e => setForm({ ...form, tags: e.target.value })} placeholder="React, Next.js, Tailwind"
-                                    className="w-full bg-white/5 border border-white/10 text-white font-body text-sm px-4 py-3 placeholder-gray-600 focus:outline-none focus:border-[#4353FF] transition-colors" />
-                            </div>
-
-                            <div>
-                                <label className="block font-body text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-2">Live URL</label>
-                                <input type="url" value={form.liveUrl} onChange={e => setForm({ ...form, liveUrl: e.target.value })} placeholder="https://..."
-                                    className="w-full bg-white/5 border border-white/10 text-white font-body text-sm px-4 py-3 placeholder-gray-600 focus:outline-none focus:border-[#4353FF] transition-colors" />
-                            </div>
-
-                            <div className="flex gap-6">
-                                <label className="flex items-center gap-2.5 cursor-pointer">
-                                    <input type="checkbox" checked={form.featured} onChange={e => setForm({ ...form, featured: e.target.checked })} className="accent-[#4353FF] w-4 h-4" />
-                                    <span className="font-body text-gray-300 text-sm">Featured project</span>
-                                </label>
-                                <label className="flex items-center gap-2.5 cursor-pointer">
-                                    <input type="checkbox" checked={form.published} onChange={e => setForm({ ...form, published: e.target.checked })} className="accent-[#4353FF] w-4 h-4" />
-                                    <span className="font-body text-gray-300 text-sm">Published (visible on site)</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div className="p-6 border-t border-white/[0.06]">
-                            <button onClick={handleSave} disabled={saving || uploading}
-                                className="w-full bg-[#4353FF] text-white font-heading font-black py-3.5 uppercase tracking-wider text-sm hover:bg-white hover:text-[#0f0f0f] transition-all duration-300 disabled:opacity-50">
-                                {saving ? "Saving..." : editItem ? "Save Changes" : "Add Project"}
-                            </button>
-                        </div>
-                    </div>
+                    ))}
                 </div>
-            )}
+                <div className="mt-6 pt-4 border-t">
+                    <label className="block text-sm font-medium mb-1">Other Skills (Used for chips, comma separated)</label>
+                    <input value={otherSkills} onChange={e => setOtherSkills(e.target.value)} className={inputClass} placeholder="PostgreSQL, Docker, AWS..." />
+                </div>
+            </section>
+
+            {/* WORK EXPERIENCE */}
+            <section className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between border-b pb-2 mb-4">
+                    <h2 className="text-lg font-bold">Work Experience</h2>
+                    <button onClick={() => setExperiences(e => [...e, {role: "", company: "", period: "", desc: "", tags: []}])} className="text-sm text-blue-600 flex items-center gap-1 hover:underline">
+                        <Plus size={16} /> Add Experience
+                    </button>
+                </div>
+                <div className="space-y-6">
+                    {experiences.map((exp, i) => (
+                        <div key={i} className="border border-gray-200 p-4 rounded-lg bg-gray-50 relative group">
+                            <button onClick={() => setExperiences(all => all.filter((_, idx) => idx !== i))} className="absolute top-4 right-4 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <Trash2 size={18} />
+                            </button>
+                            <div className="grid md:grid-cols-3 gap-4 mb-3 pr-8">
+                                <div><label className="block text-xs text-gray-500 mb-1">Role</label>
+                                    <input value={exp.role} onChange={e => setExperiences(all => { const c = [...all]; c[i].role = e.target.value; return c; })} className={inputClass} placeholder="Senior Dev" />
+                                </div>
+                                <div><label className="block text-xs text-gray-500 mb-1">Company</label>
+                                    <input value={exp.company} onChange={e => setExperiences(all => { const c = [...all]; c[i].company = e.target.value; return c; })} className={inputClass} placeholder="TechFlow Inc." />
+                                </div>
+                                <div><label className="block text-xs text-gray-500 mb-1">Period</label>
+                                    <input value={exp.period} onChange={e => setExperiences(all => { const c = [...all]; c[i].period = e.target.value; return c; })} className={inputClass} placeholder="2022 — Present" />
+                                </div>
+                            </div>
+                            <div className="mb-3">
+                                <label className="block text-xs text-gray-500 mb-1">Description</label>
+                                <textarea rows={2} value={exp.desc} onChange={e => setExperiences(all => { const c = [...all]; c[i].desc = e.target.value; return c; })} className={inputClass} placeholder="What did you do..." />
+                            </div>
+                            <div>
+                                <label className="block text-xs text-gray-500 mb-1">Tags (Comma separated)</label>
+                                <input value={exp.tags?.join(", ")} onChange={e => setExperiences(all => { const c = [...all]; c[i].tags = e.target.value.split(",").map(t => t.trim()).filter(Boolean); return c; })} className={inputClass} placeholder="Next.js, TypeScript" />
+                            </div>
+                        </div>
+                    ))}
+                    {experiences.length === 0 && <p className="text-gray-400 italic">No experiences added yet.</p>}
+                </div>
+            </section>
+
+             {/* EDUCATION */}
+             <section className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between border-b pb-2 mb-4">
+                    <h2 className="text-lg font-bold">Education</h2>
+                    <button onClick={() => setEducation(e => [...e, {degree: "", school: "", period: "", grade: ""}])} className="text-sm text-blue-600 flex items-center gap-1 hover:underline">
+                        <Plus size={16} /> Add Education
+                    </button>
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                    {education.map((edu, i) => (
+                        <div key={i} className="border border-gray-200 p-4 rounded-lg relative group">
+                            <button onClick={() => setEducation(all => all.filter((_, idx) => idx !== i))} className="absolute top-2 right-2 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <Trash2 size={16} />
+                            </button>
+                            <div className="space-y-3">
+                                <div><label className="block text-xs text-gray-500 mb-1">Degree</label>
+                                    <input value={edu.degree} onChange={e => setEducation(all => { const c = [...all]; c[i].degree = e.target.value; return c; })} className={inputClass} placeholder="B.Sc. Computer Science" />
+                                </div>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <div><label className="block text-xs text-gray-500 mb-1">School</label>
+                                        <input value={edu.school} onChange={e => setEducation(all => { const c = [...all]; c[i].school = e.target.value; return c; })} className={inputClass} placeholder="Univ. of X" />
+                                    </div>
+                                    <div><label className="block text-xs text-gray-500 mb-1">Period</label>
+                                        <input value={edu.period} onChange={e => setEducation(all => { const c = [...all]; c[i].period = e.target.value; return c; })} className={inputClass} placeholder="2014 — 2018" />
+                                    </div>
+                                </div>
+                                <div><label className="block text-xs text-gray-500 mb-1">Grade</label>
+                                    <input value={edu.grade} onChange={e => setEducation(all => { const c = [...all]; c[i].grade = e.target.value; return c; })} className={inputClass} placeholder="First Class Honours" />
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                    {education.length === 0 && <p className="text-gray-400 italic">No education added yet.</p>}
+                </div>
+            </section>
         </div>
     );
 }
