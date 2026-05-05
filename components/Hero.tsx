@@ -19,7 +19,7 @@ function Ticker() {
                     style={{ animation: "ticker 30s linear infinite" }}
                 >
                     {items.map((s, i) => (
-                        <span key={i} className="inline-flex items-center gap-4 font-body text-[11px] text-[#0f0f0f]/40 uppercase tracking-[0.22em]">
+                        <span key={i} className="inline-flex items-center gap-4 font-body text-[11px] text-[var(--text-faint)] uppercase tracking-[0.22em]">
                             <span className="w-1 h-1 rounded-full bg-[#4353FF] shrink-0" />
                             {s}
                         </span>
@@ -33,7 +33,7 @@ function Ticker() {
 // ── Count-up on scroll into view ─────────────────────────────────────────
 function Counter({ end, suffix = "" }: { end: number; suffix?: string }) {
     const [val, setVal] = useState(0);
-    const elRef = useRef<HTMLDivElement>(null);
+    const elRef = useRef<HTMLSpanElement>(null);
     const ran = useRef(false);
 
     useEffect(() => {
@@ -57,9 +57,9 @@ function Counter({ end, suffix = "" }: { end: number; suffix?: string }) {
     }, [end]);
 
     return (
-        <div ref={elRef}>
+        <span ref={elRef}>
             {val}{suffix}
-        </div>
+        </span>
     );
 }
 
@@ -108,7 +108,7 @@ export default function Hero() {
 
             <section
                 id="home"
-                className="relative w-full min-h-screen bg-[#EBEBEB] flex flex-col overflow-hidden"
+                className="relative w-full min-h-screen bg-[var(--app-bg)] flex flex-col overflow-hidden"
             >
 
                 {/* ──────────── Background geometry ──────────── */}
@@ -204,7 +204,7 @@ export default function Hero() {
                             />
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-[#4353FF]" />
                         </span>
-                        <span className="font-body text-[11px] text-[#0f0f0f]/50 uppercase tracking-[0.26em]">
+                        <span className="font-body text-[11px] text-[var(--text-soft)] uppercase tracking-[0.26em]">
                             Digital Agency · Available for Projects
                         </span>
                     </div>
@@ -213,7 +213,7 @@ export default function Hero() {
                     {/* Line 1 */}
                     <div className="overflow-hidden">
                         <h1
-                            className="font-heading font-black text-[#0f0f0f] uppercase leading-[0.87] tracking-[-0.03em]"
+                            className="font-heading font-black text-[var(--text)] uppercase leading-[0.87] tracking-[-0.03em]"
                             style={{
                                 fontSize: "clamp(3.6rem, 10vw, 9.5rem)",
                                 opacity: loaded ? 1 : 0,
@@ -228,7 +228,7 @@ export default function Hero() {
                     {/* Line 2 — "Your Digital" with blue underline on "Digital" */}
                     <div className="overflow-hidden">
                         <h1
-                            className="font-heading font-black text-[#0f0f0f] uppercase leading-[0.87] tracking-[-0.03em] flex flex-wrap items-baseline gap-x-[0.2em]"
+                            className="font-heading font-black text-[var(--text)] uppercase leading-[0.87] tracking-[-0.03em] flex flex-wrap items-baseline gap-x-[0.2em]"
                             style={{
                                 fontSize: "clamp(3.6rem, 10vw, 9.5rem)",
                                 opacity: loaded ? 1 : 0,
@@ -261,7 +261,7 @@ export default function Hero() {
                     {/* Line 3 */}
                     <div className="overflow-hidden mb-14">
                         <h1
-                            className="font-heading font-black text-[#0f0f0f] uppercase leading-[0.87] tracking-[-0.03em]"
+                            className="font-heading font-black text-[var(--text)] uppercase leading-[0.87] tracking-[-0.03em]"
                             style={{
                                 fontSize: "clamp(3.6rem, 10vw, 9.5rem)",
                                 opacity: loaded ? 1 : 0,
@@ -285,7 +285,7 @@ export default function Hero() {
                         {/* Description + CTAs */}
                         <div className="max-w-[400px]">
                             <p
-                                className="font-body text-[#0f0f0f]/55 leading-relaxed"
+                                className="font-body text-[var(--text-soft)] leading-relaxed"
                                 style={{ fontSize: "clamp(0.88rem, 1.15vw, 1rem)" }}
                             >
                                 From a stunning website to a complete digital product —
@@ -296,7 +296,7 @@ export default function Hero() {
                             <div className="flex items-center gap-5 mt-8">
                                 <a
                                     href="#about"
-                                    className="inline-flex items-center gap-2.5 bg-[#0f0f0f] text-white font-body font-semibold text-[13px] px-6 py-3.5 hover:bg-[#4353FF] transition-colors duration-300 group"
+                                    className="inline-flex items-center gap-2.5 bg-[var(--text)] text-white font-body font-semibold text-[13px] px-6 py-3.5 hover:bg-[#4353FF] transition-colors duration-300 group"
                                 >
                                     See Our Work
                                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
@@ -306,7 +306,7 @@ export default function Hero() {
                                 </a>
                                 <a
                                     href="#contact"
-                                    className="font-body font-medium text-[13px] text-[#0f0f0f] border-b border-[#0f0f0f]/25 pb-0.5 hover:border-[#4353FF] hover:text-[#4353FF] transition-all duration-300 inline-flex items-center gap-1.5"
+                                    className="font-body font-medium text-[13px] text-[var(--text)] border-b border-[var(--border)] pb-0.5 hover:border-[#4353FF] hover:text-[#4353FF] transition-all duration-300 inline-flex items-center gap-1.5"
                                 >
                                     Start a project
                                     <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
@@ -325,12 +325,12 @@ export default function Hero() {
                             ].map((s) => (
                                 <div key={s.label} className="text-right">
                                     <p
-                                        className="font-heading font-black text-[#0f0f0f] tabular-nums"
+                                        className="font-heading font-black text-[var(--text)] tabular-nums"
                                         style={{ fontSize: "clamp(2rem, 3.8vw, 3.5rem)" }}
                                     >
                                         <Counter end={s.end} suffix={s.suffix} />
                                     </p>
-                                    <p className="font-body text-[#0f0f0f]/40 text-[10px] uppercase tracking-[0.15em] leading-snug mt-0.5 whitespace-pre-line">
+                                    <p className="font-body text-[var(--text-faint)] text-[10px] uppercase tracking-[0.15em] leading-snug mt-0.5 whitespace-pre-line">
                                         {s.label}
                                     </p>
                                 </div>

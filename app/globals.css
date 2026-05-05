@@ -7,6 +7,17 @@
 :root {
   --accent: #10B981;
   --dark: #242D2D;
+  /* Theme tokens (light defaults match current design) */
+  --app-bg: #EBEBEB;
+  --surface: #ffffff;
+  --surface-2: rgba(255, 255, 255, 0.20);
+  --text: #0f0f0f;
+  --muted: #6b7280;
+  --text-soft: rgba(15, 15, 15, 0.55);
+  --text-faint: rgba(15, 15, 15, 0.40);
+  --border: rgba(17, 24, 39, 0.12);
+  --nav-bg: rgba(255, 255, 255, 0.96);
+  --chip-bg: #f3f4f6;
 }
 
 * {
@@ -21,9 +32,32 @@ html {
 
 body {
   font-family: 'Montserrat', sans-serif;
-  color: #0A0A0A;
-  background: #fff;
+  color: var(--text);
+  background: var(--app-bg);
   overflow-x: hidden;
+}
+
+/* Dark theme values (kept close to your existing palette) */
+html.dark {
+  --app-bg: #141b26;
+  --surface: #1b2433;
+  --surface-2: rgba(255, 255, 255, 0.06);
+  --text: #f5f5f5;
+  --muted: rgba(245, 245, 245, 0.72);
+  --text-soft: rgba(245, 245, 245, 0.72);
+  --text-faint: rgba(245, 245, 245, 0.56);
+  --border: rgba(255, 255, 255, 0.12);
+  --nav-bg: rgba(20, 27, 38, 0.92);
+  --chip-bg: rgba(255, 255, 255, 0.06);
+}
+
+/* Used by BlogFilters for horizontal chips */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }
 
 @layer utilities {

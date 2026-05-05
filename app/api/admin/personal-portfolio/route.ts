@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { personalPortfolio } from "@/db/schema";
 import { getSession } from "@/lib/auth";
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
 
 export async function GET() {
     try {

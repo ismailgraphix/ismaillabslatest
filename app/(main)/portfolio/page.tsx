@@ -48,14 +48,19 @@ export default function PortfolioPage() {
 
     useEffect(() => {
         setTimeout(() => setLoaded(true), 80);
-        fetch("/api/personal-portfolio").then(r => r.json()).then(d => setCfg(d || {}));
-        fetch("/api/projects").then(r => r.json()).then(d => setProjects(d.items || []));
+        const timestamp = new Date().getTime();
+        fetch(`/api/personal-portfolio?t=${timestamp}`, { cache: 'no-store' })
+            .then(r => r.json())
+            .then(d => setCfg(d || {}));
+        fetch(`/api/projects?t=${timestamp}`, { cache: 'no-store' })
+            .then(r => r.json())
+            .then(d => setProjects(d.items || []));
     }, []);
 
     const tabs = ["All", ...Array.from(new Set<string>(projects.map(p => p.type).filter(Boolean)))];
     const filtered = activeTab === "All" ? projects : projects.filter(p => p.type === activeTab);
 
-    if (!cfg) return <div className="min-h-screen bg-[#EBEBEB] flex items-center justify-center font-body">Loading...</div>;
+    if (!cfg) return <div className="min-h-screen bg-[var(--app-bg)] flex items-center justify-center font-body text-[var(--text)]">Loading...</div>;
 
     const heroTitleParts = (cfg.hero?.title || "ISMAIL LABS DEV.").split(" ");
     const word1 = heroTitleParts[0] || "ISMAIL";
@@ -63,10 +68,10 @@ export default function PortfolioPage() {
     const word3 = heroTitleParts.slice(2).join(" ") || "DEV.";
 
     return (
-        <main className="bg-[#EBEBEB] min-h-screen font-body">
+        <main className="bg-[var(--app-bg)] min-h-screen font-body">
 
             {/* ── NAVBAR ── */}
-            <header className="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 py-4">
+            <header className="fixed top-0 left-0 w-full z-50 bg-[var(--nav-bg)] backdrop-blur-md border-b border-[var(--border)] py-4">
                 <div className="max-w-[1300px] mx-auto px-6 md:px-10 flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-[#0f0f0f] rounded flex items-center justify-center">
@@ -76,7 +81,7 @@ export default function PortfolioPage() {
                             </svg>
                         </div>
                         <div>
-                            <span className="block font-heading font-black text-[14px] text-[#0f0f0f] tracking-tight leading-none">{cfg.hero?.shortTitle || "ismaillabs"}</span>
+                            <span className="block font-heading font-black text-[14px] text-[var(--text)] tracking-tight leading-none">{cfg.hero?.shortTitle || "ismaillabs"}</span>
                             <span className="block font-body text-[9px] text-gray-400 uppercase tracking-[0.18em]">agency</span>
                         </div>
                     </Link>
@@ -117,7 +122,7 @@ export default function PortfolioPage() {
                         </div>
 
                         <div className={`transition-all duration-700 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-                            <h1 className="font-heading font-black text-[#0f0f0f] uppercase leading-[0.9] tracking-tight mb-6"
+                            <h1 className="font-heading font-black text-[var(--text)] uppercase leading-[0.9] tracking-tight mb-6"
                                 style={{ fontSize: "clamp(3rem, 7vw, 6rem)" }}>
                                 {word1}<br />
                                 <span className="text-[#4353FF]">{word2}</span><br />
@@ -151,7 +156,7 @@ export default function PortfolioPage() {
                 </span>
                             </a>
                             <a href={cfg.hero?.resumeUrl || "#"}
-                               className="inline-flex items-center gap-2 border-2 border-[#0f0f0f] text-[#0f0f0f] font-body font-semibold px-6 py-3.5 hover:bg-[#0f0f0f] hover:text-white transition-all duration-300 text-sm">
+                               className="inline-flex items-center gap-2 border-2 border-[var(--text)] text-[var(--text)] font-body font-semibold px-6 py-3.5 hover:bg-[var(--text)] hover:text-white transition-all duration-300 text-sm">
                                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                                     <path d="M7 1v8M4 6l3 3 3-3M2 10v1a1 1 0 001 1h8a1 1 0 001-1v-1" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                                 </svg>
@@ -193,14 +198,14 @@ export default function PortfolioPage() {
             </section>
 
             {/* ── SKILLS ── */}
-            <section id="skills" className="py-20 bg-white" ref={skillsRef.ref}>
+            <section id="skills" className="py-20 bg-[var(--app-bg)]" ref={skillsRef.ref}>
                 <div className="max-w-[1300px] mx-auto px-6 md:px-10">
                     <div className={`mb-12 transition-all duration-700 ${skillsRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
                         <div className="flex items-center gap-3 mb-3">
                             <div className="w-6 h-[3px] bg-[#4353FF]" />
                             <span className="font-body font-semibold text-[#4353FF] text-xs uppercase tracking-[0.2em]">My Expertise</span>
                         </div>
-                        <h2 className="font-heading font-black text-[#0f0f0f] uppercase text-[clamp(1.6rem,2.8vw,2.4rem)] tracking-tight">
+                        <h2 className="font-heading font-black text-[var(--text)] uppercase text-[clamp(1.6rem,2.8vw,2.4rem)] tracking-tight">
                             SKILLS & TECHNOLOGIES
                         </h2>
                     </div>
@@ -213,7 +218,7 @@ export default function PortfolioPage() {
                                 style={{ transitionDelay: `${i * 80}ms` }}
                             >
                                 <div className="flex justify-between items-center mb-2">
-                                    <span className="font-heading font-bold text-[#0f0f0f] text-sm">{skill.name}</span>
+                                    <span className="font-heading font-bold text-[var(--text)] text-sm">{skill.name}</span>
                                     <span className="font-body text-xs text-[#4353FF] font-semibold">{skill.level}%</span>
                                 </div>
                                 <div className="h-1.5 bg-gray-100 relative overflow-hidden">
@@ -246,14 +251,14 @@ export default function PortfolioPage() {
             </section>
 
             {/* ── WORK EXPERIENCE ── */}
-            <section className="py-20 bg-[#EBEBEB]" ref={expRef.ref}>
+            <section className="py-20 bg-[var(--app-bg)]" ref={expRef.ref}>
                 <div className="max-w-[1300px] mx-auto px-6 md:px-10">
                     <div className={`mb-12 transition-all duration-700 ${expRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
                         <div className="flex items-center gap-3 mb-3">
                             <div className="w-6 h-[3px] bg-[#4353FF]" />
                             <span className="font-body font-semibold text-[#4353FF] text-xs uppercase tracking-[0.2em]">My Journey</span>
                         </div>
-                        <h2 className="font-heading font-black text-[#0f0f0f] uppercase text-[clamp(1.6rem,2.8vw,2.4rem)] tracking-tight">
+                        <h2 className="font-heading font-black text-[var(--text)] uppercase text-[clamp(1.6rem,2.8vw,2.4rem)] tracking-tight">
                             WORK EXPERIENCE
                         </h2>
                     </div>
@@ -274,12 +279,12 @@ export default function PortfolioPage() {
                                         <div className="w-3 h-3 rounded-full bg-gray-300 group-hover:bg-[#4353FF] transition-colors duration-300" />
                                     </div>
 
-                                    <div className="bg-white p-7 border border-gray-100 group-hover:border-[#4353FF]/30 group-hover:shadow-[0_8px_30px_rgba(67,83,255,0.08)] transition-all duration-300 relative overflow-hidden">
+                                    <div className="bg-[var(--surface)] p-7 border border-[var(--border)] group-hover:border-[#4353FF]/30 group-hover:shadow-[0_8px_30px_rgba(67,83,255,0.08)] transition-all duration-300 relative overflow-hidden">
                                         <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-[#4353FF] group-hover:w-full transition-all duration-500" />
 
                                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
                                             <div>
-                                                <h3 className="font-heading font-black text-[#0f0f0f] text-lg group-hover:text-[#4353FF] transition-colors">{exp.role}</h3>
+                                                <h3 className="font-heading font-black text-[var(--text)] text-lg group-hover:text-[#4353FF] transition-colors">{exp.role}</h3>
                                                 <p className="font-body text-[#4353FF] text-sm font-semibold">{exp.company}</p>
                                             </div>
                                             <span className="font-body text-xs text-gray-400 bg-gray-50 border border-gray-100 px-3 py-1.5 whitespace-nowrap self-start">
@@ -301,7 +306,7 @@ export default function PortfolioPage() {
             </section>
 
             {/* ── PROJECTS ── */}
-            <section id="work" className="py-20 bg-white" ref={projRef.ref}>
+            <section id="work" className="py-20 bg-[var(--app-bg)]" ref={projRef.ref}>
                 <div className="max-w-[1300px] mx-auto px-6 md:px-10">
                     <div className={`flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10 transition-all duration-700 ${projRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
                         <div>
@@ -309,7 +314,7 @@ export default function PortfolioPage() {
                                 <div className="w-6 h-[3px] bg-[#4353FF]" />
                                 <span className="font-body font-semibold text-[#4353FF] text-xs uppercase tracking-[0.2em]">Selected Work</span>
                             </div>
-                            <h2 className="font-heading font-black text-[#0f0f0f] uppercase text-[clamp(1.6rem,2.8vw,2.4rem)] tracking-tight">
+                            <h2 className="font-heading font-black text-[var(--text)] uppercase text-[clamp(1.6rem,2.8vw,2.4rem)] tracking-tight">
                                 PROJECTS
                             </h2>
                         </div>
@@ -374,14 +379,14 @@ export default function PortfolioPage() {
             </section>
 
             {/* ── EDUCATION ── */}
-            <section className="py-20 bg-[#EBEBEB]" ref={eduRef.ref}>
+            <section className="py-20 bg-[var(--app-bg)]" ref={eduRef.ref}>
                 <div className="max-w-[1300px] mx-auto px-6 md:px-10">
                     <div className={`mb-12 transition-all duration-700 ${eduRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
                         <div className="flex items-center gap-3 mb-3">
                             <div className="w-6 h-[3px] bg-[#4353FF]" />
                             <span className="font-body font-semibold text-[#4353FF] text-xs uppercase tracking-[0.2em]">Education</span>
                         </div>
-                        <h2 className="font-heading font-black text-[#0f0f0f] uppercase text-[clamp(1.6rem,2.8vw,2.4rem)] tracking-tight">
+                        <h2 className="font-heading font-black text-[var(--text)] uppercase text-[clamp(1.6rem,2.8vw,2.4rem)] tracking-tight">
                             ACADEMIC BACKGROUND
                         </h2>
                     </div>
@@ -390,7 +395,7 @@ export default function PortfolioPage() {
                         {(cfg.education || []).map((edu: any, i: number) => (
                             <div
                                 key={i}
-                                className={`group bg-white p-8 border border-gray-100 hover:border-[#4353FF]/30 hover:shadow-lg transition-all duration-400 relative overflow-hidden ${eduRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+                                className={`group bg-[var(--surface)] p-8 border border-[var(--border)] hover:border-[#4353FF]/30 hover:shadow-lg transition-all duration-400 relative overflow-hidden ${eduRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
                                 style={{ transitionDelay: `${i * 150}ms` }}
                             >
                                 <div className="absolute top-0 right-0 w-20 h-20 bg-[#4353FF]/4 rounded-bl-[60px] group-hover:bg-[#4353FF]/8 transition-colors" />
@@ -400,7 +405,7 @@ export default function PortfolioPage() {
                                         <path d="M1 6v6M17 6v6M5 8v4c0 1.1 1.8 2 4 2s4-.9 4-2V8" stroke="#4353FF" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
                                     </svg>
                                 </div>
-                                <h3 className="font-heading font-black text-[#0f0f0f] text-lg mb-1 group-hover:text-[#4353FF] transition-colors">{edu.degree}</h3>
+                                <h3 className="font-heading font-black text-[var(--text)] text-lg mb-1 group-hover:text-[#4353FF] transition-colors">{edu.degree}</h3>
                                 <p className="font-body text-[#4353FF] text-sm font-semibold mb-3">{edu.school}</p>
                                 <div className="flex items-center justify-between">
                                     <span className="font-body text-xs text-gray-400">{edu.period}</span>

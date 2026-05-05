@@ -77,7 +77,7 @@ export default function Process() {
     const { ref, inView } = useInView(0.1);
 
     return (
-        <section className="bg-[#EBEBEB] py-20 relative overflow-hidden" ref={ref}>
+        <section className="bg-[var(--app-bg)] py-20 relative overflow-hidden" ref={ref}>
             {/* Subtle dot pattern bg */}
             <div
                 className="absolute inset-0 opacity-[0.025] pointer-events-none"
@@ -94,7 +94,7 @@ export default function Process() {
                         <div className="w-10 h-[3px] bg-[#4353FF]/40 rounded-full" />
                     </div>
                     <h2
-                        className="font-heading font-black text-[#0f0f0f] uppercase tracking-tight"
+                        className="font-heading font-black text-[var(--text)] uppercase tracking-tight"
                         style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)" }}
                     >
                         FOLLOW 4 EASY WORK STEPS
@@ -107,7 +107,7 @@ export default function Process() {
                         <div
                             key={step.label}
                             className={`
-                group relative bg-white border border-gray-200/80 p-8
+                group relative bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-8
                 hover:border-[#4353FF]/40 hover:shadow-[0_8px_40px_rgba(67,83,255,0.12)]
                 hover:-translate-y-2
                 transition-all duration-400 cursor-pointer overflow-hidden
@@ -116,7 +116,7 @@ export default function Process() {
                             style={{ transitionDelay: inView ? `${i * 120}ms` : "0ms" }}
                         >
                             {/* Circle icon container — gray bg becomes blue-tinted on hover */}
-                            <div className="w-20 h-20 rounded-full bg-gray-100 group-hover:bg-[#4353FF]/10 flex items-center justify-center mb-6 transition-colors duration-300 mx-auto">
+                            <div className="w-20 h-20 rounded-2xl bg-gray-100 group-hover:bg-[#4353FF]/10 flex items-center justify-center mb-6 transition-colors duration-300 mx-auto">
                                 <div className="transition-transform duration-300 group-hover:scale-110">
                                     {step.icon}
                                 </div>
@@ -128,7 +128,7 @@ export default function Process() {
                             </p>
 
                             {/* Title */}
-                            <h3 className="font-heading font-black text-[#0f0f0f] text-[1.05rem] mb-3 text-center group-hover:text-[#4353FF] transition-colors duration-300">
+                            <h3 className="font-heading font-black text-[var(--text)] text-[1.05rem] mb-3 text-center group-hover:text-[#4353FF] transition-colors duration-300">
                                 {step.title}
                             </h3>
 
@@ -139,7 +139,7 @@ export default function Process() {
 
                             {/* Connector arrow — visible on desktop between cards */}
                             {i < steps.length - 1 && (
-                                <div className="hidden lg:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10 w-6 h-6 bg-white border border-gray-200 rounded-full items-center justify-center shadow-sm">
+                                <div className="hidden lg:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10 w-6 h-6 bg-[var(--surface)] border border-[var(--border)] rounded-full items-center justify-center shadow-sm">
                                     <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                                         <path d="M2 5h6M6 3l2 2-2 2" stroke="#4353FF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                                     </svg>

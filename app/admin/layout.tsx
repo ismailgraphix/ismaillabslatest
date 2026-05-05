@@ -6,5 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-    return <>{children}</>;
+    return <div className="theme-admin-scope min-h-dvh">{children}</div>;
 }

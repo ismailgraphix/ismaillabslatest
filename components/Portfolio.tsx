@@ -7,7 +7,7 @@ export default function Portfolio() {
   const [tabs, setTabs] = useState<string[]>(["All"]);
 
   useEffect(() => {
-    fetch("/api/projects")
+    fetch(`/api/projects?t=${new Date().getTime()}`, { cache: 'no-store' })
       .then((res) => res.json())
       .then((data) => {
         if (data.items) {
@@ -22,7 +22,7 @@ export default function Portfolio() {
   const filtered = activeTab === "All" ? projects : projects.filter((p: any) => p.type === activeTab);
 
   return (
-    <section id="portfolio" className="py-28 bg-white">
+    <section id="portfolio" className="py-28 bg-[var(--app-bg)]">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-14">
@@ -30,7 +30,7 @@ export default function Portfolio() {
             <span className="w-1.5 h-1.5 rounded-full bg-[#4A6CF7]" />
             <span className="font-heading font-semibold text-sm text-[#4A6CF7] uppercase tracking-widest">Recent Works Gallery</span>
           </div>
-          <h2 className="font-heading font-black text-[clamp(2rem,4vw,3.5rem)] leading-tight text-[#0A0A0A]">
+          <h2 className="font-heading font-black text-[clamp(2rem,4vw,3.5rem)] leading-tight text-[var(--text)]">
             Our recent project gallery
           </h2>
         </div>
@@ -44,7 +44,7 @@ export default function Portfolio() {
               className={`font-heading font-semibold text-sm px-6 py-2.5 rounded-full border transition-all duration-200 ${
                 activeTab === tab
                   ? "bg-[#4A6CF7] text-white border-[#4A6CF7]"
-                  : "bg-white text-[#0A0A0A] border-gray-200 hover:border-[#4A6CF7] hover:text-[#4A6CF7]"
+                  : "bg-[var(--surface)] text-[var(--text)] border-[var(--border)] hover:border-[#4A6CF7] hover:text-[#4A6CF7]"
               }`}
             >
               {tab}
@@ -73,9 +73,9 @@ export default function Portfolio() {
               </div>
 
               {/* Arrow */}
-              <div className="absolute top-4 right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 transition-all duration-300">
+              <div className="absolute top-4 right-4 w-10 h-10 bg-[var(--surface)] rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 transition-all duration-300">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M3 11L11 3M11 3H5M11 3v6" stroke="#0A0A0A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M3 11L11 3M11 3H5M11 3v6" stroke="var(--text)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
             </div>

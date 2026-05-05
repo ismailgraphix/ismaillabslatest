@@ -32,11 +32,10 @@ export default async function PublicBlogPage({ searchParams }: { searchParams: {
         .orderBy(orderClause);
 
     return (
-        <main className="bg-[#0A0A0A] min-h-screen flex flex-col">
-
+        <main className="bg-[var(--app-bg)] min-h-screen flex flex-col">
 
             <section className="pt-40 pb-20 px-6 relative flex-1">
-                <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#4353FF]/5 blur-[150px] rounded-full pointer-events-none" />
+                <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#4353FF]/10 blur-[150px] rounded-full pointer-events-none" />
                 <div className="max-w-7xl mx-auto relative z-10">
                     <div className="mb-12 text-center max-w-3xl mx-auto">
                         <div className="inline-flex items-center gap-3 mb-6">
@@ -44,10 +43,10 @@ export default async function PublicBlogPage({ searchParams }: { searchParams: {
                             <span className="font-body font-bold text-[#4353FF] text-xs uppercase tracking-[0.2em]">Our News</span>
                             <div className="w-8 h-px bg-[#4353FF]" />
                         </div>
-                        <h1 className="font-heading font-black text-white uppercase text-[clamp(2.5rem,5vw,4.5rem)] leading-none tracking-tight mb-6">
+                        <h1 className="font-heading font-black text-[var(--text)] uppercase text-[clamp(2.5rem,5vw,4.5rem)] leading-none tracking-tight mb-6">
                             Insights & Updates
                         </h1>
-                        <p className="font-body text-gray-400 text-lg leading-relaxed">
+                        <p className="font-body text-[var(--muted)] text-lg leading-relaxed">
                             Discover the latest strategies, case studies, and news from our team across design, engineering, and product growth.
                         </p>
                     </div>
@@ -55,34 +54,34 @@ export default async function PublicBlogPage({ searchParams }: { searchParams: {
                     <BlogFilters categories={categories} />
 
                     {posts.length === 0 ? (
-                        <div className="py-24 text-center border border-white/5 bg-white/[0.02]">
-                            <p className="font-heading font-bold text-white text-xl mb-2">No posts found</p>
-                            <p className="font-body text-gray-500">Try adjusting your category filters.</p>
+                        <div className="py-24 text-center border border-[var(--border)] bg-[var(--surface)] shadow-sm rounded-sm">
+                            <p className="font-heading font-bold text-[var(--text)] text-xl mb-2">No posts found</p>
+                            <p className="font-body text-[var(--muted)]">Try adjusting your category filters.</p>
                         </div>
                     ) : (
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {posts.map(({ post, author, category }) => (
-                                <Link href={`/blog/${post.slug}`} key={post.id} className="group relative bg-[#111] border border-white/10 hover:border-[#4353FF]/50 transition-all duration-500 overflow-hidden flex flex-col">
+                                <Link href={`/blog/${post.slug}`} key={post.id} className="group relative bg-[var(--surface)] border border-[var(--border)] hover:border-[#4353FF]/40 shadow-sm hover:shadow-md transition-all duration-500 overflow-hidden flex flex-col rounded-sm">
                                     <div className="relative h-[240px] w-full overflow-hidden">
-                                        <div className="absolute inset-0 bg-[#4353FF]/20 group-hover:bg-transparent transition-colors z-10" />
+                                        <div className="absolute inset-0 bg-[#4353FF]/10 group-hover:bg-transparent transition-colors z-10 pointer-events-none" />
                                         {post.image ? (
                                             <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                                         ) : (
-                                            <div className="w-full h-full bg-[#1a1a1a] flex items-center justify-center font-heading text-gray-800 font-black text-4xl">NO IMAGE</div>
+                                            <div className="w-full h-full bg-gray-100 flex items-center justify-center font-heading text-gray-300 font-black text-4xl">NO IMAGE</div>
                                         )}
                                         <div className="absolute top-4 left-4 z-20">
-                                            <span className="bg-black/60 backdrop-blur border border-white/10 text-white font-body text-[10px] uppercase tracking-widest px-3 py-1.5 font-bold">
+                                            <span className="bg-[var(--surface)]/95 backdrop-blur border border-[var(--border)] text-[var(--text)] font-body text-[10px] uppercase tracking-widest px-3 py-1.5 font-bold shadow-sm">
                                                 {category?.name || "General"}
                                             </span>
                                         </div>
                                     </div>
                                     <div className="p-8 flex-1 flex flex-col">
-                                        <h2 className="font-heading font-bold text-white text-2xl leading-tight mb-4 group-hover:text-[#4353FF] transition-colors">{post.title}</h2>
-                                        <p className="font-body text-gray-400 text-sm leading-relaxed mb-6 flex-1 line-clamp-3">
+                                        <h2 className="font-heading font-bold text-[var(--text)] text-2xl leading-tight mb-4 group-hover:text-[#4353FF] transition-colors">{post.title}</h2>
+                                        <p className="font-body text-[var(--muted)] text-sm leading-relaxed mb-6 flex-1 line-clamp-3">
                                             {post.excerpt || post.content.substring(0, 150) + "..."}
                                         </p>
-                                        <div className="flex items-center gap-3 pt-6 border-t border-white/10 mt-auto">
-                                            <div className="w-10 h-10 rounded-full bg-[#4353FF]/20 border border-[#4353FF]/30 overflow-hidden flex items-center justify-center flex-shrink-0">
+                                        <div className="flex items-center gap-3 pt-6 border-t border-[var(--border)] mt-auto">
+                                            <div className="w-10 h-10 rounded-full bg-[#4353FF]/10 border border-[#4353FF]/25 overflow-hidden flex items-center justify-center flex-shrink-0">
                                                 {author?.avatar ? (
                                                     <img src={author.avatar} alt="Author" className="w-full h-full object-cover" />
                                                 ) : (
@@ -90,8 +89,8 @@ export default async function PublicBlogPage({ searchParams }: { searchParams: {
                                                 )}
                                             </div>
                                             <div>
-                                                <p className="font-heading font-bold text-white text-[13px]">{author?.name || "Unknown Author"}</p>
-                                                <p className="font-body text-gray-500 text-[10px] uppercase tracking-widest mt-0.5">{new Date(post.createdAt).toLocaleDateString()}</p>
+                                                <p className="font-heading font-bold text-[var(--text)] text-[13px]">{author?.name || "Unknown Author"}</p>
+                                                <p className="font-body text-gray-400 text-[10px] uppercase tracking-widest mt-0.5">{new Date(post.createdAt).toLocaleDateString()}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -101,7 +100,6 @@ export default async function PublicBlogPage({ searchParams }: { searchParams: {
                     )}
                 </div>
             </section>
-
 
         </main>
     );

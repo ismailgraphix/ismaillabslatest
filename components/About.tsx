@@ -36,7 +36,7 @@ export default function About() {
     const { ref, inView } = useInView(0.15);
 
     return (
-        <section id="about" className="bg-[#EBEBEB] py-24 overflow-hidden relative" ref={ref}>
+        <section id="about" className="bg-[var(--app-bg)] py-24 overflow-hidden relative" ref={ref}>
             {/* Ghost arc left edge */}
             <div className="absolute -left-20 bottom-10 w-56 h-56 rounded-full border border-gray-300/50 pointer-events-none" />
 
@@ -77,7 +77,7 @@ export default function About() {
 
                     {/* Heading — bold, all caps, matches screenshot */}
                     <h2
-                        className="font-heading font-black text-[#0f0f0f] uppercase leading-[1.0] tracking-tight mb-6"
+                        className="font-heading font-black text-[var(--text)] uppercase leading-[1.0] tracking-tight mb-6"
                         style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)" }}
                     >
                         WE WANT TO BRING BUSINESS<br />
@@ -106,7 +106,7 @@ export default function About() {
                                 </svg>
                             </div>
                             <div>
-                                <p className="font-heading font-black text-[#0f0f0f] text-3xl leading-none">
+                                <p className="font-heading font-black text-[var(--text)] text-3xl leading-none">
                                     <Counter target={25} />
                                 </p>
                                 <p className="font-body text-gray-400 text-sm mt-1">Years on the market</p>
@@ -125,7 +125,7 @@ export default function About() {
                                 </svg>
                             </div>
                             <div>
-                                <p className="font-heading font-black text-[#0f0f0f] text-3xl leading-none">
+                                <p className="font-heading font-black text-[var(--text)] text-3xl leading-none">
                                     <Counter target={375} />
                                 </p>
                                 <p className="font-body text-gray-400 text-sm mt-1">Projects delivered so far</p>

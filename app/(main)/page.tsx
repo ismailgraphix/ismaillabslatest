@@ -29,7 +29,9 @@ export default async function Home() {
             .from(services)
             .where(eq(services.published, true))
             .orderBy(asc(services.order))
-            .limit(4);
+            // We show 4 by default in UI, with a "View all" toggle.
+            // Fetching all here keeps it simple and avoids adding a separate page/API.
+            ;
     } catch (err: any) {
         console.error("Home page Services fetch error:", err);
         dbError = "Failed to load services due to a database connection error.";

@@ -29,7 +29,7 @@ export default async function Blog() {
   }
 
   return (
-    <section className="py-28 bg-white">
+    <section className="py-28 bg-[var(--app-bg)]">
       {dbError && <DatabaseErrorModal error={dbError} />}
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-14">
@@ -37,14 +37,14 @@ export default async function Blog() {
             <span className="w-1.5 h-1.5 rounded-full bg-[#4A6CF7]" />
             <span className="font-heading font-semibold text-sm text-[#4A6CF7] uppercase tracking-widest">News & Latest Updates</span>
           </div>
-          <h2 className="font-heading font-black text-[clamp(2rem,4vw,3.5rem)] leading-tight text-[#0A0A0A]">
+          <h2 className="font-heading font-black text-[clamp(2rem,4vw,3.5rem)] leading-tight text-[var(--text)]">
             Check Our Company Inside Story
           </h2>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
           {posts.map(({ post, author, category }) => (
-            <Link href={`/blog/${post.slug}`} key={post.id} className="group rounded-2xl overflow-hidden border border-gray-100 hover:shadow-xl transition-shadow duration-300 cursor-pointer block bg-white">
+            <Link href={`/blog/${post.slug}`} key={post.id} className="group rounded-2xl overflow-hidden border border-[var(--border)] hover:shadow-xl transition-shadow duration-300 cursor-pointer block bg-[var(--surface)]">
               <div className="relative aspect-video overflow-hidden bg-gray-100">
                 {post.image ? (
                   <img
@@ -69,7 +69,7 @@ export default async function Blog() {
                   <span>By {author?.name || "Admin"}</span>
                 </div>
 
-                <h3 className="font-heading font-black text-[#0A0A0A] text-lg leading-snug mb-4 group-hover:text-[#4A6CF7] transition-colors line-clamp-2">
+                <h3 className="font-heading font-black text-[var(--text)] text-lg leading-snug mb-4 group-hover:text-[#4A6CF7] transition-colors line-clamp-2">
                   {post.title}
                 </h3>
 
@@ -85,7 +85,7 @@ export default async function Blog() {
         </div>
 
         <div className="mt-16 text-center">
-          <Link href="/blog" className="inline-flex items-center justify-center bg-[#4A6CF7] text-white font-heading font-black px-8 py-4 uppercase tracking-wider text-sm hover:bg-[#0A0A0A] hover:-translate-y-1 transition-all duration-300">
+          <Link href="/blog" className="inline-flex items-center justify-center bg-[#4A6CF7] text-white font-heading font-black px-8 py-4 uppercase tracking-wider text-sm hover:bg-[var(--text)] hover:-translate-y-1 transition-all duration-300">
             View All News
           </Link>
         </div>

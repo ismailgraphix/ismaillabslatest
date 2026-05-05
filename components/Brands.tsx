@@ -74,7 +74,7 @@ export default function Brands() {
     const [paused, setPaused] = useState(false);
 
     return (
-        <section className="bg-[#EBEBEB] py-12 overflow-hidden border-t border-gray-200/60">
+        <section className="bg-[var(--app-bg)] py-12 overflow-hidden border-t border-[var(--border)]">
             {/* Title */}
             <p className="text-center font-body text-[13px] tracking-[0.25em] text-gray-400 uppercase mb-8">
                 <span className="font-semibold text-gray-600">WE WORKED WITH G</span>LOBAL LARGEST BRANDS

@@ -29,9 +29,11 @@ interface ServiceData {
 
 export default function Services({ services = [] }: { services?: ServiceData[] }) {
     const { ref, inView } = useInView(0.1);
+    const [showAll, setShowAll] = useState(false);
+    const visible = showAll ? services : services.slice(0, 4);
 
     return (
-        <section id="services" className="bg-[#EBEBEB] py-20" ref={ref}>
+        <section id="services" className="bg-[var(--app-bg)] py-20" ref={ref}>
             <div className="max-w-[1300px] mx-auto px-6 md:px-10">
                 <div className="grid lg:grid-cols-[320px_1fr] gap-10 items-start">
 
@@ -44,7 +46,7 @@ export default function Services({ services = [] }: { services?: ServiceData[] }
                         </div>
 
                         <h2
-                            className="font-heading font-black text-[#0f0f0f] uppercase leading-[1.0] tracking-tight mb-8"
+                            className="font-heading font-black text-[var(--text)] uppercase leading-[1.0] tracking-tight mb-8"
                             style={{ fontSize: "clamp(1.7rem, 2.8vw, 2.4rem)" }}
                         >
                             WE&apos;VE AMAZING WEB SOLUTIONS
@@ -65,12 +67,13 @@ export default function Services({ services = [] }: { services?: ServiceData[] }
                     </div>
 
                     {/* ── RIGHT: 2×2 grid ── */}
-                    <div className="grid sm:grid-cols-2 gap-0 border border-gray-200/60 bg-white/20">
-                        {services.map((s, i) => (
+                    <div>
+                    <div className="grid sm:grid-cols-2 gap-0 border border-[var(--border)] bg-[var(--surface-2)] rounded-2xl overflow-hidden">
+                        {visible.map((s, i) => (
                             <Link
                                 href={`/services/${s.slug}`}
                                 key={s.id}
-                                className={`relative p-7 border border-gray-200/60 bg-white/0 hover:bg-white transition-all duration-500 group cursor-pointer overflow-hidden block
+                                className={`relative p-7 border border-[var(--border)] bg-transparent hover:bg-[var(--surface)] transition-all duration-500 group cursor-pointer overflow-hidden block
                                     ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
                                 `}
                                 style={{ transitionDelay: inView ? `${150 + i * 100}ms` : "0ms" }}
@@ -93,11 +96,11 @@ export default function Services({ services = [] }: { services?: ServiceData[] }
                                 </div>
 
                                 {/* Title */}
-                                <h3 className="font-heading font-black text-[#0f0f0f] text-lg mb-4 relative z-10 group-hover:text-[#4353FF] transition-colors duration-300 line-clamp-2">
+                                <h3 className="font-heading font-black text-[var(--text)] text-lg mb-4 relative z-10 group-hover:text-[#4353FF] transition-colors duration-300 line-clamp-2">
                                     {s.title}
                                 </h3>
 
-                                <div className="relative w-full overflow-hidden rounded-sm" style={{ aspectRatio: "16/9" }}>
+                                <div className="relative w-full overflow-hidden rounded-xl" style={{ aspectRatio: "16/9" }}>
                                     {s.image ? (
                                         <img
                                             src={s.image}
@@ -115,7 +118,23 @@ export default function Services({ services = [] }: { services?: ServiceData[] }
                                 <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-[#4353FF] group-hover:w-full transition-all duration-500" />
                             </Link>
                         ))}
-                    </div> 
+                        </div>
+
+                        {services.length > 4 && (
+                            <div className={`mt-8 flex justify-center transition-all duration-700 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowAll(v => !v)}
+                                    className="inline-flex items-center gap-2 rounded-xl border-2 border-[var(--text)] text-[var(--text)] font-body font-semibold px-6 py-3.5 hover:bg-[var(--text)] hover:text-white transition-all duration-300 text-sm"
+                                >
+                                    {showAll ? "Show less" : `View all (${services.length})`}
+                                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                        <path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </section>

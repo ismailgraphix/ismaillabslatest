@@ -53,7 +53,7 @@ export default function Testimonials() {
   }, []);
 
   return (
-      <section className="bg-[#EBEBEB] py-24 relative overflow-hidden" ref={ref}>
+      <section className="bg-[var(--app-bg)] py-24 relative overflow-hidden" ref={ref}>
 
         {/* Big faint quote mark background */}
         <div
@@ -73,7 +73,7 @@ export default function Testimonials() {
                 <span className="font-body font-semibold text-[#4353FF] text-xs uppercase tracking-[0.2em]">Testimonials</span>
               </div>
               <h2
-                  className="font-heading font-black text-[#0f0f0f] uppercase leading-tight tracking-tight"
+                  className="font-heading font-black text-[var(--text)] uppercase leading-tight tracking-tight"
                   style={{ fontSize: "clamp(1.8rem, 3vw, 2.6rem)" }}
               >
                 WHAT CLIENTS SAY<br />ABOUT US
@@ -102,17 +102,15 @@ export default function Testimonials() {
                     key={i}
                     onClick={() => setActive(i)}
                     className={`
-                relative p-8 cursor-pointer overflow-hidden
+                relative p-8 rounded-2xl cursor-pointer overflow-hidden
                 border-2 transition-all duration-500 group
                 ${active === i
                         ? "bg-[#4353FF] border-[#4353FF] -translate-y-3 shadow-[0_20px_60px_rgba(67,83,255,0.3)]"
-                        : "bg-white border-gray-100 hover:-translate-y-1 hover:border-[#4353FF]/30 hover:shadow-lg"
+                        : "bg-[var(--surface)] border-[var(--border)] hover:-translate-y-1 hover:border-[#4353FF]/30 hover:shadow-lg"
                     }
                 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}
               `}
-                    style={{ transitionDelay: inView ? `${i * 120}ms` : "0ms",
-                      transition: "opacity 0.7s ease, transform 0.5s ease, background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease"
-                    }}
+                    style={{ transitionDelay: inView ? `${i * 120}ms` : "0ms" }}
                 >
                   {/* Large quote */}
                   <div
@@ -152,7 +150,7 @@ export default function Testimonials() {
                     </div>
                     <div>
                       <p className={`font-heading font-black text-[15px] transition-colors duration-300 ${
-                          active === i ? "text-white" : "text-[#0f0f0f]"
+                          active === i ? "text-white" : "text-[var(--text)]"
                       }`}>{t.name}</p>
                       <p className={`font-body text-xs mt-0.5 transition-colors duration-300 ${
                           active === i ? "text-white/60" : "text-gray-400"
