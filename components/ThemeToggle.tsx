@@ -13,43 +13,35 @@ export default function ThemeToggle() {
   if (!mounted) return null;
 
   const resolved = theme === "system" ? systemTheme : theme;
-  const label =
-    theme === "system"
-      ? `System (${resolved === "dark" ? "Dark" : "Light"})`
-      : theme === "dark"
-        ? "Dark"
-        : "Light";
+  const isDark = resolved === "dark";
+  const nextTheme = isDark ? "light" : "dark";
 
   return (
-    <div className="relative">
-      <select
-        aria-label="Theme"
-        value={theme ?? "system"}
-        onChange={(e) => setTheme(e.target.value)}
-        className="hidden md:inline-flex bg-[var(--surface)]/70 backdrop-blur-sm border-2 border-[var(--border)] text-[var(--text)] font-body font-semibold text-[12px] px-3 py-2 hover:border-[#4353FF] transition-colors"
-      >
-        <option value="system">System</option>
-        <option value="light">Light</option>
-        <option value="dark">Dark</option>
-      </select>
+    <button
+      type="button"
+      onClick={() => setTheme(nextTheme)}
+      aria-label={`Switch to ${nextTheme} mode`}
+      title={`Switch to ${nextTheme} mode`}
+      className="group w-11 h-11 rounded-full border border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-md hover:border-[#4353FF] hover:shadow-[0_8px_30px_rgba(67,83,255,0.22)] transition-all duration-300 flex items-center justify-center"
+    >
+      <span className="sr-only">{isDark ? "Dark mode" : "Light mode"}</span>
 
-      {/* Compact button for mobile (cycle) */}
-      <button
-        type="button"
-        className="md:hidden w-11 h-11 rounded-full border-2 border-[var(--border)] bg-[var(--surface)]/70 backdrop-blur-sm hover:border-[#4353FF] transition-all duration-300 flex items-center justify-center text-[var(--text)]"
-        onClick={() => {
-          const order = ["system", "light", "dark"] as const;
-          const idx = Math.max(0, order.indexOf((theme as any) ?? "system"));
-          setTheme(order[(idx + 1) % order.length]);
-        }}
-        aria-label={`Theme: ${label}`}
-        title={`Theme: ${label}`}
-      >
-        <span className="font-heading font-black text-[12px] leading-none">
-          {resolved === "dark" ? "D" : "L"}
-        </span>
-      </button>
-    </div>
+      {isDark ? (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-[var(--text)] transition-transform duration-300 group-hover:rotate-6">
+          <path
+            d="M21 12.79A9 9 0 1 1 11.21 3c-.13.43-.21.89-.21 1.37A7.63 7.63 0 0 0 18.63 12c.48 0 .94-.08 1.37-.21Z"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      ) : (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-[var(--text)] transition-transform duration-300 group-hover:-rotate-6">
+          <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="1.8" />
+          <path d="M12 2.5v2.2M12 19.3v2.2M21.5 12h-2.2M4.7 12H2.5M18.9 5.1l-1.5 1.5M6.6 17.4l-1.5 1.5M18.9 18.9l-1.5-1.5M6.6 6.6L5.1 5.1" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        </svg>
+      )}
+    </button>
   );
 }
-

@@ -58,7 +58,7 @@ export default function Navbar() {
         <>
             <header
                 className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${scrolled
-                    ? "bg-[var(--nav-bg)] backdrop-blur-xl shadow-[0_1px_0_0_rgba(0,0,0,0.06)] py-3"
+                    ? "bg-[var(--nav-bg)]/95 backdrop-blur-xl shadow-[0_1px_0_0_rgba(0,0,0,0.06)] py-3"
                     : "bg-transparent py-5"
                     }`}
             >
@@ -77,19 +77,19 @@ export default function Navbar() {
                     </Link>
 
                     {/* ── Desktop nav — absolutely centered ── */}
-                    <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-7 rounded-full px-4 py-2 bg-[var(--surface)]/60 backdrop-blur border border-[var(--border)]">
+                    <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-2 rounded-full px-2.5 py-2 bg-[var(--surface)]/70 backdrop-blur-xl border border-[var(--border)] shadow-[0_10px_28px_rgba(8,8,20,0.08)]">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.label}
                                 href={toHref(link.href)}
                                 aria-current={isActive(link.href) ? "page" : undefined}
-                                className={`relative font-body font-medium text-[14px] tracking-wide transition-colors duration-200 group ${isActive(link.href)
-                                    ? "text-[#4353FF]"
-                                    : "text-[var(--text)] hover:text-[#4353FF]"
+                                className={`relative font-body font-medium text-[13px] tracking-wide transition-all duration-200 group px-4 py-2 rounded-full ${isActive(link.href)
+                                    ? "text-[#4353FF] bg-[#4353FF]/10"
+                                    : "text-[var(--text)] hover:text-[#4353FF] hover:bg-[var(--background)]/70"
                                     }`}
                             >
                                 {link.label}
-                                <span className={`absolute -bottom-0.5 left-0 h-[1.5px] bg-[#4353FF] transition-all duration-300 ${isActive(link.href) ? "w-full" : "w-0 group-hover:w-full"
+                                <span className={`absolute bottom-[5px] left-1/2 -translate-x-1/2 h-[1.5px] bg-[#4353FF] transition-all duration-300 ${isActive(link.href) ? "w-6" : "w-0 group-hover:w-5"
                                     }`} />
                             </Link>
                         ))}
@@ -113,7 +113,7 @@ export default function Navbar() {
                             aria-label="Toggle menu"
                             aria-expanded={menuOpen}
                             aria-controls="mobile-nav-panel"
-                            className={`w-11 h-11 rounded-full border-2 flex flex-col items-center justify-center gap-[5px] transition-all duration-300 hover:scale-105 ${menuOpen
+                            className={`md:hidden w-11 h-11 rounded-full border-2 flex flex-col items-center justify-center gap-[5px] transition-all duration-300 hover:scale-105 ${menuOpen
                                 ? "border-[#4353FF] bg-[#4353FF]"
                                 : "border-[var(--border)] bg-[var(--surface)]/70 backdrop-blur-sm hover:border-[#4353FF]"
                                 }`}

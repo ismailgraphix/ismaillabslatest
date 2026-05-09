@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Mail, Phone } from "lucide-react";
 
 export default function Contact() {
     const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
@@ -45,12 +46,13 @@ export default function Contact() {
                     </p>
                     <div className="space-y-5">
                         {[
-                            { icon: "📍", label: "Address", value: "3891 Ranchview Dr. Richardson, Texas" },
-                            { icon: "✉️", label: "Email", value: "hello@ismaillabs.com" },
-                            { icon: "📞", label: "Phone", value: "(505) 555-0125" },
-                        ].map(item => (
+                            { icon: Mail, label: "Email", value: "hello@ismaillabs.com" },
+                            { icon: Phone, label: "Phone", value: "(505) 555-0125" },
+                        ].map((item) => (
                             <div key={item.label} className="flex items-start gap-4">
-                                <div className="w-10 h-10 bg-[#4353FF] rounded-xl flex items-center justify-center flex-shrink-0 text-lg">{item.icon}</div>
+                                <div className="w-10 h-10 bg-[#4353FF] rounded-xl flex items-center justify-center flex-shrink-0 text-white">
+                                    <item.icon size={18} strokeWidth={2.2} />
+                                </div>
                                 <div>
                                     <p className="font-heading font-semibold text-[var(--muted)] text-xs uppercase tracking-widest mb-0.5">{item.label}</p>
                                     <p className="font-body text-[var(--text)] text-sm">{item.value}</p>

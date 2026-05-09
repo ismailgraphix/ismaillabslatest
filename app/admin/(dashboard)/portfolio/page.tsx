@@ -43,12 +43,35 @@ export default function PersonalPortfolioAdmin() {
     const handleSave = async () => {
         setSaving(true);
         try {
+            const cleanSkills = skills
+                .map((s) => ({ name: (s.name || "").trim(), level: Number(s.level) }))
+                .filter((s) => s.name.length > 0);
+
+            const cleanExperiences = experiences
+                .map((e) => ({
+                    role: (e.role || "").trim(),
+                    company: (e.company || "").trim(),
+                    period: (e.period || "").trim(),
+                    desc: (e.desc || "").trim(),
+                    tags: (e.tags || []).map((t) => t.trim()).filter(Boolean),
+                }))
+                .filter((e) => e.role || e.company || e.period || e.desc || e.tags.length > 0);
+
+            const cleanEducation = education
+                .map((e) => ({
+                    degree: (e.degree || "").trim(),
+                    school: (e.school || "").trim(),
+                    period: (e.period || "").trim(),
+                    grade: (e.grade || "").trim(),
+                }))
+                .filter((e) => e.degree || e.school || e.period || e.grade);
+
             const body = {
                 hero: { ...hero, tags: heroTags.split(",").map(t => t.trim()).filter(Boolean) },
-                skills: skills.map(s => ({ ...s, level: Number(s.level) })),
+                skills: cleanSkills,
                 otherSkills: otherSkills.split(",").map(s => s.trim()).filter(Boolean),
-                experiences,
-                education
+                experiences: cleanExperiences,
+                education: cleanEducation
             };
             const r = await fetch("/api/admin/personal-portfolio", {
                 method: "POST",

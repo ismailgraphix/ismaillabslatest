@@ -1,11 +1,18 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import ThemeToggle from "@/components/ThemeToggle";
 
 function useInView(threshold = 0.15) {
     const ref = useRef<HTMLDivElement>(null);
-    const [inView, setInView] = useState(false);
+    const [inView, setInView] = useState(true);
+
     useEffect(() => {
+        if (typeof IntersectionObserver === "undefined") {
+            setInView(true);
+            return;
+        }
+
         const obs = new IntersectionObserver(
             ([e]) => { if (e.isIntersecting) setInView(true); },
             { threshold }
@@ -49,16 +56,48 @@ export default function PortfolioPage() {
     useEffect(() => {
         setTimeout(() => setLoaded(true), 80);
         const timestamp = new Date().getTime();
+
+        // Guard against stuck body-lock from other overlays/navs.
+        document.body.style.overflow = "";
+
         fetch(`/api/personal-portfolio?t=${timestamp}`, { cache: 'no-store' })
             .then(r => r.json())
-            .then(d => setCfg(d || {}));
+            .then(d => {
+                const safe = d || {};
+                setCfg({
+                    ...safe,
+                    hero: safe.hero || {},
+                    skills: Array.isArray(safe.skills) ? safe.skills : [],
+                    otherSkills: Array.isArray(safe.otherSkills) ? safe.otherSkills : [],
+                    experiences: Array.isArray(safe.experiences) ? safe.experiences : [],
+                    education: Array.isArray(safe.education) ? safe.education : [],
+                });
+            });
         fetch(`/api/projects?t=${timestamp}`, { cache: 'no-store' })
             .then(r => r.json())
             .then(d => setProjects(d.items || []));
+
+        return () => {
+            document.body.style.overflow = "";
+        };
     }, []);
 
     const tabs = ["All", ...Array.from(new Set<string>(projects.map(p => p.type).filter(Boolean)))];
     const filtered = activeTab === "All" ? projects : projects.filter(p => p.type === activeTab);
+    const validSkills = (cfg?.skills || []).filter((s: any) => (s?.name || "").trim().length > 0);
+    const validExperiences = (cfg?.experiences || []).filter((e: any) =>
+        (e?.role || "").trim() ||
+        (e?.company || "").trim() ||
+        (e?.period || "").trim() ||
+        (e?.desc || "").trim() ||
+        ((e?.tags || []).length > 0)
+    );
+    const validEducation = (cfg?.education || []).filter((e: any) =>
+        (e?.degree || "").trim() ||
+        (e?.school || "").trim() ||
+        (e?.period || "").trim() ||
+        (e?.grade || "").trim()
+    );
 
     if (!cfg) return <div className="min-h-screen bg-[var(--app-bg)] flex items-center justify-center font-body text-[var(--text)]">Loading...</div>;
 
@@ -95,12 +134,15 @@ export default function PortfolioPage() {
                         ))}
                     </nav>
 
-                    <a
-                        href="#contact"
-                        className="inline-flex items-center gap-2 bg-[#4353FF] text-white font-body font-semibold text-sm px-5 py-2.5 hover:bg-[#0f0f0f] transition-colors"
-                    >
-                        Hire Me
-                    </a>
+                    <div className="flex items-center gap-3">
+                        <ThemeToggle />
+                        <a
+                            href="#contact"
+                            className="inline-flex items-center gap-2 bg-[#4353FF] text-white font-body font-semibold text-sm px-5 py-2.5 hover:bg-[#0f0f0f] transition-colors"
+                        >
+                            Hire Me
+                        </a>
+                    </div>
                 </div>
             </header>
 
@@ -211,7 +253,7 @@ export default function PortfolioPage() {
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-x-16 gap-y-8">
-                        {(cfg.skills || []).map((skill: {name: string, level: number}, i: number) => (
+                        {validSkills.map((skill: {name: string, level: number}, i: number) => (
                             <div
                                 key={skill.name}
                                 className={`transition-all duration-700 ${skillsRef.inView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"}`}
@@ -268,7 +310,7 @@ export default function PortfolioPage() {
                         <div className="absolute left-5 top-0 bottom-0 w-[2px] bg-gray-200 hidden md:block" />
 
                         <div className="space-y-6">
-                            {(cfg.experiences || []).map((exp: any, i: number) => (
+                            {validExperiences.map((exp: any, i: number) => (
                                 <div
                                     key={i}
                                     className={`group relative md:pl-16 transition-all duration-700 ${expRef.inView ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"}`}
@@ -392,7 +434,7 @@ export default function PortfolioPage() {
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-5">
-                        {(cfg.education || []).map((edu: any, i: number) => (
+                        {validEducation.map((edu: any, i: number) => (
                             <div
                                 key={i}
                                 className={`group bg-[var(--surface)] p-8 border border-[var(--border)] hover:border-[#4353FF]/30 hover:shadow-lg transition-all duration-400 relative overflow-hidden ${eduRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
