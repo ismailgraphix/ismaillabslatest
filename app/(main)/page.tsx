@@ -13,7 +13,11 @@ import { eq, asc } from "drizzle-orm";
 
 export const dynamic = 'force-dynamic';
 
+import { unstable_noStore as noStore } from 'next/cache';
+
 export default async function Home() {
+    noStore(); // Explicitly opt out of Next.js caching for this entire page
+
     let servicesData: any[] = [];
     let dbError = null;
 

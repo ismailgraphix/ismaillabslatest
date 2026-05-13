@@ -27,6 +27,7 @@ export const portfolioItems = pgTable("portfolio_items", {
     category: varchar("category", { length: 100 }).notNull(),
     description: text("description"),
     image: text("image"),
+    image3d: text("image3d"),
     tags: jsonb("tags").$type<string[]>().default([]),
     liveUrl: text("live_url"),
     featured: boolean("featured").default(false),
@@ -145,6 +146,7 @@ export const projects = pgTable("projects", {
     title: varchar("title", { length: 255 }).notNull(),
     description: text("description"),
     image: text("image"),
+    image3d: text("image3d"),
     techStack: jsonb("tech_stack").$type<string[]>().default([]),
     type: projectTypeEnum("type").notNull().default("web"),
     link: text("link"),
@@ -178,6 +180,7 @@ export const personalPortfolio = pgTable("personal_portfolio", {
         description: string;
         tags: string[];
         image: string;
+        image3d?: string;
         resumeUrl: string;
         yearsExp: number;
         projectsCount: number;

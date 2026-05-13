@@ -13,12 +13,13 @@ export async function PATCH(req: NextRequest, { params }: Params) {
 
     try {
         const body = await req.json();
-        const { title, description, image, techStack, type, link, published, order } = body;
+        const { title, description, image, image3d, techStack, type, link, published, order } = body;
 
         const [updated] = await db.update(projects).set({
             ...(title !== undefined && { title: title.trim() }),
             ...(description !== undefined && { description: description?.trim() ?? null }),
             ...(image !== undefined && { image: image?.trim() ?? null }),
+            ...(image3d !== undefined && { image3d: image3d?.trim() ?? null }),
             ...(techStack !== undefined && { techStack: Array.isArray(techStack) ? techStack : [] }),
             ...(type !== undefined && { type }),
             ...(link !== undefined && { link: link?.trim() ?? null }),

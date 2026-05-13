@@ -16,7 +16,7 @@ const serviceSchema = z.object({
 });
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
-    const { forbidden } = await requirePermission("services.edit"); 
+    const { forbidden } = await requirePermission("services.edit");
     if (forbidden) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
     try {
@@ -28,7 +28,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
             .set(parsed.data)
             .where(eq(services.id, params.id))
             .returning();
-            
+
         if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 });
         return NextResponse.json({ service: updated });
     } catch (err: any) {

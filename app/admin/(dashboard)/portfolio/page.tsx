@@ -7,10 +7,11 @@ export default function PersonalPortfolioAdmin() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [uploadingImage, setUploadingImage] = useState(false);
+    const [uploadingImage3d, setUploadingImage3d] = useState(false);
     
     // State
     const [hero, setHero] = useState({ 
-        title: "", shortTitle: "", description: "", image: "", resumeUrl: "", projectsCount: 0, yearsExp: 0, tags: [] as string[] 
+        title: "", shortTitle: "", description: "", image: "", image3d: "", resumeUrl: "", projectsCount: 0, yearsExp: 0, tags: [] as string[] 
     });
     const [heroTags, setHeroTags] = useState("");
     const [skills, setSkills] = useState<{name: string, level: number}[]>([]);
@@ -103,6 +104,23 @@ export default function PersonalPortfolioAdmin() {
         setUploadingImage(false);
     }
 
+    async function handleUpload3d(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setUploadingImage3d(true);
+        const fd = new FormData(); fd.append("file", file);
+        try {
+            const r = await fetch("/api/admin/upload", { method: "POST", body: fd });
+            const d = await r.json();
+            if (d.url) {
+                setHero(f => ({ ...f, image3d: d.url }));
+            }
+        } catch (error) {
+            toast.error("Upload failed");
+        }
+        setUploadingImage3d(false);
+    }
+
     if (loading) return <div className="p-8">Loading configuration...</div>;
 
     const inputClass = "w-full border-gray-200 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border";
@@ -148,19 +166,39 @@ export default function PersonalPortfolioAdmin() {
                         </div>
                         <div className="flex flex-col gap-4">
                             <label className="block text-sm font-medium">Hero Image Upload</label>
-                            <div className="flex items-start gap-4">
-                                {hero.image ? (
-                                    <div className="w-24 h-24 bg-gray-200 rounded overflow-hidden">
-                                        <img src={hero.image} alt="Hero" className="w-full h-full object-cover" />
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="flex items-start gap-4">
+                                    {hero.image ? (
+                                        <div className="w-16 h-16 bg-gray-200 rounded overflow-hidden">
+                                            <img src={hero.image} alt="Hero" className="w-full h-full object-cover" />
+                                        </div>
+                                    ) : (
+                                        <div className="w-16 h-16 bg-gray-100 rounded flex items-center justify-center border border-dashed border-gray-300">
+                                            <ImageIcon size={24} className="text-gray-400" />
+                                        </div>
+                                    )}
+                                    <div className="flex-1">
+                                        <p className="text-[10px] text-gray-500 mb-1">Normal</p>
+                                        <input type="file" onChange={handleUpload} accept="image/*" className="text-xs w-full" />
+                                        {uploadingImage && <p className="text-[10px] text-blue-500 mt-1">Uploading...</p>}
                                     </div>
-                                ) : (
-                                    <div className="w-24 h-24 bg-gray-100 rounded flex items-center justify-center border border-dashed border-gray-300">
-                                        <ImageIcon size={24} className="text-gray-400" />
+                                </div>
+                                
+                                <div className="flex items-start gap-4">
+                                    {hero.image3d ? (
+                                        <div className="w-16 h-16 bg-gray-200 rounded overflow-hidden">
+                                            <img src={hero.image3d} alt="Hero 3D" className="w-full h-full object-cover" />
+                                        </div>
+                                    ) : (
+                                        <div className="w-16 h-16 bg-gray-100 rounded flex items-center justify-center border border-dashed border-gray-300">
+                                            <ImageIcon size={24} className="text-gray-400" />
+                                        </div>
+                                    )}
+                                    <div className="flex-1">
+                                        <p className="text-[10px] text-gray-500 mb-1">3D (Hover)</p>
+                                        <input type="file" onChange={handleUpload3d} accept="image/*" className="text-xs w-full" />
+                                        {uploadingImage3d && <p className="text-[10px] text-blue-500 mt-1">Uploading...</p>}
                                     </div>
-                                )}
-                                <div className="flex-1">
-                                    <input type="file" onChange={handleUpload} accept="image/*" className="text-sm" />
-                                    {uploadingImage && <p className="text-xs text-blue-500 mt-2">Uploading...</p>}
                                 </div>
                             </div>
                         </div>

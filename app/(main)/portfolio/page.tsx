@@ -40,6 +40,46 @@ function Counter({ target, suffix = "", duration = 1600 }: { target: number; suf
     return <span ref={ref}>{count}{suffix}</span>;
 }
 
+function ProjectCard({ p, i, inView }: { p: any, i: number, inView: boolean }) {
+    return (
+        <a
+            key={i}
+            href={p.link || "#"}
+            className={`group relative overflow-hidden bg-gray-100 block transition-all duration-700 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+            style={{ transitionDelay: `${i * 100}ms` }}
+        >
+            <div className="aspect-[16/10] overflow-hidden">
+                <img
+                    src={p.image}
+                    alt={p.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+            </div>
+            {/* Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f0f] via-[#0f0f0f]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
+
+            {/* Content */}
+            <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-400">
+                <span className="font-body text-xs text-[#4353FF] bg-[#4353FF]/20 backdrop-blur-sm px-2.5 py-1 mb-2 inline-block font-semibold">{p.type}</span>
+                <h3 className="font-heading font-black text-white text-xl">{p.title}</h3>
+                <p className="font-body text-white/70 text-sm mt-1">{p.description}</p>
+            </div>
+
+            {/* Year badge */}
+            <div className="absolute top-4 right-4 font-body text-xs font-bold text-white bg-[#0f0f0f]/60 backdrop-blur-sm px-2.5 py-1">
+                {p.createdAt ? p.createdAt.substring(0, 4) : new Date().getFullYear()}
+            </div>
+
+            {/* Arrow */}
+            <div className="absolute top-4 left-4 w-9 h-9 bg-white flex items-center justify-center opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 transition-all duration-300">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M2 12L12 2M12 2H4M12 2v8" stroke="#0f0f0f" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+            </div>
+        </a>
+    );
+}
+
 export default function PortfolioPage() {
     const [loaded, setLoaded] = useState(false);
     const [activeTab, setActiveTab] = useState("All");
@@ -211,13 +251,20 @@ export default function PortfolioPage() {
                     <div className={`relative transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"}`}>
                         {/* Main photo frame */}
                         <div className="relative mx-auto w-full max-w-[420px]">
-                            <div className="aspect-[3/4] overflow-hidden bg-gray-200 relative">
+                            <div className="aspect-[3/4] overflow-hidden bg-gray-200 relative group cursor-pointer">
                                 <img
                                     src={cfg.hero?.image || "https://html.ravextheme.com/redox/light/assets/imgs/web-development/team-1.webp"}
                                     alt="Hero Profile"
-                                    className="w-full h-full object-cover"
+                                    className={`w-full h-full object-cover transition-all duration-700 ${cfg.hero?.image3d ? 'group-hover:opacity-0' : ''}`}
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#4353FF]/30 to-transparent" />
+                                {cfg.hero?.image3d && (
+                                    <img
+                                        src={cfg.hero?.image3d}
+                                        alt="Hero Profile 3D"
+                                        className="absolute inset-0 w-full h-full object-cover transition-all duration-700 opacity-0 group-hover:opacity-100"
+                                    />
+                                )}
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#4353FF]/30 to-transparent pointer-events-none" />
                             </div>
 
                             {/* Experience badge */}
@@ -380,41 +427,7 @@ export default function PortfolioPage() {
 
                     <div className="grid sm:grid-cols-2 gap-5">
                         {filtered.map((p, i) => (
-                            <a
-                                key={i}
-                                href={p.link || "#"}
-                                className={`group relative overflow-hidden bg-gray-100 block transition-all duration-700 ${projRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
-                                style={{ transitionDelay: `${i * 100}ms` }}
-                            >
-                                <div className="aspect-[16/10] overflow-hidden">
-                                    <img
-                                        src={p.image}
-                                        alt={p.title}
-                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-108"
-                                    />
-                                </div>
-                                {/* Overlay */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f0f] via-[#0f0f0f]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
-
-                                {/* Content */}
-                                <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-400">
-                                    <span className="font-body text-xs text-[#4353FF] bg-[#4353FF]/20 backdrop-blur-sm px-2.5 py-1 mb-2 inline-block font-semibold">{p.type}</span>
-                                    <h3 className="font-heading font-black text-white text-xl">{p.title}</h3>
-                                    <p className="font-body text-white/70 text-sm mt-1">{p.description}</p>
-                                </div>
-
-                                {/* Year badge */}
-                                <div className="absolute top-4 right-4 font-body text-xs font-bold text-white bg-[#0f0f0f]/60 backdrop-blur-sm px-2.5 py-1">
-                                    {p.createdAt ? p.createdAt.substring(0, 4) : new Date().getFullYear()}
-                                </div>
-
-                                {/* Arrow */}
-                                <div className="absolute top-4 left-4 w-9 h-9 bg-white flex items-center justify-center opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 transition-all duration-300">
-                                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                                        <path d="M2 12L12 2M12 2H4M12 2v8" stroke="#0f0f0f" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                                    </svg>
-                                </div>
-                            </a>
+                            <ProjectCard key={i} p={p} i={i} inView={projRef.inView} />
                         ))}
                     </div>
                 </div>

@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
 
     try {
         const body = await req.json();
-        const { title, description, image, techStack, type, link, published, order } = body;
+        const { title, description, image, image3d, techStack, type, link, published, order } = body;
 
         if (!title?.trim()) {
             return NextResponse.json({ error: "Title is required" }, { status: 400 });
@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
             title: title.trim(),
             description: description?.trim() ?? null,
             image: image?.trim() ?? null,
+            image3d: image3d?.trim() ?? null,
             techStack: Array.isArray(techStack) ? techStack : [],
             type: type ?? "web",
             link: link?.trim() ?? null,

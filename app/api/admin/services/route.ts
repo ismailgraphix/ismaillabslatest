@@ -17,7 +17,7 @@ const serviceSchema = z.object({
 
 export async function GET() {
     // Assuming you have a 'services.view' permission, or falling back to general admin
-    const { forbidden } = await requirePermission("services.view"); 
+    const { forbidden } = await requirePermission("services.view");
     if (forbidden) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
     const all = await db.select().from(services).orderBy(asc(services.order));

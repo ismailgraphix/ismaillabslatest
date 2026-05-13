@@ -3,8 +3,11 @@ import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
+import { unstable_noStore as noStore } from 'next/cache';
 
 export default async function ServiceDetailsPage({ params }: { params: { slug: string } }) {
+    noStore(); // Explicitly opt out of Next.js caching
+
     const [service] = await db
         .select()
         .from(services)
