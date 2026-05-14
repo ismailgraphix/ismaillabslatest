@@ -293,10 +293,10 @@ export default function Hero() {
                                 can focus on running your business.
                             </p>
 
-                            <div className="flex items-center gap-5 mt-8">
+                            <div className="flex items-center gap-4 mt-8">
                                 <a
                                     href="#about"
-                                    className="inline-flex items-center gap-2.5 bg-[var(--text)] text-white font-body font-semibold text-[13px] px-6 py-3.5 hover:bg-[#4353FF] transition-colors duration-300 group"
+                                    className="inline-flex items-center gap-2.5 bg-[var(--text)] text-white font-body font-semibold text-[13px] px-6 py-3.5 rounded-full hover:bg-[#4353FF] transition-all duration-300 hover:-translate-y-px group"
                                 >
                                     See Our Work
                                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
@@ -306,10 +306,11 @@ export default function Hero() {
                                 </a>
                                 <a
                                     href="#contact"
-                                    className="font-body font-medium text-[13px] text-[var(--text)] border-b border-[var(--border)] pb-0.5 hover:border-[#4353FF] hover:text-[#4353FF] transition-all duration-300 inline-flex items-center gap-1.5"
+                                    className="inline-flex items-center gap-2 font-body font-medium text-[13px] text-[var(--text)] border-[1.5px] border-[var(--text)] px-6 py-3.5 rounded-full hover:border-[#4353FF] hover:text-[#4353FF] transition-all duration-300 hover:-translate-y-px group"
                                 >
                                     Start a project
-                                    <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+                                    <svg width="11" height="11" viewBox="0 0 12 12" fill="none"
+                                        className="transition-transform duration-300 group-hover:translate-x-0.5">
                                         <path d="M1 6h10M7 2l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                                     </svg>
                                 </a>
