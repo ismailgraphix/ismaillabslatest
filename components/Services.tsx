@@ -11,8 +11,7 @@ function useInView(threshold = 0.15) {
             { threshold, rootMargin: "200px" }
         );
         if (ref.current) obs.observe(ref.current);
-        
-        // Failsafe fallback: if intersection observer fails to trigger, show anyway
+
         const timer = setTimeout(() => setInView(true), 2000);
         return () => { obs.disconnect(); clearTimeout(timer); };
     }, [threshold]);
@@ -52,15 +51,15 @@ export default function Services({ services = [] }: { services?: ServiceData[] }
                             WE&apos;VE AMAZING WEB SOLUTIONS
                         </h2>
 
+                        {/* CTA — pill, theme-safe hover, no broken slide overlay */}
                         <a
                             href="#contact"
-                            className="inline-flex items-center gap-3 bg-[#4353FF] text-white font-body font-semibold px-7 py-4 hover:bg-[#0f0f0f] transition-all duration-300 group relative overflow-hidden"
+                            className="inline-flex items-center gap-3 bg-[#4353FF] text-white font-body font-semibold px-7 py-4 rounded-full hover:bg-[var(--text)] transition-all duration-[400ms] group"
                         >
-                            <span className="absolute inset-0 bg-[#0f0f0f] translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-400" />
-                            <span className="relative text-sm">Contact Us</span>
-                            <span className="relative group-hover:rotate-45 transition-transform duration-300">
+                            <span className="text-sm">Contact Us</span>
+                            <span className="group-hover:rotate-45 transition-transform duration-300">
                                 <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                                <path d="M1.5 1.5h10v10M1.5 11.5l10-10" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                                    <path d="M1.5 1.5h10v10M1.5 11.5l10-10" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                                 </svg>
                             </span>
                         </a>
@@ -68,67 +67,79 @@ export default function Services({ services = [] }: { services?: ServiceData[] }
 
                     {/* ── RIGHT: 2×2 grid ── */}
                     <div>
-                    <div className="grid sm:grid-cols-2 gap-0 border border-[var(--border)] bg-[var(--surface-2)] rounded-2xl overflow-hidden">
-                        {visible.map((s, i) => (
-                            <Link
-                                href={`/services/${s.slug}`}
-                                key={s.id}
-                                className={`relative p-7 border border-[var(--border)] bg-transparent hover:bg-[var(--surface)] transition-all duration-500 group cursor-pointer overflow-hidden block
-                                    ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
-                                `}
-                                style={{ transitionDelay: inView ? `${150 + i * 100}ms` : "0ms" }}
-                            >
-                                {/* Faded number — top right */}
-                                <span
-                                    className="absolute top-4 right-5 font-heading font-black text-[#4353FF]/15 select-none group-hover:text-[#4353FF]/25 transition-colors duration-300"
-                                    style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}
-                                >
-                                    {String(i + 1).padStart(2, '0')}
-                                </span>
+                        {/* Outer wrapper — no border/bg, inner card borders form the grid lines */}
+                        <div className="grid sm:grid-cols-2 gap-0 rounded-2xl overflow-hidden">
+                            {visible.map((s, i) => {
+                                // Alternate slide direction per column
+                                const isRightCol = i % 2 === 1;
+                                const enterClass = inView
+                                    ? "opacity-100 translate-x-0"
+                                    : isRightCol
+                                        ? "opacity-0 translate-x-6"
+                                        : "opacity-0 -translate-x-6";
 
-                                {/* Icon */}
-                                <div className="mb-4 relative z-10 w-12 h-12 text-[#4353FF]">
-                                    {s.icon ? (
-                                        <div dangerouslySetInnerHTML={{ __html: s.icon }} />
-                                    ) : (
-                                        <div className="w-full h-full border-2 border-[#4353FF]/30 rounded-full" />
-                                    )}
-                                </div>
+                                return (
+                                    <Link
+                                        href={`/services/${s.slug}`}
+                                        key={s.id}
+                                        className={`relative p-7 border border-[var(--border)] bg-transparent hover:bg-[var(--surface)] transition-all duration-500 group cursor-pointer overflow-hidden block ${enterClass}`}
+                                        style={{ transitionDelay: inView ? `${150 + i * 100}ms` : "0ms" }}
+                                    >
+                                        {/* Faded number — top right */}
+                                        <span
+                                            className="absolute top-4 right-5 font-heading font-black text-[#4353FF]/15 select-none group-hover:text-[#4353FF]/25 transition-colors duration-300"
+                                            style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}
+                                        >
+                                            {String(i + 1).padStart(2, '0')}
+                                        </span>
 
-                                {/* Title */}
-                                <h3 className="font-heading font-black text-[var(--text)] text-lg mb-4 relative z-10 group-hover:text-[#4353FF] transition-colors duration-300 line-clamp-2">
-                                    {s.title}
-                                </h3>
+                                        {/* Icon */}
+                                        <div className="mb-4 relative z-10 w-12 h-12 text-[#4353FF]">
+                                            {s.icon ? (
+                                                <div dangerouslySetInnerHTML={{ __html: s.icon }} />
+                                            ) : (
+                                                <div className="w-full h-full border-2 border-[#4353FF]/30 rounded-full" />
+                                            )}
+                                        </div>
 
-                                <div className="relative w-full overflow-hidden rounded-xl" style={{ aspectRatio: "16/9" }}>
-                                    {s.image ? (
-                                        <img
-                                            src={s.image}
-                                            alt={s.title}
-                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full bg-[#f1f1f1]" />
-                                    )}
-                                    {/* Blue overlay on hover */}
-                                    <div className="absolute inset-0 bg-[#4353FF] opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-                                </div>
+                                        {/* Title */}
+                                        <h3 className="font-heading font-black text-[var(--text)] text-lg mb-4 relative z-10 group-hover:text-[#4353FF] transition-colors duration-300 line-clamp-2">
+                                            {s.title}
+                                        </h3>
 
-                                {/* Bottom border reveal on hover */}
-                                <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-[#4353FF] group-hover:w-full transition-all duration-500" />
-                            </Link>
-                        ))}
+                                        {/* Image — theme-safe placeholder, no blue overlay */}
+                                        <div className="relative w-full overflow-hidden rounded-xl" style={{ aspectRatio: "16/9" }}>
+                                            {s.image ? (
+                                                <img
+                                                    src={s.image}
+                                                    alt={s.title}
+                                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full bg-[var(--surface)]" />
+                                            )}
+                                        </div>
+
+                                        {/* Bottom border reveal on hover */}
+                                        <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-[#4353FF] group-hover:w-full transition-all duration-500" />
+                                    </Link>
+                                );
+                            })}
                         </div>
 
                         {services.length > 4 && (
                             <div className={`mt-8 flex justify-center transition-all duration-700 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+                                {/* Show all — pill, lighter border weight */}
                                 <button
                                     type="button"
                                     onClick={() => setShowAll(v => !v)}
-                                    className="inline-flex items-center gap-2 rounded-xl border-2 border-[var(--text)] text-[var(--text)] font-body font-semibold px-6 py-3.5 hover:bg-[var(--text)] hover:text-white transition-all duration-300 text-sm"
+                                    className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-[var(--border)] text-[var(--text)] font-body font-semibold px-6 py-3.5 hover:bg-[var(--text)] hover:text-white hover:border-[var(--text)] transition-all duration-300 text-sm"
                                 >
                                     {showAll ? "Show less" : `View all (${services.length})`}
-                                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                    <svg
+                                        width="14" height="14" viewBox="0 0 14 14" fill="none"
+                                        className={`transition-transform duration-300 ${showAll ? "rotate-180" : ""}`}
+                                    >
                                         <path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                                     </svg>
                                 </button>
