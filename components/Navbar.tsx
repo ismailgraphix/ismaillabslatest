@@ -68,7 +68,7 @@ export default function Navbar() {
                     <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
                         <div className="leading-[1.15]">
                             <span className="block font-heading font-black text-[15px] text-[var(--text)] tracking-tight">
-                                Ismaillabs
+                                {"<ismail labs />"}
                             </span>
                             <span className="block font-body text-[9px] text-gray-400 uppercase tracking-[0.22em]">
                                 digital agency
@@ -100,7 +100,7 @@ export default function Navbar() {
                         <ThemeToggle />
                         <Link
                             href={toHref("#contact")}
-                            className="hidden md:inline-flex items-center gap-2 bg-[#4353FF] text-white font-body font-semibold text-[13px] px-5 py-2.5 hover:bg-[#0f0f0f] transition-all duration-300"
+                            className="hidden md:inline-flex items-center gap-2 bg-[#4353FF] text-white border border-[#4353FF] rounded-full font-body font-semibold text-[13px] px-5 py-2.5 hover:bg-[#3d4ce6] transition-all duration-300"
                         >
                             Let&apos;s Talk
                             <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
@@ -133,8 +133,8 @@ export default function Navbar() {
                 {/* ── Mobile dropdown ── */}
                 <div
                     id="mobile-nav-panel"
-                    className={`md:hidden overflow-hidden transition-all duration-400 ease-in-out ${menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-                        } bg-[var(--surface)] border-t border-[var(--border)] mt-3`}
+                    className={`md:hidden overflow-hidden transition-all duration-400 ease-in-out ${menuOpen ? "max-h-[calc(100vh-6rem)] opacity-100" : "max-h-0 opacity-0"
+                        } bg-[var(--surface)] border-t border-[var(--border)] mt-3 pb-5`}
                 >
                     <div className="px-6 py-5 flex flex-col gap-1">
                         {navLinks.map((link, i) => (
@@ -152,7 +152,7 @@ export default function Navbar() {
                         <Link
                             href={toHref("#contact")}
                             onClick={() => setMenuOpen(false)}
-                            className="mt-4 text-center rounded-xl bg-[#4353FF] text-white font-body font-semibold py-3 text-sm"
+                            className="mt-4 text-center rounded-full bg-[#4353FF] text-white border border-[#4353FF] font-body font-semibold py-3 text-sm hover:bg-[#3d4ce6] transition-colors duration-300"
                         >
                             Let&apos;s Talk
                         </Link>

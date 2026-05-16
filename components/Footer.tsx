@@ -61,7 +61,7 @@ export default function Footer() {
           </h2>
           <a
             href="#contact"
-            className="relative flex-shrink-0 inline-flex items-center gap-2 bg-white text-[#4A6CF7] font-heading font-black px-8 py-4 rounded-full hover:bg-[var(--text)] hover:text-white transition-all duration-300"
+            className="relative flex-shrink-0 inline-flex items-center gap-2 bg-white text-[#4A6CF7] font-heading font-black px-8 py-4 rounded-full hover:bg-[var(--text)] hover:text-[var(--surface)] transition-all duration-300"
           >
             Get in Touch
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">

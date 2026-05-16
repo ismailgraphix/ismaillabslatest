@@ -54,7 +54,7 @@ export default function Services({ services = [] }: { services?: ServiceData[] }
                         {/* CTA — pill, theme-safe hover, no broken slide overlay */}
                         <a
                             href="#contact"
-                            className="inline-flex items-center gap-3 bg-[#4353FF] text-white font-body font-semibold px-7 py-4 rounded-full hover:bg-[var(--text)] transition-all duration-[400ms] group"
+                            className="inline-flex items-center gap-3 bg-[#4353FF] text-white border border-[#4353FF] font-body font-semibold px-7 py-4 rounded-full hover:bg-[var(--text)] hover:text-[var(--surface)] transition-all duration-[400ms] group"
                         >
                             <span className="text-sm">Contact Us</span>
                             <span className="group-hover:rotate-45 transition-transform duration-300">
@@ -133,7 +133,7 @@ export default function Services({ services = [] }: { services?: ServiceData[] }
                                 <button
                                     type="button"
                                     onClick={() => setShowAll(v => !v)}
-                                    className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-[var(--border)] text-[var(--text)] font-body font-semibold px-6 py-3.5 hover:bg-[var(--text)] hover:text-white hover:border-[var(--text)] transition-all duration-300 text-sm"
+                                    className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-[var(--border)] text-[var(--text)] font-body font-semibold px-6 py-3.5 hover:bg-[var(--text)] hover:text-[var(--surface)] hover:border-[var(--text)] transition-all duration-300 text-sm"
                                 >
                                     {showAll ? "Show less" : `View all (${services.length})`}
                                     <svg

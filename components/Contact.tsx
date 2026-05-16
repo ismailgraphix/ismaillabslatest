@@ -106,9 +106,9 @@ export default function Contact() {
                                           className="w-full bg-[var(--surface-2)] border border-[var(--border)] rounded-xl text-[var(--text)] font-body text-sm px-4 py-3 placeholder-gray-500 focus:outline-none focus:border-[#4353FF] transition-colors resize-none"/>
                             </div>
                             <button type="submit" disabled={state === "loading"}
-                                    className="w-full bg-[#4353FF] text-white font-heading font-black rounded-xl py-4 uppercase tracking-wider hover:bg-[var(--text)] hover:text-white transition-all duration-300 disabled:opacity-50 relative overflow-hidden group">
+                                    className="w-full bg-[#4353FF] text-white font-heading font-black rounded-xl py-4 uppercase tracking-wider hover:bg-[var(--text)] hover:text-[var(--surface)] transition-all duration-300 disabled:opacity-50 relative overflow-hidden group">
                                 <span className="absolute inset-0 bg-[var(--text)] translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-400"/>
-                                <span className="relative flex items-center justify-center gap-2 group-hover:text-white">
+                                <span className="relative flex items-center justify-center gap-2 group-hover:text-[var(--surface)]">
                   {state === "loading" ? (
                       <><svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Sending...</>
                   ) : "Send Message →"}

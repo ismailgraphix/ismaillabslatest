@@ -296,12 +296,12 @@ export default function Hero() {
                             <div className="flex items-center gap-4 mt-8">
                                 <a
                                     href="#about"
-                                    className="inline-flex items-center gap-2.5 bg-[var(--text)] text-white font-body font-semibold text-[13px] px-6 py-3.5 rounded-full hover:bg-[#4353FF] transition-all duration-300 hover:-translate-y-px group"
+                                    className="inline-flex items-center gap-2.5 bg-[#4353FF] text-white font-body font-semibold text-[13px] px-6 py-3.5 rounded-full border border-[#4353FF] hover:bg-[var(--text)] hover:text-[var(--surface)] transition-all duration-300 hover:-translate-y-px group"
                                 >
                                     See Our Work
                                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
-                                        className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                                        <path d="M1 11L11 1M11 1H4M11 1v7" stroke="white" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                                        className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 text-inherit">
+                                        <path d="M1 11L11 1M11 1H4M11 1v7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
                                     </svg>
                                 </a>
                                 <a

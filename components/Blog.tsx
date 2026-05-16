@@ -85,7 +85,7 @@ export default async function Blog() {
         </div>
 
         <div className="mt-16 text-center">
-          <Link href="/blog" className="inline-flex items-center justify-center bg-[#4A6CF7] text-white font-heading font-black px-8 py-4 uppercase tracking-wider text-sm hover:bg-[var(--text)] hover:-translate-y-1 transition-all duration-300">
+          <Link href="/blog" className="inline-flex items-center justify-center rounded-full bg-[#4A6CF7] text-white border border-[#4A6CF7] font-heading font-black px-8 py-4 uppercase tracking-wider text-sm hover:bg-[var(--text)] hover:text-[var(--surface)] hover:-translate-y-1 transition-all duration-300">
             View All News
           </Link>
         </div>

@@ -136,12 +136,12 @@ export default function About() {
                     {/* CTA — pill shape, theme-safe hover, valid Tailwind duration */}
                     <a
                         href="#services"
-                        className="inline-flex items-center gap-3 bg-[#4353FF] text-white font-body font-semibold px-7 py-4 rounded-full hover:bg-[var(--text)] transition-all duration-[400ms] group"
+                        className="inline-flex items-center gap-3 bg-[#4353FF] text-white font-body font-semibold px-7 py-4 rounded-full hover:bg-[var(--text)] hover:text-[var(--surface)] transition-all duration-[400ms] group"
                     >
                         <span>Get Started Now</span>
                         <span className="group-hover:rotate-45 transition-transform duration-300">
-                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                                <path d="M2 2h10v10M2 12L12 2" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="text-inherit">
+                                <path d="M2 2h10v10M2 12L12 2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                             </svg>
                         </span>
                     </a>
