@@ -2,7 +2,6 @@ import Hero from "@/components/Hero";
 
 import About from "@/components/About";
 import Services from "@/components/Services";
-import Portfolio from "@/components/Portfolio";
 import Process from "@/components/Process";
 import Testimonials from "@/components/Testimonials";
 import Blog from "@/components/Blog";
@@ -48,7 +47,6 @@ export default async function Home() {
 
             <About />
             <Services services={servicesData} />
-            <Portfolio />
             <Process />
             <Testimonials />
             <Blog />

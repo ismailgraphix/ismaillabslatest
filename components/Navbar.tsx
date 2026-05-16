@@ -17,7 +17,6 @@ export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const pathname = usePathname();
-    const isPortfolio = pathname.startsWith("/portfolio");
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 40);
@@ -54,9 +53,6 @@ export default function Navbar() {
         if (!href.startsWith("#")) return href;
         return pathname === "/" ? href : `/${href}`;
     }
-
-    // Hide on portfolio pages — they have their own navbar
-    if (isPortfolio) return null;
 
     return (
         <>
