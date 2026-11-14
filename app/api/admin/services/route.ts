@@ -38,6 +38,7 @@ export async function POST(req: NextRequest) {
 
         const [service] = await db.insert(services).values(parsed.data).returning();
         revalidatePath("/");
+        revalidatePath("/services");
         revalidatePath(`/services/${service.slug}`);
         return NextResponse.json({ service });
     } catch (err: any) {

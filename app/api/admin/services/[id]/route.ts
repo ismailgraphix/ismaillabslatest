@@ -32,6 +32,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
         if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 });
         revalidatePath("/");
+        revalidatePath("/services");
         revalidatePath(`/services/${updated.slug}`);
         return NextResponse.json({ service: updated });
     } catch (err: any) {
@@ -46,6 +47,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
 
     const [deleted] = await db.delete(services).where(eq(services.id, params.id)).returning();
     revalidatePath("/");
+    revalidatePath("/services");
     if (deleted) revalidatePath(`/services/${deleted.slug}`);
     return NextResponse.json({ success: true });
 }

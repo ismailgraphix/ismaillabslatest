@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 
-interface BlogFiltersProps {
+interface NotesFiltersProps {
     categories: { id: string; name: string }[];
 }
 
@@ -10,7 +10,7 @@ const chipBase = "whitespace-nowrap px-4 py-2 rounded font-mono text-xs uppercas
 const chipActive = "bg-accent text-white";
 const chipIdle = "bg-[var(--chip-bg)] text-[var(--muted)] hover:text-[var(--text)]";
 
-export default function BlogFilters({ categories }: BlogFiltersProps) {
+export default function NotesFilters({ categories }: NotesFiltersProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -24,7 +24,7 @@ export default function BlogFilters({ categories }: BlogFiltersProps) {
         } else {
             params.set(key, value);
         }
-        router.push(`/blog?${params.toString()}`, { scroll: false });
+        router.push(`/notes?${params.toString()}`, { scroll: false });
     };
 
     return (

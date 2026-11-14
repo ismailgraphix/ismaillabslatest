@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
             authorId: user.userId,
         }).returning();
 
-        revalidatePath("/blog");
+        revalidatePath("/notes");
         revalidatePath("/");
         return NextResponse.json({ post });
     } catch (err: any) {

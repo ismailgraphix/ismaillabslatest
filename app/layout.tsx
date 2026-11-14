@@ -31,8 +31,14 @@ const monoFont = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: "Ismail Labs — Digital Agency",
-  description: "We build the digital side of your business. Web design, development & brand strategy.",
+  // Pages set a short title of their own ("Work", "About", ...) and the
+  // template adds the studio name.
+  title: {
+    default: `${site.name}: software for universities and hospitals`,
+    template: `%s · ${site.name}`,
+  },
+  description:
+    "We build the software universities and hospitals run on: student portals, hospital records, payments and the systems behind them. Built in Abuja for clients anywhere.",
   // Icons come from the logo kit in public/brand/. /favicon.ico is a copy at
   // the site root because browsers and crawlers request that path directly.
   icons: {

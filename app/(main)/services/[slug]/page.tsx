@@ -5,17 +5,26 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { unstable_noStore as noStore } from 'next/cache';
 import SectionLabel from "@/components/SectionLabel";
+import type { Metadata } from "next";
+import { firstSentence } from "@/lib/text";
+
+async function getService(slug: string) {
+    const [service] = await db.select().from(services).where(eq(services.slug, slug)).limit(1);
+    return service && service.published ? service : null;
+}
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+    noStore();
+    const service = await getService(params.slug).catch(() => null);
+    if (!service) return {};
+    return { title: service.title, description: firstSentence(service.description) };
+}
 
 export default async function ServiceDetailsPage({ params }: { params: { slug: string } }) {
     noStore(); // Explicitly opt out of Next.js caching
 
-    const [service] = await db
-        .select()
-        .from(services)
-        .where(eq(services.slug, params.slug))
-        .limit(1);
-
-    if (!service || !service.published) return notFound();
+    const service = await getService(params.slug);
+    if (!service) return notFound();
 
     const proseArticle =
         "font-body text-[var(--muted)] text-[17px] leading-relaxed prose prose-neutral max-w-none " +
@@ -33,10 +42,10 @@ export default async function ServiceDetailsPage({ params }: { params: { slug: s
             <article className="pt-32 pb-20 flex-1 relative">
                 {/* Hero Header */}
                 <div className="max-w-4xl mx-auto px-6 text-center mb-16 relative z-10">
-                    <Link href="/#services" className="inline-flex items-center gap-2 font-mono text-xs text-[var(--muted)] uppercase tracking-[0.14em] mb-8 hover:text-[var(--accent-text)] transition-colors">
+                    <Link href="/services" className="inline-flex items-center gap-2 font-mono text-xs text-[var(--muted)] uppercase tracking-[0.14em] mb-8 hover:text-[var(--accent-text)] transition-colors">
                         ← Back to services
                     </Link>
-                    <SectionLabel className="justify-center mb-6">Our expertise</SectionLabel>
+                    <SectionLabel className="justify-center mb-6">Service</SectionLabel>
                     <div className="flex items-center justify-center mb-8 text-accent">
                         {service.icon ? (
                             <div className="w-16 h-16 [&_svg]:w-full [&_svg]:h-full" dangerouslySetInnerHTML={{ __html: service.icon }} />
@@ -66,9 +75,9 @@ export default async function ServiceDetailsPage({ params }: { params: { slug: s
                     </div>
 
                     <div className="mt-20 pt-16 border-t border-[var(--border)] text-center">
-                        <h3 className="font-heading font-bold text-[var(--text)] text-3xl tracking-tight mb-6">Ready to get started?</h3>
-                        <Link href="/#contact" className="inline-flex items-center gap-3 bg-accent text-white border border-accent font-body font-semibold px-8 py-4 rounded-md hover:bg-[var(--text)] hover:border-[var(--text)] hover:text-[var(--app-bg)] transition-colors duration-300 text-[15px]">
-                            Contact us today
+                        <h2 className="font-heading font-bold text-[var(--text)] text-3xl tracking-tight mb-6">Tell us what you need built</h2>
+                        <Link href="/contact" className="inline-flex items-center gap-3 bg-accent text-white border border-accent font-body font-semibold px-8 py-4 rounded-md hover:bg-[var(--text)] hover:border-[var(--text)] hover:text-[var(--app-bg)] transition-colors duration-300 text-[15px]">
+                            Start a project
                         </Link>
                     </div>
                 </div>

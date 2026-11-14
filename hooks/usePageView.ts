@@ -4,7 +4,8 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 // Add whatever public paths you want tracked here
-const TRACKED_PATHS = ["/", "/portfolio"];
+// "/about" replaced "/portfolio" (which now redirects there), so the same two pages are tracked as before.
+const TRACKED_PATHS = ["/", "/about"];
 
 export function usePageView() {
     const pathname = usePathname();

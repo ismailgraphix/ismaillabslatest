@@ -3,6 +3,7 @@ import { unstable_noStore as noStore } from "next/cache";
 import { getPublishedServices, hasEnoughPosts } from "@/lib/queries";
 import { site } from "@/lib/site";
 import Logo from "@/components/Logo";
+import FooterCta from "@/components/FooterCta";
 
 // Icons for the platforms we can draw, keyed by lowercase label. A social link
 // whose label is not listed here still renders, as a text link.
@@ -52,44 +53,33 @@ export default async function Footer() {
   } catch (err) {
     console.error("Footer services fetch error:", err);
   }
-  const showBlog = await hasEnoughPosts();
+  const showNotes = await hasEnoughPosts();
 
   const companyLinks = [
-    { label: "About", href: "/#about" },
-    { label: "Portfolio", href: "/portfolio" },
-    ...(showBlog ? [{ label: "Blog", href: "/blog" }] : []),
-    { label: "Contact", href: "/#contact" },
+    { label: "Work", href: "/work" },
+    { label: "Services", href: "/services" },
+    { label: "About", href: "/about" },
+    ...(showNotes ? [{ label: "Notes", href: "/notes" }] : []),
+    { label: "Contact", href: "/contact" },
   ];
+
+  // The legal pages are drafts until reviewed; see `legalReviewed` in lib/site.ts.
+  const legalLinks = site.legalReviewed
+    ? [
+        { label: "Privacy", href: "/privacy" },
+        { label: "Terms", href: "/terms" },
+      ]
+    : [];
 
   const year = new Date().getFullYear();
 
   return (
     <footer className="bg-[var(--surface)] border-t border-[var(--border)]">
-      {/* CTA Banner */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="bg-accent rounded-lg p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10"
-            style={{
-              backgroundImage: `repeating-linear-gradient(45deg, white, white 1px, transparent 1px, transparent 20px)`,
-            }}
-          />
-          <h2 className="relative font-heading font-bold text-white text-[clamp(1.5rem,3vw,2.5rem)] leading-tight tracking-tight">
-            Let&apos;s start your next<br />dream project
-          </h2>
-          <Link
-            href="/#contact"
-            className="relative flex-shrink-0 inline-flex items-center gap-2 bg-white text-ink font-body font-semibold px-8 py-4 rounded-md hover:bg-ink hover:text-white transition-colors duration-300"
-          >
-            Get in Touch
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </Link>
-        </div>
-      </div>
+      {/* The contact CTA, on every page except /contact itself */}
+      <FooterCta />
 
       {/* Main footer */}
-      <div className="max-w-7xl mx-auto px-6 pb-8">
+      <div className="max-w-7xl mx-auto px-6 pt-16 pb-8">
         <div className="grid md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr] gap-12 pb-12 border-b border-[var(--border)]">
           {/* Brand */}
           <div>
@@ -97,7 +87,7 @@ export default async function Footer() {
               <Logo height={36} />
             </Link>
             <p className="font-body text-[var(--muted)] text-sm leading-relaxed mb-6 max-w-sm">
-              We bring business and the digital world together with passion for creative problem solving.
+              Software for universities, hospitals and the teams that run them.
             </p>
             {site.socials.length > 0 && (
               <div className="flex flex-wrap items-center gap-3">
@@ -161,10 +151,21 @@ export default async function Footer() {
           )}
         </div>
 
-        <div className="pt-8">
+        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="font-body text-[var(--muted)] text-sm text-center md:text-left">
-            © {year} {site.name}. All rights reserved.
+            © {year} {site.name}. {site.location}.
           </p>
+          {legalLinks.length > 0 && (
+            <ul className="flex items-center gap-6">
+              {legalLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="font-body text-sm text-[var(--muted)] hover:text-[var(--accent-text)] transition-colors hover-line">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </footer>

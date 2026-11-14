@@ -1,47 +1,45 @@
+// app/(main)/page.tsx
+// Home, work first: positioning, who we have built for, the work itself, then
+// services, process, client quotes, notes, and the contact call to action
+// (which is the footer banner, shared with every page but /contact).
+import { unstable_noStore as noStore } from "next/cache";
 import Hero from "@/components/Hero";
-
-import About from "@/components/About";
+import ClientStrip from "@/components/ClientStrip";
+import SelectedWork from "@/components/SelectedWork";
 import Services from "@/components/Services";
 import Process from "@/components/Process";
 import Testimonials from "@/components/Testimonials";
-import Blog from "@/components/Blog";
-import Contact from "@/components/Contact";
+import Notes from "@/components/Notes";
 import DatabaseErrorModal from "@/components/DatabaseErrorModal";
-import { getPublishedServices } from "@/lib/queries";
+import { getPublishedServices, getWork, type WorkItem } from "@/lib/queries";
 
-export const dynamic = 'force-dynamic';
-
-import { unstable_noStore as noStore } from 'next/cache';
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
-    noStore(); // Explicitly opt out of Next.js caching for this entire page
+    noStore(); // admin edits must show immediately; called outside the try (see lib/queries.ts)
 
-    let servicesData: Awaited<ReturnType<typeof getPublishedServices>> = [];
-    let dbError = null;
+    let services: Awaited<ReturnType<typeof getPublishedServices>> = [];
+    let work: WorkItem[] = [];
+    let dbError: string | null = null;
 
     try {
-        // We show 4 by default in UI, with a "View all" toggle.
-        // Fetching all here keeps it simple and avoids adding a separate page/API.
-        // The footer reads the same list, so the query is shared (see lib/queries.ts).
-        servicesData = await getPublishedServices();
-    } catch (err: any) {
-        console.error("Home page Services fetch error:", err);
-        dbError = "Failed to load services due to a database connection error.";
+        [services, work] = await Promise.all([getPublishedServices(), getWork()]);
+    } catch (err) {
+        console.error("Home page fetch error:", err);
+        dbError = "Failed to load the page content due to a database connection error.";
     }
 
     return (
         <main>
             {dbError && <DatabaseErrorModal error={dbError} />}
             <Hero />
-
-            <About />
-            <Services services={servicesData} />
+            {/* Each section below renders nothing until it has real content. */}
+            <ClientStrip />
+            <SelectedWork work={work} />
+            <Services services={services} />
             <Process />
-            {/* Testimonials and Blog render nothing until there is real content for them. */}
             <Testimonials />
-            <Blog />
-            <Contact />
-
+            <Notes />
         </main>
     );
 }

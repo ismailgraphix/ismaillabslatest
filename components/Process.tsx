@@ -1,32 +1,34 @@
 "use client";
 import { motion } from "framer-motion";
-import { Activity, Layers, PenTool, Search } from "lucide-react";
+import { CodeXml, FileText, Rocket, Users } from "lucide-react";
 import SectionLabel from "@/components/SectionLabel";
 
+// Draft copy from the rebuild plan. Ismail confirms each step is how projects
+// actually run before this ships; edit or remove any step that is not.
 const steps = [
   {
     id: "01",
     title: "Discovery",
-    desc: "Engineer-led research sessions to map product goals, users, and technical constraints before we build.",
-    icon: Search,
+    desc: "We talk to the people who will use the system and map how the work is done today.",
+    icon: Users,
   },
   {
     id: "02",
-    title: "Strategy & Planning",
-    desc: "Define the product architecture, delivery roadmap, and success metrics for a smooth execution.",
-    icon: Layers,
+    title: "Plan",
+    desc: "You get a written scope, a timeline and a price for the first milestone before any code is written.",
+    icon: FileText,
   },
   {
     id: "03",
-    title: "Design & Development",
-    desc: "Craft refined interfaces and engineering-ready experiences that align with your brand and business goals.",
-    icon: PenTool,
+    title: "Build",
+    desc: "You see working software on a staging link at regular intervals, not slides.",
+    icon: CodeXml,
   },
   {
     id: "04",
-    title: "Testing & Launch",
-    desc: "Validate quality with rigorous QA, then deploy confidently with monitoring and post-launch support.",
-    icon: Activity,
+    title: "Launch and support",
+    desc: "We deploy, train your staff, and stay on for fixes and changes.",
+    icon: Rocket,
   },
 ];
 
@@ -56,15 +58,12 @@ export default function Process() {
       viewport={{ once: true, amount: 0.2 }}
       variants={container}
     >
-      <div className="mx-auto max-w-7xl px-6 py-24 sm:px-8 lg:px-12">
+      <div className="mx-auto max-w-[1300px] px-6 py-24 md:px-10">
         <div className="max-w-3xl">
-          <SectionLabel className="mb-5">Our process</SectionLabel>
+          <SectionLabel className="mb-5">Process</SectionLabel>
           <h2 className="font-heading font-bold text-[2.6rem] leading-[1.02] tracking-[-0.03em] sm:text-[3.4rem]">
-            A polished workflow built for product clarity and reliable delivery.
+            How a project runs
           </h2>
-          <p className="mt-6 max-w-2xl text-base md:text-[17px] leading-relaxed text-[var(--muted)]">
-            We combine strategic planning, clean execution, and careful validation so every phase feels aligned with your business goals.
-          </p>
         </div>
 
         <div className="mt-16 grid gap-6 lg:grid-cols-2 lg:gap-8">
@@ -78,7 +77,7 @@ export default function Process() {
                 style={{ transitionDelay: `${index * 80}ms` }}
               >
                 <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-md border border-accent/20 bg-accent/10 text-accent">
-                  <StepIcon className="h-6 w-6" />
+                  <StepIcon className="h-6 w-6" aria-hidden="true" />
                 </div>
                 <div className="mb-4 inline-flex items-center gap-3 font-mono text-xs uppercase tracking-[0.14em] text-[var(--muted)]">
                   <span>{step.id}</span>

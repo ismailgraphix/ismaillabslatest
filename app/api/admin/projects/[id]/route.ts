@@ -32,7 +32,8 @@ export async function PATCH(req: NextRequest, { params }: Params) {
             .returning();
 
         if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 });
-        revalidatePath("/portfolio");
+        revalidatePath("/work");
+        revalidatePath("/");
         return NextResponse.json({ project: updated });
     } catch (err) {
         console.error("[projects PATCH]", err);
@@ -50,7 +51,8 @@ export async function DELETE(req: NextRequest, { params }: Params) {
             .returning();
 
         if (!deleted) return NextResponse.json({ error: "Not found" }, { status: 404 });
-        revalidatePath("/portfolio");
+        revalidatePath("/work");
+        revalidatePath("/");
         return NextResponse.json({ success: true });
     } catch (err) {
         console.error("[projects DELETE]", err);

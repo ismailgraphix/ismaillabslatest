@@ -43,7 +43,9 @@ export async function POST(req: NextRequest) {
             order: order ?? 0,
         }).returning();
 
-        revalidatePath("/portfolio");
+        revalidatePath("/work");
+
+        revalidatePath("/");
         return NextResponse.json({ project: created }, { status: 201 });
     } catch (err) {
         console.error("[projects POST]", err);

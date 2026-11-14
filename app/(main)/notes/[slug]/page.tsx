@@ -41,8 +41,8 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             <article className="pt-32 pb-20 flex-1 relative">
                 {/* Hero Header */}
                 <div className="max-w-4xl mx-auto px-6 text-center mb-16 relative z-10">
-                    <Link href="/blog" className="inline-flex items-center gap-2 font-mono text-xs text-[var(--muted)] uppercase tracking-[0.14em] mb-8 hover:text-[var(--accent-text)] transition-colors">
-                        ← Back to news
+                    <Link href="/notes" className="inline-flex items-center gap-2 font-mono text-xs text-[var(--muted)] uppercase tracking-[0.14em] mb-8 hover:text-[var(--accent-text)] transition-colors">
+                        ← Back to notes
                     </Link>
                     <div className="flex items-center justify-center gap-3 mb-6">
                         <span className="font-mono text-[var(--muted)] text-xs uppercase tracking-[0.14em]">{category?.name || "General"}</span>

@@ -22,6 +22,23 @@ function HeadingLine({ children, loaded, delay }: { children: React.ReactNode; l
     );
 }
 
+// An accent-coloured word with an underline bar that grows from the left.
+function Accent({ children, loaded, delay }: { children: React.ReactNode; loaded: boolean; delay: number }) {
+    return (
+        <span className="relative inline-block text-accent">
+            {children}
+            <span
+                aria-hidden="true"
+                className="absolute left-0 bottom-[0.02em] h-[0.06em] w-full bg-accent origin-left"
+                style={{
+                    transform: loaded ? "scaleX(1)" : "scaleX(0)",
+                    transition: `transform 0.9s cubic-bezier(0.2,0,0,1) ${delay}s`,
+                }}
+            />
+        </span>
+    );
+}
+
 export default function Hero() {
     const [loaded, setLoaded] = useState(false);
 
@@ -75,41 +92,38 @@ export default function Hero() {
                         transition: "all 0.7s ease 0.1s",
                     }}
                 >
-                    {/* Status light: the logo's square dot */}
-                    <span className="relative flex h-2 w-2">
-                        <span
-                            className="absolute inline-flex h-full w-full bg-accent opacity-60"
-                            style={{ animation: "pulseDot 2.4s ease-in-out infinite" }}
-                        />
+                    {/* The logo's square dot. It pulses only when there is a real availability date to announce. */}
+                    <span className="relative flex h-2 w-2" aria-hidden="true">
+                        {site.availability && (
+                            <span
+                                className="absolute inline-flex h-full w-full bg-accent opacity-60"
+                                style={{ animation: "pulseDot 2.4s ease-in-out infinite" }}
+                            />
+                        )}
                         <span className="relative inline-flex h-2 w-2 bg-accent" />
                     </span>
                     <span className="font-mono text-xs text-[var(--text-soft)] uppercase tracking-[0.14em]">
-                        Digital Agency · Available for Projects
+                        {site.availability
+                            ? `Taking projects for ${site.availability}`
+                            : `Software studio · ${site.location}`}
                     </span>
                 </div>
 
                 {/* ── Headline: one h1, three lines, each rising from behind a mask.
-                       Set at the large display size the landing page had before the rebrand. ── */}
+                       Large display type, as the landing page had before the rebrand. The
+                       positioning line is longer than the old three words, so the top size is
+                       the largest at which "We build the software" still fits on one line. ── */}
                 <h1
-                    className="font-heading font-bold text-[var(--text)] leading-[0.95] tracking-[-0.04em] mb-14"
-                    style={{ fontSize: "clamp(3.6rem, 10vw, 9.5rem)" }}
+                    className="font-heading font-bold text-[var(--text)] leading-[0.98] tracking-[-0.04em] mb-14"
+                    style={{ fontSize: "clamp(2.6rem, 7.4vw, 7.25rem)" }}
                 >
-                    <HeadingLine loaded={loaded} delay={0.18}>We build</HeadingLine>
+                    <HeadingLine loaded={loaded} delay={0.18}>We build the software</HeadingLine>
                     <HeadingLine loaded={loaded} delay={0.3}>
-                        your{" "}
-                        <span className="relative inline-block text-accent">
-                            digital
-                            {/* Underline bar, growing from the left */}
-                            <span
-                                className="absolute left-0 bottom-[0.02em] h-[0.06em] w-full bg-accent origin-left"
-                                style={{
-                                    transform: loaded ? "scaleX(1)" : "scaleX(0)",
-                                    transition: "transform 0.9s cubic-bezier(0.2,0,0,1) 1.1s",
-                                }}
-                            />
-                        </span>
+                        <Accent loaded={loaded} delay={1.1}>universities</Accent> and
                     </HeadingLine>
-                    <HeadingLine loaded={loaded} delay={0.42}>presence.</HeadingLine>
+                    <HeadingLine loaded={loaded} delay={0.42}>
+                        <Accent loaded={loaded} delay={1.3}>hospitals</Accent> run on.
+                    </HeadingLine>
                 </h1>
 
                 {/* ── Bottom row ── */}
@@ -124,24 +138,23 @@ export default function Hero() {
                         }}
                     >
                         <p className="font-body text-[var(--text-soft)] text-base md:text-lg leading-relaxed">
-                            From a stunning website to a complete digital product —
-                            we design, build, and scale your online presence so you
-                            can focus on running your business.
+                            Student portals, hospital records, payments and the systems
+                            behind them. Built in Abuja for clients anywhere.
                         </p>
 
                         <div className="flex flex-wrap items-center gap-4 mt-8">
                             <Link
-                                href="/portfolio#work"
+                                href="/work"
                                 className="inline-flex items-center gap-2.5 bg-accent text-white font-body font-semibold text-sm px-6 py-3.5 rounded-md border border-accent hover:bg-[var(--text)] hover:border-[var(--text)] hover:text-[var(--app-bg)] transition-colors duration-300 group"
                             >
-                                See Our Work
+                                See the work
                                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
                                     className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 text-inherit">
                                     <path d="M1 11L11 1M11 1H4M11 1v7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
                             </Link>
-                            <a
-                                href="#contact"
+                            <Link
+                                href="/contact"
                                 className="inline-flex items-center gap-2 font-body font-medium text-sm text-[var(--text)] border border-[var(--text)] px-6 py-3.5 rounded-md hover:border-accent hover:text-[var(--accent-text)] transition-colors duration-300 group"
                             >
                                 Start a project
@@ -149,7 +162,7 @@ export default function Hero() {
                                     className="transition-transform duration-300 group-hover:translate-x-0.5">
                                     <path d="M1 6h10M7 2l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
-                            </a>
+                            </Link>
                         </div>
                     </div>
 

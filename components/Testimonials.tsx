@@ -58,7 +58,7 @@ function TestimonialCards({ testimonials }: { testimonials: Testimonial[] }) {
                   className="font-heading font-bold text-[var(--text)] leading-tight tracking-tight"
                   style={{ fontSize: "clamp(1.8rem, 3vw, 2.6rem)" }}
               >
-                What clients say<br />about us
+                From clients
               </h2>
             </div>
 

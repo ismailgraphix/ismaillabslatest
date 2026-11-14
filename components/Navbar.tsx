@@ -6,19 +6,19 @@ import ThemeToggle from "@/components/ThemeToggle";
 import Logo from "@/components/Logo";
 import { site } from "@/lib/site";
 
+// The logo links home, so "Home" is not repeated here.
 const navLinks = [
-    { label: "Home", href: "/" },
-    { label: "About", href: "#about" },
-    { label: "Services", href: "#services" },
-    { label: "Portfolio", href: "/portfolio" },
-    { label: "Blog", href: "/blog" },
-    { label: "Contact", href: "#contact" },
+    { label: "Work", href: "/work" },
+    { label: "Services", href: "/services" },
+    { label: "About", href: "/about" },
+    { label: "Notes", href: "/notes" },
+    { label: "Contact", href: "/contact" },
 ];
 
-// `showBlog` is false until enough posts are published (see lib/queries.ts),
-// so the header never links to an empty blog.
-export default function Navbar({ showBlog = false }: { showBlog?: boolean }) {
-    const links = showBlog ? navLinks : navLinks.filter((link) => link.href !== "/blog");
+// `showNotes` is false until enough posts are published (see lib/queries.ts),
+// so the header never links to an empty notes page.
+export default function Navbar({ showNotes = false }: { showNotes?: boolean }) {
+    const links = showNotes ? navLinks : navLinks.filter((link) => link.href !== "/notes");
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const pathname = usePathname();
@@ -48,15 +48,7 @@ export default function Navbar({ showBlog = false }: { showBlog?: boolean }) {
     }, []);
 
     function isActive(href: string) {
-        if (href === "/") return pathname === "/";
-        if (href.startsWith("#")) return false;
-        const base = href.split("#")[0];
-        return pathname === base || pathname.startsWith(base + "/");
-    }
-
-    function toHref(href: string) {
-        if (!href.startsWith("#")) return href;
-        return pathname === "/" ? href : `/${href}`;
+        return pathname === href || pathname.startsWith(href + "/");
     }
 
     return (
@@ -80,7 +72,7 @@ export default function Navbar({ showBlog = false }: { showBlog?: boolean }) {
                         {links.map((link) => (
                             <Link
                                 key={link.label}
-                                href={toHref(link.href)}
+                                href={link.href}
                                 aria-current={isActive(link.href) ? "page" : undefined}
                                 className={`relative font-body font-medium text-[13px] tracking-wide transition-colors duration-200 group px-4 py-2 rounded-md ${isActive(link.href)
                                     ? "text-[var(--accent-text)] bg-accent/10"
@@ -98,10 +90,10 @@ export default function Navbar({ showBlog = false }: { showBlog?: boolean }) {
                     <div className="flex items-center gap-3">
                         <ThemeToggle />
                         <Link
-                            href={toHref("#contact")}
+                            href="/contact"
                             className="hidden md:inline-flex items-center gap-2 bg-accent text-white border border-accent rounded-md font-body font-semibold text-[13px] px-5 py-2.5 hover:bg-[var(--text)] hover:border-[var(--text)] hover:text-[var(--app-bg)] transition-colors duration-300"
                         >
-                            Let&apos;s Talk
+                            Start a project
                             <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
                                 <path d="M1 11L11 1M11 1H4M11 1v7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
@@ -139,7 +131,7 @@ export default function Navbar({ showBlog = false }: { showBlog?: boolean }) {
                         {links.map((link, i) => (
                             <Link
                                 key={link.label}
-                                href={toHref(link.href)}
+                                href={link.href}
                                 onClick={() => setMenuOpen(false)}
                                 style={{ transitionDelay: menuOpen ? `${i * 40}ms` : "0ms" }}
                                 className={`font-body font-medium text-base py-3 border-b border-[var(--border)] transition-all duration-300 ${menuOpen ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0"
@@ -149,11 +141,11 @@ export default function Navbar({ showBlog = false }: { showBlog?: boolean }) {
                             </Link>
                         ))}
                         <Link
-                            href={toHref("#contact")}
+                            href="/contact"
                             onClick={() => setMenuOpen(false)}
                             className="mt-4 text-center rounded-md bg-accent text-white border border-accent font-body font-semibold py-3 text-sm hover:bg-[var(--text)] hover:border-[var(--text)] hover:text-[var(--app-bg)] transition-colors duration-300"
                         >
-                            Let&apos;s Talk
+                            Start a project
                         </Link>
                     </div>
                 </div>

@@ -1,10 +1,15 @@
 import { db, blogPosts, users, blogCategories } from "@/db";
 import { eq, desc, asc, and } from "drizzle-orm";
 import Link from "next/link";
-import BlogFilters from "./BlogFilters";
+import NotesFilters from "./NotesFilters";
 import SectionLabel from "@/components/SectionLabel";
 
-export default async function PublicBlogPage({ searchParams }: { searchParams: { category?: string, sort?: string } }) {
+export const metadata = {
+    title: "Notes",
+    description: "Short write-ups from real projects by Ismail Labs.",
+};
+
+export default async function NotesPage({ searchParams }: { searchParams: { category?: string, sort?: string } }) {
     // 1. Fetch available categories for the filter UI
     const categories = await db.select().from(blogCategories);
 
@@ -38,26 +43,26 @@ export default async function PublicBlogPage({ searchParams }: { searchParams: {
             <section className="pt-40 pb-20 px-6 relative flex-1">
                 <div className="max-w-7xl mx-auto relative z-10">
                     <div className="mb-12 text-center max-w-3xl mx-auto">
-                        <SectionLabel className="justify-center mb-6">Our news</SectionLabel>
+                        <SectionLabel className="justify-center mb-6">Notes</SectionLabel>
                         <h1 className="font-heading font-bold text-[var(--text)] text-[clamp(2.25rem,5vw,4rem)] leading-[1.05] tracking-tight mb-6">
-                            Insights & updates
+                            Notes from real projects
                         </h1>
                         <p className="font-body text-[var(--muted)] text-lg leading-relaxed">
-                            Discover the latest strategies, case studies, and news from our team across design, engineering, and product growth.
+                            Short write-ups from the systems we build and maintain: what broke, what we changed and what we would do again.
                         </p>
                     </div>
 
-                    <BlogFilters categories={categories} />
+                    <NotesFilters categories={categories} />
 
                     {posts.length === 0 ? (
                         <div className="py-24 text-center border border-[var(--border)] bg-[var(--surface)] rounded-lg">
-                            <p className="font-heading font-bold text-[var(--text)] text-xl mb-2">No posts found</p>
+                            <p className="font-heading font-bold text-[var(--text)] text-xl mb-2">No notes found</p>
                             <p className="font-body text-[var(--muted)]">Try adjusting your category filters.</p>
                         </div>
                     ) : (
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {posts.map(({ post, author, category }) => (
-                                <Link href={`/blog/${post.slug}`} key={post.id} className="group relative bg-[var(--surface)] border border-[var(--border)] hover:border-accent/40 transition-colors duration-300 overflow-hidden flex flex-col rounded-lg">
+                                <Link href={`/notes/${post.slug}`} key={post.id} className="group relative bg-[var(--surface)] border border-[var(--border)] hover:border-accent/40 transition-colors duration-300 overflow-hidden flex flex-col rounded-lg">
                                     <div className="relative h-[240px] w-full overflow-hidden bg-[var(--chip-bg)]">
                                         {post.image ? (
                                             <img src={post.image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />

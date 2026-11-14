@@ -130,7 +130,7 @@ export default function PersonalPortfolioAdmin() {
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold">Personal Portfolio Configurator</h1>
-                    <p className="text-[var(--text-faint)] text-sm mt-1">Manage the details matching the /portfolio public view.</p>
+                    <p className="text-[var(--text-faint)] text-sm mt-1">Manage the details matching the /about public view.</p>
                 </div>
                 <button
                     onClick={handleSave}
