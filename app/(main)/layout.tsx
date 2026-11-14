@@ -1,10 +1,16 @@
 import Footer from "@/components/Footer";
-import ConditionalNavbar from "@/components/ConditionalNavbar";
+import Navbar from "@/components/Navbar";
+import { hasEnoughPosts } from "@/lib/queries";
+
+// Every public page, including /portfolio, uses this one header and footer.
+async function Header() {
+  return <Navbar showBlog={await hasEnoughPosts()} />;
+}
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <ConditionalNavbar />
+      <Header />
       {children}
       <Footer />
     </>

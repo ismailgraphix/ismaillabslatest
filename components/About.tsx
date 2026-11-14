@@ -15,23 +15,9 @@ function useInView(threshold = 0.2) {
     return { ref, inView };
 }
 
-function Counter({ target, suffix = "+", duration = 1800 }: { target: number; suffix?: string; duration?: number }) {
-    const [count, setCount] = useState(0);
-    const { ref, inView } = useInView(0.3);
-    useEffect(() => {
-        if (!inView) return;
-        let start = 0;
-        const step = Math.ceil(target / (duration / 16));
-        const timer = setInterval(() => {
-            start += step;
-            if (start >= target) { setCount(target); clearInterval(timer); }
-            else setCount(start);
-        }, 16);
-        return () => clearInterval(timer);
-    }, [inView, target, duration]);
-    return <span ref={ref}>{count}{suffix}</span>;
-}
-
+// The two template photographs and the "25+ years / 375+ projects" counters
+// that used to sit here are gone. Stats now come from lib/site.ts and show in
+// the hero only, and this section carries no image until there is a real one.
 export default function About() {
     const { ref, inView } = useInView(0.15);
 
@@ -40,34 +26,10 @@ export default function About() {
             {/* Ghost arc — consistent with Hero's geometry language */}
             <div className="absolute -left-20 bottom-10 w-56 h-56 rounded-full border border-[#0f0f0f]/[0.055] pointer-events-none" />
 
-            <div className="max-w-[1300px] mx-auto px-8 grid lg:grid-cols-2 gap-16 items-center">
+            <div className="max-w-[1300px] mx-auto px-8 grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
 
-                {/* ── LEFT: overlapping images ── */}
-                <div className={`relative h-[480px] md:h-[540px] transition-all duration-1000 ${inView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-16"}`}>
-                    {/* Main large image */}
-                    <div className="absolute right-0 top-0 w-[75%] h-full rounded-sm overflow-hidden">
-                        <img
-                            src="https://html.ravextheme.com/redox/light/assets/imgs/web-development/hero-img-5.webp"
-                            alt="Team collaboration"
-                            className="w-full h-full object-cover object-center"
-                        />
-                    </div>
-                    {/* Small overlapping image — border uses app-bg so it reads as a "frame" against any bg */}
-                    <div
-                        className={`absolute left-0 bottom-10 w-[46%] h-[54%] rounded-sm overflow-hidden border-2 border-[var(--app-bg)] transition-all duration-1000 delay-200 ${
-                            inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-                        }`}
-                    >
-                        <img
-                            src="https://html.ravextheme.com/redox/light/assets/imgs/web-development/about-img-7.webp"
-                            alt="Team detail"
-                            className="w-full h-full object-cover"
-                        />
-                    </div>
-                </div>
-
-                {/* ── RIGHT: content ── */}
-                <div className={`transition-all duration-1000 delay-150 ${inView ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"}`}>
+                {/* ── LEFT: label + heading ── */}
+                <div className={`transition-all duration-1000 ${inView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-16"}`}>
 
                     {/* Label */}
                     <div className="flex items-center gap-3 mb-5">
@@ -77,13 +39,17 @@ export default function About() {
 
                     {/* Heading */}
                     <h2
-                        className="font-heading font-black text-[var(--text)] uppercase leading-[1.0] tracking-tight mb-6"
+                        className="font-heading font-black text-[var(--text)] uppercase leading-[1.0] tracking-tight"
                         style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.8rem)" }}
                     >
                         WE WANT TO BRING BUSINESS<br />
                         AND THE DIGITAL WORLD<br />
                         TOGETHER
                     </h2>
+                </div>
+
+                {/* ── RIGHT: body + CTA ── */}
+                <div className={`transition-all duration-1000 delay-150 ${inView ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"}`}>
 
                     {/* Body — theme-safe muted text */}
                     <p className="font-body text-[var(--text-soft)] leading-relaxed text-[15px] mb-10 max-w-[500px]">
@@ -92,46 +58,6 @@ export default function About() {
                         we've also learned that while each channel has its own set of advantages, they all
                         work best when strategically paired with other channels.
                     </p>
-
-                    {/* Stats row */}
-                    <div className="flex items-start gap-10 mb-10">
-                        {/* Stat 1 */}
-                        <div className={`flex items-center gap-4 transition-all duration-700 delay-400 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-                            <div className="w-14 h-14 flex-shrink-0">
-                                <svg viewBox="0 0 56 56" fill="none" className="w-full h-full">
-                                    <circle cx="28" cy="28" r="27" stroke="#4353FF" strokeWidth="1.5" opacity="0.25"/>
-                                    <path d="M28 14 C22 14 17 19 17 25 C17 31 21 35 26 37 L28 42 L30 37 C35 35 39 31 39 25 C39 19 34 14 28 14Z" stroke="#4353FF" strokeWidth="1.5" fill="none"/>
-                                    <circle cx="28" cy="25" r="4" stroke="#4353FF" strokeWidth="1.5" fill="none"/>
-                                    <path d="M20 44 Q28 40 36 44" stroke="#4353FF" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p className="font-heading font-black text-[var(--text)] text-3xl leading-none">
-                                    <Counter target={25} />
-                                </p>
-                                <p className="font-body text-[var(--text-faint)] text-sm mt-1">Years on the market</p>
-                            </div>
-                        </div>
-
-                        {/* Stat 2 */}
-                        <div className={`flex items-center gap-4 transition-all duration-700 delay-500 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-                            <div className="w-14 h-14 flex-shrink-0">
-                                <svg viewBox="0 0 56 56" fill="none" className="w-full h-full">
-                                    <circle cx="28" cy="28" r="27" stroke="#4353FF" strokeWidth="1.5" opacity="0.25"/>
-                                    <rect x="16" y="14" width="18" height="24" rx="1.5" stroke="#4353FF" strokeWidth="1.5" fill="none"/>
-                                    <path d="M34 18 L40 18 L40 38 L22 38" stroke="#4353FF" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-                                    <circle cx="26" cy="20" r="3" stroke="#4353FF" strokeWidth="1.5" fill="none"/>
-                                    <path d="M20 26 L28 26 M20 30 L28 30" stroke="#4353FF" strokeWidth="1.5" strokeLinecap="round"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p className="font-heading font-black text-[var(--text)] text-3xl leading-none">
-                                    <Counter target={375} />
-                                </p>
-                                <p className="font-body text-[var(--text-faint)] text-sm mt-1">Projects delivered so far</p>
-                            </div>
-                        </div>
-                    </div>
 
                     {/* CTA — pill shape, theme-safe hover, valid Tailwind duration */}
                     <a

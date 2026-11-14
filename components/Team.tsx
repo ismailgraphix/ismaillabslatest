@@ -2,22 +2,18 @@ const team = [
   {
     name: "Charlotte Amitina",
     role: "UI/UX Designer",
-    img: "https://html.ravextheme.com/redox/light/assets/imgs/web-development/team-1.webp",
   },
   {
     name: "William Edward",
     role: "Project Manager",
-    img: "https://html.ravextheme.com/redox/light/assets/imgs/web-development/team-2.webp",
   },
   {
     name: "Hannah Chloe",
     role: "Product Designer",
-    img: "https://html.ravextheme.com/redox/light/assets/imgs/web-development/team-3.webp",
   },
   {
     name: "Maiselan Willam",
     role: "Web Developer",
-    img: "https://html.ravextheme.com/redox/light/assets/imgs/web-development/team-4.webp",
   },
 ];
 
@@ -42,11 +38,6 @@ export default function Team() {
             <div key={member.name} className="group relative overflow-hidden rounded-2xl bg-white cursor-pointer">
               {/* Image */}
               <div className="relative aspect-[3/4] overflow-hidden bg-gray-200">
-                <img
-                  src={member.img}
-                  alt={member.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
                 {/* Gradient on hover */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-300" />
 

@@ -1,6 +1,16 @@
 "use client";
 import { useState } from "react";
 import { Mail, Phone } from "lucide-react";
+import { site } from "@/lib/site";
+
+// Contact details come from lib/site.ts. The phone row only exists once a real
+// number has been supplied there.
+const contactDetails = [
+    { icon: Mail, label: "Email", value: site.email, href: `mailto:${site.email}` },
+    ...(site.phone
+        ? [{ icon: Phone, label: "Phone", value: site.phone, href: `tel:${site.phone.replace(/[^+\d]/g, "")}` }]
+        : []),
+];
 
 export default function Contact() {
     const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
@@ -45,17 +55,14 @@ export default function Contact() {
                         Have a project in mind? We'd love to hear about it. Tell us your ideas and we'll craft a custom strategy to bring your vision to life.
                     </p>
                     <div className="space-y-5">
-                        {[
-                            { icon: Mail, label: "Email", value: "hello@ismaillabs.com" },
-                            { icon: Phone, label: "Phone", value: "(505) 555-0125" },
-                        ].map((item) => (
+                        {contactDetails.map((item) => (
                             <div key={item.label} className="flex items-start gap-4">
                                 <div className="w-10 h-10 bg-[#4353FF] rounded-xl flex items-center justify-center flex-shrink-0 text-white">
                                     <item.icon size={18} strokeWidth={2.2} />
                                 </div>
                                 <div>
                                     <p className="font-heading font-semibold text-[var(--muted)] text-xs uppercase tracking-widest mb-0.5">{item.label}</p>
-                                    <p className="font-body text-[var(--text)] text-sm">{item.value}</p>
+                                    <a href={item.href} className="font-body text-[var(--text)] text-sm hover:text-[#4353FF] transition-colors">{item.value}</a>
                                 </div>
                             </div>
                         ))}
@@ -71,7 +78,7 @@ export default function Contact() {
                                 </svg>
                             </div>
                             <h3 className="font-heading font-black text-2xl text-[var(--text)] uppercase mb-2">Message Sent!</h3>
-                            <p className="font-body text-[var(--muted)] mb-6">We'll get back to you within 24 hours.</p>
+                            <p className="font-body text-[var(--muted)] mb-6">Thanks. We have your message and will reply by email.</p>
                             <button onClick={() => setState("idle")} className="font-body text-sm text-[#4353FF] hover:text-[var(--text)] transition-colors">Send another message →</button>
                         </div>
                     ) : (

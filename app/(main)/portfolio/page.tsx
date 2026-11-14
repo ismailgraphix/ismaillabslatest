@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import ThemeToggle from "@/components/ThemeToggle";
+import { site } from "@/lib/site";
 
 function useInView(threshold = 0.15) {
     const ref = useRef<HTMLDivElement>(null);
@@ -23,31 +23,12 @@ function useInView(threshold = 0.15) {
     return { ref, inView };
 }
 
-function Counter({ target, suffix = "", duration = 1600 }: { target: number; suffix?: string; duration?: number }) {
-    const [count, setCount] = useState(0);
-    const { ref, inView } = useInView(0.3);
-    useEffect(() => {
-        if (!inView) return;
-        let start = 0;
-        const step = Math.ceil(target / (duration / 16));
-        const timer = setInterval(() => {
-            start += step;
-            if (start >= target) { setCount(target); clearInterval(timer); }
-            else setCount(start);
-        }, 16);
-        return () => clearInterval(timer);
-    }, [inView, target, duration]);
-    return <span ref={ref}>{count}{suffix}</span>;
-}
-
 function ProjectCard({ p, i, inView }: { p: any, i: number, inView: boolean }) {
-    return (
-        <a
-            key={i}
-            href={p.link || "#"}
-            className={`group relative overflow-hidden bg-gray-100 block transition-all duration-700 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
-            style={{ transitionDelay: `${i * 100}ms` }}
-        >
+    const className = `group relative overflow-hidden bg-gray-100 block transition-all duration-700 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`;
+    const style = { transitionDelay: `${i * 100}ms` };
+
+    const body = (
+        <>
             <div className="aspect-[16/10] overflow-hidden">
                 <img
                     src={p.image}
@@ -70,13 +51,22 @@ function ProjectCard({ p, i, inView }: { p: any, i: number, inView: boolean }) {
                 {p.createdAt ? p.createdAt.substring(0, 4) : new Date().getFullYear()}
             </div>
 
-            {/* Arrow */}
-            <div className="absolute top-4 left-4 w-9 h-9 bg-white flex items-center justify-center opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 transition-all duration-300">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M2 12L12 2M12 2H4M12 2v8" stroke="#0f0f0f" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-            </div>
-        </a>
+            {/* Arrow: only on cards that link somewhere */}
+            {p.link && (
+                <div className="absolute top-4 left-4 w-9 h-9 bg-white flex items-center justify-center opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 transition-all duration-300">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M2 12L12 2M12 2H4M12 2v8" stroke="#0f0f0f" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                </div>
+            )}
+        </>
+    );
+
+    // A project without a live URL is a plain card, not a link to "#".
+    return p.link ? (
+        <a href={p.link} className={className} style={style}>{body}</a>
+    ) : (
+        <div className={className} style={style}>{body}</div>
     );
 }
 
@@ -122,6 +112,19 @@ export default function PortfolioPage() {
         };
     }, []);
 
+    // The sections only exist once the data has loaded, so a link such as
+    // /portfolio#work has nothing to scroll to on arrival. Do it here, once.
+    const scrolledToHash = useRef(false);
+    useEffect(() => {
+        if (scrolledToHash.current || !cfg) return;
+        const id = window.location.hash.slice(1);
+        if (!id) return;
+        const target = document.getElementById(id);
+        if (!target) return;
+        scrolledToHash.current = true;
+        target.scrollIntoView();
+    }, [cfg, projects.length]);
+
     const tabs = ["All", ...Array.from(new Set<string>(projects.map(p => p.type).filter(Boolean)))];
     const filtered = activeTab === "All" ? projects : projects.filter(p => p.type === activeTab);
     const validSkills = (cfg?.skills || []).filter((s: any) => (s?.name || "").trim().length > 0);
@@ -141,50 +144,18 @@ export default function PortfolioPage() {
 
     if (!cfg) return <div className="min-h-screen bg-[var(--app-bg)] flex items-center justify-center font-body text-[var(--text)]">Loading...</div>;
 
-    const heroTitleParts = (cfg.hero?.title || "ISMAIL LABS DEV.").split(" ");
-    const word1 = heroTitleParts[0] || "ISMAIL";
-    const word2 = heroTitleParts[1] || "LABS";
-    const word3 = heroTitleParts.slice(2).join(" ") || "DEV.";
+    // Title words exactly as entered in the admin; the second word takes the accent colour.
+    const [word1, word2, ...restWords] = (cfg.hero?.title || site.name).trim().split(/\s+/);
+    const word3 = restWords.join(" ");
+
+    // "Download CV" only shows for a real PDF link, never for an editable document.
+    const resumeUrl = (cfg.hero?.resumeUrl || "").trim();
+    const hasResumePdf = /\.pdf($|[?#])/i.test(resumeUrl);
+
+    const otherSkills: string[] = cfg.otherSkills || [];
 
     return (
         <main className="bg-[var(--app-bg)] min-h-screen font-body">
-
-            {/* ── NAVBAR ── */}
-            <header className="fixed top-0 left-0 w-full z-50 bg-[var(--nav-bg)] backdrop-blur-md border-b border-[var(--border)] py-4">
-                <div className="max-w-[1300px] mx-auto px-6 md:px-10 flex items-center justify-between">
-                    <Link href="/" className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-[#0f0f0f] rounded flex items-center justify-center">
-                            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-                                <path d="M4 3h7.5C13.985 3 16 5.015 16 7.5S13.985 12 11.5 12H4V3z" fill="white"/>
-                                <path d="M4 12l5 5" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <span className="block font-heading font-black text-[14px] text-[var(--text)] tracking-tight leading-none">{cfg.hero?.shortTitle || "ismaillabs"}</span>
-                            <span className="block font-body text-[9px] text-gray-400 uppercase tracking-[0.18em]">agency</span>
-                        </div>
-                    </Link>
-
-                    <nav className="hidden md:flex items-center gap-7">
-                        {["About", "Skills", "Work", "Contact"].map(item => (
-                            <a key={item} href={`#${item.toLowerCase()}`}
-                               className="font-body font-medium text-sm text-gray-500 hover:text-[#4353FF] transition-colors">
-                                {item}
-                            </a>
-                        ))}
-                    </nav>
-
-                    <div className="flex items-center gap-3">
-                        <ThemeToggle />
-                        <a
-                            href="#contact"
-                            className="inline-flex items-center gap-2 bg-[#4353FF] text-white font-body font-semibold text-sm px-5 py-2.5 hover:bg-[#0f0f0f] transition-colors"
-                        >
-                            Hire Me
-                        </a>
-                    </div>
-                </div>
-            </header>
 
             {/* ── HERO ── */}
             <section id="about" className="min-h-screen flex items-center pt-24 pb-16 relative overflow-hidden" ref={heroRef.ref}>
@@ -206,9 +177,9 @@ export default function PortfolioPage() {
                         <div className={`transition-all duration-700 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
                             <h1 className="font-heading font-black text-[var(--text)] uppercase leading-[0.9] tracking-tight mb-6"
                                 style={{ fontSize: "clamp(3rem, 7vw, 6rem)" }}>
-                                {word1}<br />
-                                <span className="text-[#4353FF]">{word2}</span><br />
-                                {word3}
+                                {word1}
+                                {word2 && <><br /><span className="text-[#4353FF]">{word2}</span></>}
+                                {word3 && <><br />{word3}</>}
                             </h1>
                         </div>
 
@@ -227,6 +198,7 @@ export default function PortfolioPage() {
                         </div>
 
                         <div className={`flex items-center gap-4 flex-wrap transition-all duration-700 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+                            {projects.length > 0 && (
                             <a href="#work"
                                className="inline-flex items-center gap-3 bg-[#4353FF] text-white font-body font-semibold px-7 py-4 hover:bg-[#0f0f0f] transition-all duration-300 group relative overflow-hidden">
                                 <span className="absolute inset-0 bg-[#0f0f0f] translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-400" />
@@ -237,23 +209,27 @@ export default function PortfolioPage() {
                   </svg>
                 </span>
                             </a>
-                            <a href={cfg.hero?.resumeUrl || "#"}
+                            )}
+                            {hasResumePdf && (
+                            <a href={resumeUrl}
                                className="inline-flex items-center gap-2 border-2 border-[var(--text)] text-[var(--text)] font-body font-semibold px-6 py-3.5 hover:bg-[var(--text)] hover:text-white transition-all duration-300 text-sm">
                                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                                     <path d="M7 1v8M4 6l3 3 3-3M2 10v1a1 1 0 001 1h8a1 1 0 001-1v-1" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                                 </svg>
                                 Download CV
                             </a>
+                            )}
                         </div>
                     </div>
 
-                    {/* Right — photo + stats */}
+                    {/* Right — photo. Only rendered when a profile image has been uploaded. */}
+                    {cfg.hero?.image && (
                     <div className={`relative transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"}`}>
                         {/* Main photo frame */}
                         <div className="relative mx-auto w-full max-w-[420px]">
                             <div className="aspect-[3/4] overflow-hidden bg-gray-200 relative group cursor-pointer">
                                 <img
-                                    src={cfg.hero?.image || "https://html.ravextheme.com/redox/light/assets/imgs/web-development/team-1.webp"}
+                                    src={cfg.hero.image}
                                     alt="Hero Profile"
                                     className={`w-full h-full object-cover transition-all duration-700 ${cfg.hero?.image3d ? 'group-hover:opacity-0' : ''}`}
                                 />
@@ -267,26 +243,16 @@ export default function PortfolioPage() {
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#4353FF]/30 to-transparent pointer-events-none" />
                             </div>
 
-                            {/* Experience badge */}
-                            <div className="absolute -left-8 top-12 bg-[#4353FF] text-white p-4 shadow-xl">
-                                <p className="font-heading font-black text-3xl leading-none"><Counter target={cfg.hero?.yearsExp || 0} suffix="+" /></p>
-                                <p className="font-body text-xs mt-1 opacity-90">Years Exp.</p>
-                            </div>
-
-                            {/* Projects badge */}
-                            <div className="absolute -right-6 bottom-16 bg-white border border-gray-100 p-4 shadow-xl">
-                                <p className="font-heading font-black text-3xl leading-none text-[#4353FF]"><Counter target={cfg.hero?.projectsCount || 0} suffix="+" /></p>
-                                <p className="font-body text-xs text-gray-500 mt-1">Projects</p>
-                            </div>
-
                             {/* Blue accent bar */}
                             <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#4353FF]" />
                         </div>
                     </div>
+                    )}
                 </div>
             </section>
 
-            {/* ── SKILLS ── */}
+            {/* ── SKILLS ── plain text list; the section is hidden when there is nothing to list */}
+            {(validSkills.length > 0 || otherSkills.length > 0) && (
             <section id="skills" className="py-20 bg-[var(--app-bg)]" ref={skillsRef.ref}>
                 <div className="max-w-[1300px] mx-auto px-6 md:px-10">
                     <div className={`mb-12 transition-all duration-700 ${skillsRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
@@ -299,47 +265,30 @@ export default function PortfolioPage() {
                         </h2>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-x-16 gap-y-8">
-                        {validSkills.map((skill: {name: string, level: number}, i: number) => (
-                            <div
-                                key={skill.name}
-                                className={`transition-all duration-700 ${skillsRef.inView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"}`}
-                                style={{ transitionDelay: `${i * 80}ms` }}
-                            >
-                                <div className="flex justify-between items-center mb-2">
-                                    <span className="font-heading font-bold text-[var(--text)] text-sm">{skill.name}</span>
-                                    <span className="font-body text-xs text-[#4353FF] font-semibold">{skill.level}%</span>
-                                </div>
-                                <div className="h-1.5 bg-gray-100 relative overflow-hidden">
-                                    <div
-                                        className="absolute top-0 left-0 h-full bg-[#4353FF] transition-all duration-1000 ease-out"
-                                        style={{
-                                            width: skillsRef.inView ? `${skill.level}%` : "0%",
-                                            transitionDelay: `${200 + i * 80}ms`,
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                    {validSkills.length > 0 && (
+                        <ul className={`flex flex-wrap gap-x-10 gap-y-3 transition-all duration-700 ${skillsRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+                            {validSkills.map((skill: { name: string }) => (
+                                <li key={skill.name} className="font-heading font-bold text-[var(--text)] text-base">{skill.name}</li>
+                            ))}
+                        </ul>
+                    )}
 
-                    {/* Tech stack chips */}
-                    {cfg.otherSkills && cfg.otherSkills.length > 0 && (
-                        <div className={`mt-14 pt-10 border-t border-gray-100 transition-all duration-700 delay-500 ${skillsRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+                    {otherSkills.length > 0 && (
+                        <div className={`${validSkills.length > 0 ? "mt-14 pt-10 border-t border-[var(--border)]" : ""} transition-all duration-700 delay-500 ${skillsRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
                             <p className="font-body text-xs text-gray-400 uppercase tracking-widest mb-5">Also familiar with</p>
-                            <div className="flex flex-wrap gap-2">
-                                {cfg.otherSkills.map((tech: string) => (
-                                    <span key={tech} className="font-body text-xs text-gray-500 border border-gray-200 px-3 py-1.5 hover:border-[#4353FF] hover:text-[#4353FF] transition-colors cursor-default">
-                                    {tech}
-                                    </span>
+                            <ul className="flex flex-wrap gap-x-8 gap-y-2">
+                                {otherSkills.map((tech: string) => (
+                                    <li key={tech} className="font-body text-sm text-gray-500">{tech}</li>
                                 ))}
-                            </div>
+                            </ul>
                         </div>
                     )}
                 </div>
             </section>
+            )}
 
-            {/* ── WORK EXPERIENCE ── */}
+            {/* ── WORK EXPERIENCE ── hidden when there are no entries */}
+            {validExperiences.length > 0 && (
             <section className="py-20 bg-[var(--app-bg)]" ref={expRef.ref}>
                 <div className="max-w-[1300px] mx-auto px-6 md:px-10">
                     <div className={`mb-12 transition-all duration-700 ${expRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
@@ -393,8 +342,10 @@ export default function PortfolioPage() {
                     </div>
                 </div>
             </section>
+            )}
 
-            {/* ── PROJECTS ── */}
+            {/* ── PROJECTS ── hidden when there are no published projects */}
+            {projects.length > 0 && (
             <section id="work" className="py-20 bg-[var(--app-bg)]" ref={projRef.ref}>
                 <div className="max-w-[1300px] mx-auto px-6 md:px-10">
                     <div className={`flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10 transition-all duration-700 ${projRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
@@ -432,8 +383,10 @@ export default function PortfolioPage() {
                     </div>
                 </div>
             </section>
+            )}
 
-            {/* ── EDUCATION ── */}
+            {/* ── EDUCATION ── hidden when there are no entries */}
+            {validEducation.length > 0 && (
             <section className="py-20 bg-[var(--app-bg)]" ref={eduRef.ref}>
                 <div className="max-w-[1300px] mx-auto px-6 md:px-10">
                     <div className={`mb-12 transition-all duration-700 ${eduRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
@@ -472,6 +425,7 @@ export default function PortfolioPage() {
                     </div>
                 </div>
             </section>
+            )}
 
             {/* ── CONTACT CTA ── */}
             <section id="contact" className="py-24 bg-[#0f0f0f] relative overflow-hidden" ref={ctaRef.ref}>
@@ -489,10 +443,10 @@ export default function PortfolioPage() {
                         I'm currently open to new opportunities. Whether it's a full product or just a quick question, my inbox is always open.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <a href="mailto:hello@ismaillabs.com"
+                        <a href={`mailto:${site.email}`}
                            className="inline-flex items-center justify-center gap-3 bg-[#4353FF] text-white font-body font-semibold px-8 py-4 hover:bg-white hover:text-[#0f0f0f] transition-all duration-300 group relative overflow-hidden">
                             <span className="absolute inset-0 bg-white translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-400" />
-                            <span className="relative group-hover:text-[#0f0f0f]">hello@ismaillabs.com</span>
+                            <span className="relative group-hover:text-[#0f0f0f]">{site.email}</span>
                         </a>
                         <Link href="/"
                               className="inline-flex items-center justify-center gap-2 border-2 border-white/20 text-white font-body font-semibold px-7 py-4 hover:border-white hover:bg-white hover:text-[#0f0f0f] transition-all duration-300 text-sm">
@@ -500,12 +454,14 @@ export default function PortfolioPage() {
                         </Link>
                     </div>
 
-                    {/* Social row */}
-                    <div className="flex items-center justify-center gap-6 mt-14 pt-10 border-t border-white/10">
-                        {["GitHub", "LinkedIn", "Twitter", "Dribbble"].map(s => (
-                            <a key={s} href="#" className="font-body text-xs text-gray-500 uppercase tracking-widest hover:text-[#4353FF] transition-colors">{s}</a>
-                        ))}
-                    </div>
+                    {/* Social row: real profile links from lib/site.ts; hidden while there are none */}
+                    {site.socials.length > 0 && (
+                        <div className="flex items-center justify-center gap-6 mt-14 pt-10 border-t border-white/10">
+                            {site.socials.map(social => (
+                                <a key={social.href} href={social.href} target="_blank" rel="noopener noreferrer" className="font-body text-xs text-gray-500 uppercase tracking-widest hover:text-[#4353FF] transition-colors">{social.label}</a>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </section>
         </main>

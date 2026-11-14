@@ -1,36 +1,28 @@
-import { db, blogPosts, users, blogCategories } from "@/db";
-import { eq, desc } from "drizzle-orm";
 import Link from "next/link";
 import { unstable_noStore as noStore } from 'next/cache';
 import DatabaseErrorModal from "./DatabaseErrorModal";
+import { getLatestPosts, MIN_POSTS_TO_SHOW_BLOG } from "@/lib/queries";
 
 export default async function Blog() {
   noStore();
-  
-  let posts: any[] = [];
+
+  let posts: Awaited<ReturnType<typeof getLatestPosts>> = [];
   let dbError = null;
 
   try {
-      posts = await db
-          .select({
-              post: blogPosts,
-              author: { name: users.name },
-              category: { name: blogCategories.name }
-          })
-          .from(blogPosts)
-          .leftJoin(users, eq(users.id, blogPosts.authorId))
-          .leftJoin(blogCategories, eq(blogCategories.id, blogPosts.categoryId))
-          .where(eq(blogPosts.published, true))
-          .orderBy(desc(blogPosts.createdAt))
-          .limit(3);
+      posts = await getLatestPosts();
   } catch (err: any) {
       console.error("Blog component fetch error:", err);
       dbError = "Failed to load blog posts due to a database connection error.";
   }
 
+  if (dbError) return <DatabaseErrorModal error={dbError} />;
+
+  // The section stays off the home page until there are enough posts to fill it.
+  if (posts.length < MIN_POSTS_TO_SHOW_BLOG) return null;
+
   return (
     <section className="py-28 bg-[var(--app-bg)]">
-      {dbError && <DatabaseErrorModal error={dbError} />}
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-14">
           <div className="inline-flex items-center gap-2 bg-[#4353FF]/10 rounded-full px-4 py-2 mb-4">
@@ -49,7 +41,7 @@ export default async function Blog() {
                 {post.image ? (
                   <img
                     src={post.image}
-                    alt={post.title}
+                    alt=""
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 ) : (

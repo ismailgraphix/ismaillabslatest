@@ -1,67 +1,8 @@
 "use client";
 // components/Hero.tsx
-import { useEffect, useState, useRef } from "react";
-
-// ── Scrolling ticker ──────────────────────────────────────────────────────
-const SERVICES = [
-    "Web Design", "Brand Identity", "Web Development",
-    "UI / UX Design", "Mobile Apps", "Digital Strategy",
-    "E-commerce", "Creative Direction",
-];
-
-function Ticker() {
-    const items = [...SERVICES, ...SERVICES]; // duplicate for seamless loop
-    return (
-        <div className="w-full overflow-hidden border-t border-[#0f0f0f]/[0.08]">
-            <div className="flex items-center py-4 whitespace-nowrap">
-                <div
-                    className="flex items-center gap-14 shrink-0"
-                    style={{ animation: "ticker 30s linear infinite" }}
-                >
-                    {items.map((s, i) => (
-                        <span key={i} className="inline-flex items-center gap-4 font-body text-[11px] text-[var(--text-faint)] uppercase tracking-[0.22em]">
-                            <span className="w-1 h-1 rounded-full bg-[#4353FF] shrink-0" />
-                            {s}
-                        </span>
-                    ))}
-                </div>
-            </div>
-        </div>
-    );
-}
-
-// ── Count-up on scroll into view ─────────────────────────────────────────
-function Counter({ end, suffix = "" }: { end: number; suffix?: string }) {
-    const [val, setVal] = useState(0);
-    const elRef = useRef<HTMLSpanElement>(null);
-    const ran = useRef(false);
-
-    useEffect(() => {
-        const el = elRef.current;
-        if (!el) return;
-        const obs = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting && !ran.current) {
-                ran.current = true;
-                let start = 0;
-                const steps = 48;
-                const ms = 1200 / steps;
-                const timer = setInterval(() => {
-                    start++;
-                    setVal(Math.round((start / steps) * end));
-                    if (start >= steps) clearInterval(timer);
-                }, ms);
-            }
-        }, { threshold: 0.5 });
-        obs.observe(el);
-        return () => obs.disconnect();
-    }, [end]);
-
-    return (
-        <span ref={elRef}>
-            {val}{suffix}
-        </span>
-    );
-}
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { site } from "@/lib/site";
 
 export default function Hero() {
     const [loaded, setLoaded] = useState(false);
@@ -80,10 +21,6 @@ export default function Hero() {
     return (
         <>
             <style>{`
-                @keyframes ticker {
-                    from { transform: translateX(0); }
-                    to   { transform: translateX(-50%); }
-                }
                 @keyframes fadeUp {
                     from { opacity: 0; transform: translateY(24px); }
                     to   { opacity: 1; transform: translateY(0); }
@@ -274,16 +211,16 @@ export default function Hero() {
                     </div>
 
                     {/* ── Bottom row ── */}
-                    <div
-                        className="flex flex-col md:flex-row items-start md:items-end justify-between gap-10"
-                        style={{
-                            opacity: loaded ? 1 : 0,
-                            transform: loaded ? "translateY(0)" : "translateY(20px)",
-                            transition: "all 0.8s ease 0.6s",
-                        }}
-                    >
+                    <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-10">
                         {/* Description + CTAs */}
-                        <div className="max-w-[400px]">
+                        <div
+                            className="max-w-[400px]"
+                            style={{
+                                opacity: loaded ? 1 : 0,
+                                transform: loaded ? "translateY(0)" : "translateY(20px)",
+                                transition: "all 0.8s ease 0.6s",
+                            }}
+                        >
                             <p
                                 className="font-body text-[var(--text-soft)] leading-relaxed"
                                 style={{ fontSize: "clamp(0.88rem, 1.15vw, 1rem)" }}
@@ -294,8 +231,8 @@ export default function Hero() {
                             </p>
 
                             <div className="flex items-center gap-4 mt-8">
-                                <a
-                                    href="#about"
+                                <Link
+                                    href="/portfolio#work"
                                     className="inline-flex items-center gap-2.5 bg-[#4353FF] text-white font-body font-semibold text-[13px] px-6 py-3.5 rounded-full border border-[#4353FF] hover:bg-[var(--text)] hover:text-[var(--surface)] transition-all duration-300 hover:-translate-y-px group"
                                 >
                                     See Our Work
@@ -303,7 +240,7 @@ export default function Hero() {
                                         className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 text-inherit">
                                         <path d="M1 11L11 1M11 1H4M11 1v7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
                                     </svg>
-                                </a>
+                                </Link>
                                 <a
                                     href="#contact"
                                     className="inline-flex items-center gap-2 font-body font-medium text-[13px] text-[var(--text)] border-[1.5px] border-[var(--text)] px-6 py-3.5 rounded-full hover:border-[#4353FF] hover:text-[#4353FF] transition-all duration-300 hover:-translate-y-px group"
@@ -317,39 +254,27 @@ export default function Hero() {
                             </div>
                         </div>
 
-                        {/* Stats */}
-                        <div className="flex items-end gap-10 md:gap-16 shrink-0">
-                            {[
-                                { end: 50, suffix: "+", label: "Projects\ncompleted" },
-                                { end: 98, suffix: "%", label: "Client\nsatisfaction" },
-                                { end: 4, suffix: "+", label: "Years of\nexperience" },
-                            ].map((s) => (
-                                <div key={s.label} className="text-right">
-                                    <p
-                                        className="font-heading font-black text-[var(--text)] tabular-nums"
-                                        style={{ fontSize: "clamp(2rem, 3.8vw, 3.5rem)" }}
-                                    >
-                                        <Counter end={s.end} suffix={s.suffix} />
-                                    </p>
-                                    <p className="font-body text-[var(--text-faint)] text-[10px] uppercase tracking-[0.15em] leading-snug mt-0.5 whitespace-pre-line">
-                                        {s.label}
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
+                        {/* Stats: confirmed numbers from lib/site.ts, as static text. Hidden while there are none. */}
+                        {site.stats.length > 0 && (
+                            <div className="flex items-end gap-10 md:gap-16 shrink-0">
+                                {site.stats.map((s) => (
+                                    <div key={s.label} className="text-right">
+                                        <p
+                                            className="font-heading font-black text-[var(--text)] tabular-nums"
+                                            style={{ fontSize: "clamp(2rem, 3.8vw, 3.5rem)" }}
+                                        >
+                                            {s.value}
+                                        </p>
+                                        <p className="font-body text-[var(--text-faint)] text-[10px] uppercase tracking-[0.15em] leading-snug mt-0.5 whitespace-pre-line">
+                                            {s.label}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
 
-                {/* ── Ticker strip at bottom ── */}
-                <div
-                    className="relative z-10"
-                    style={{
-                        opacity: loaded ? 1 : 0,
-                        transition: "opacity 0.8s ease 0.9s",
-                    }}
-                >
-                    <Ticker />
-                </div>
             </section>
         </>
     );

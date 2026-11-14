@@ -53,7 +53,7 @@ export default function PortfolioNavbar({ shortTitle }: { shortTitle?: string })
                     <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
                         <div className="leading-[1.15]">
                             <span className="block font-heading font-black text-[15px] text-[var(--text)] tracking-tight">
-                                {shortTitle || "Ismaillabs"}
+                                {shortTitle || "Ismail Labs"}
                             </span>
                             <span className="block font-body text-[9px] text-gray-400 uppercase tracking-[0.22em]">
                                 digital agency

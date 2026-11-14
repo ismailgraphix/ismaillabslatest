@@ -30,6 +30,12 @@ html {
   scroll-behavior: smooth;
 }
 
+/* The site header is fixed, so an anchor jump (#about, #services, #work ...)
+   would otherwise park the section's top edge underneath it. */
+section[id] {
+  scroll-margin-top: 5rem;
+}
+
 body {
   font-family: 'Montserrat', sans-serif;
   color: var(--text);

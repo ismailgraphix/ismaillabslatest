@@ -29,6 +29,8 @@ interface ServiceData {
 export default function Services({ services = [] }: { services?: ServiceData[] }) {
     const { ref, inView } = useInView(0.1);
     const [showAll, setShowAll] = useState(false);
+    // Ids of services whose image URL failed to load; they get the fallback too.
+    const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
     const visible = showAll ? services : services.slice(0, 4);
 
     return (
@@ -107,16 +109,29 @@ export default function Services({ services = [] }: { services?: ServiceData[] }
                                             {s.title}
                                         </h3>
 
-                                        {/* Image — theme-safe placeholder, no blue overlay */}
+                                        {/* Image. Decorative (the title sits right above it), so the alt is empty.
+                                            A service with no image, or one whose image fails to load, gets a
+                                            tinted panel with its own icon instead of an empty box. */}
                                         <div className="relative w-full overflow-hidden rounded-xl" style={{ aspectRatio: "16/9" }}>
-                                            {s.image ? (
+                                            {s.image && !brokenImages[s.id] ? (
                                                 <img
                                                     src={s.image}
-                                                    alt={s.title}
+                                                    alt=""
+                                                    onError={() => setBrokenImages(prev => ({ ...prev, [s.id]: true }))}
                                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                                 />
                                             ) : (
-                                                <div className="w-full h-full bg-[var(--surface)]" />
+                                                <div
+                                                    className="w-full h-full flex items-center justify-center bg-[#4353FF]/[0.06] border border-[#4353FF]/10 rounded-xl"
+                                                    aria-hidden="true"
+                                                >
+                                                    {s.icon && (
+                                                        <div
+                                                            className="w-16 h-16 text-[#4353FF]/40 [&_svg]:w-full [&_svg]:h-full"
+                                                            dangerouslySetInnerHTML={{ __html: s.icon }}
+                                                        />
+                                                    )}
+                                                </div>
                                             )}
                                         </div>
 

@@ -1,5 +1,9 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { site, type Testimonial } from "@/lib/site";
+
+// The section stays off the page until there are this many real quotes.
+const MIN_QUOTES = 2;
 
 function useInView(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null);
@@ -15,34 +19,14 @@ function useInView(threshold = 0.15) {
   return { ref, inView };
 }
 
-const testimonials = [
-  {
-    name: "Daniel Joseph",
-    role: "Content Writer",
-    company: "CreativeCo",
-    img: "https://html.ravextheme.com/redox/light/assets/imgs/web-development/testi-author-1.webp",
-    quote: "Working with this team has been an absolute game-changer. Their attention to detail and creative approach completely transformed our digital presence.",
-    rating: 5,
-  },
-  {
-    name: "Victoria Madison",
-    role: "Lead Developer",
-    company: "TechFlow Inc.",
-    img: "https://html.ravextheme.com/redox/light/assets/imgs/web-development/testi-author-2.webp",
-    quote: "Delivered beyond our expectations. Their strategic thinking and technical expertise helped us hit our goals in record time. Would hire again without hesitation.",
-    rating: 5,
-  },
-  {
-    name: "Nicholas Thomas",
-    role: "Marketing Director",
-    company: "BrandLab",
-    img: "https://html.ravextheme.com/redox/light/assets/imgs/web-development/testi-author-3.webp",
-    quote: "Exceptional work, exceptional people. They bring creative vision and technical precision together in a way I've rarely seen. Highly recommended.",
-    rating: 5,
-  },
-];
-
+// Quotes come from lib/site.ts. The sample quotes, star ratings and template
+// portraits that used to be hardcoded here have been removed.
 export default function Testimonials() {
+  if (site.testimonials.length < MIN_QUOTES) return null;
+  return <TestimonialCards testimonials={site.testimonials} />;
+}
+
+function TestimonialCards({ testimonials }: { testimonials: Testimonial[] }) {
   const { ref, inView } = useInView(0.1);
   const [active, setActive] = useState(0);
 
@@ -50,7 +34,7 @@ export default function Testimonials() {
   useEffect(() => {
     const t = setInterval(() => setActive(p => (p + 1) % testimonials.length), 4500);
     return () => clearInterval(t);
-  }, []);
+  }, [testimonials.length]);
 
   return (
       <section className="bg-[var(--app-bg)] py-24 relative overflow-hidden" ref={ref}>
@@ -96,7 +80,7 @@ export default function Testimonials() {
           </div>
 
           {/* Cards */}
-          <div className="grid md:grid-cols-3 gap-5">
+          <div className={`grid gap-5 ${testimonials.length === 2 ? "md:grid-cols-2" : "md:grid-cols-3"}`}>
             {testimonials.map((t, i) => (
                 <div
                     key={i}
@@ -122,18 +106,6 @@ export default function Testimonials() {
                     "
                   </div>
 
-                  {/* Stars */}
-                  <div className="flex gap-1 mb-5">
-                    {Array(t.rating).fill(0).map((_, s) => (
-                        <svg key={s} width="14" height="14" viewBox="0 0 14 14" fill="none">
-                          <path
-                              d="M7 1l1.6 3.5H12l-2.8 2.2 1.1 3.8L7 8.5 3.7 10.5l1.1-3.8L2 4.5h3.4L7 1z"
-                              fill={active === i ? "rgba(255,255,255,0.9)" : "#4353FF"}
-                          />
-                        </svg>
-                    ))}
-                  </div>
-
                   {/* Quote text */}
                   <p className={`font-body leading-relaxed text-[15px] mb-8 relative z-10 transition-colors duration-300 ${
                       active === i ? "text-white/90" : "text-gray-500"
@@ -142,20 +114,13 @@ export default function Testimonials() {
                   </p>
 
                   {/* Author */}
-                  <div className="flex items-center gap-3 relative z-10">
-                    <div className={`w-12 h-12 rounded-full overflow-hidden flex-shrink-0 ring-2 transition-all duration-300 ${
-                        active === i ? "ring-white/40" : "ring-gray-100"
-                    }`}>
-                      <img src={t.img} alt={t.name} className="w-full h-full object-cover" />
-                    </div>
-                    <div>
-                      <p className={`font-heading font-black text-[15px] transition-colors duration-300 ${
-                          active === i ? "text-white" : "text-[var(--text)]"
-                      }`}>{t.name}</p>
-                      <p className={`font-body text-xs mt-0.5 transition-colors duration-300 ${
-                          active === i ? "text-white/60" : "text-gray-400"
-                      }`}>{t.role} · {t.company}</p>
-                    </div>
+                  <div className="relative z-10">
+                    <p className={`font-heading font-black text-[15px] transition-colors duration-300 ${
+                        active === i ? "text-white" : "text-[var(--text)]"
+                    }`}>{t.name}</p>
+                    <p className={`font-body text-xs mt-0.5 transition-colors duration-300 ${
+                        active === i ? "text-white/60" : "text-gray-400"
+                    }`}>{t.role} · {t.organisation}</p>
                   </div>
 
                   {/* Bottom line for inactive cards */}

@@ -13,7 +13,10 @@ const navLinks = [
     { label: "Contact", href: "#contact" },
 ];
 
-export default function Navbar() {
+// `showBlog` is false until enough posts are published (see lib/queries.ts),
+// so the header never links to an empty blog.
+export default function Navbar({ showBlog = false }: { showBlog?: boolean }) {
+    const links = showBlog ? navLinks : navLinks.filter((link) => link.href !== "/blog");
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const pathname = usePathname();
@@ -68,7 +71,7 @@ export default function Navbar() {
                     <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
                         <div className="leading-[1.15]">
                             <span className="block font-heading font-black text-[15px] text-[var(--text)] tracking-tight">
-                                {"<ismail labs />"}
+                                Ismail Labs
                             </span>
                             <span className="block font-body text-[9px] text-gray-400 uppercase tracking-[0.22em]">
                                 digital agency
@@ -78,7 +81,7 @@ export default function Navbar() {
 
                     {/* ── Desktop nav — absolutely centered ── */}
                     <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-2 rounded-full px-2.5 py-2 bg-[var(--surface)]/70 backdrop-blur-xl border border-[var(--border)] shadow-[0_10px_28px_rgba(8,8,20,0.08)]">
-                        {navLinks.map((link) => (
+                        {links.map((link) => (
                             <Link
                                 key={link.label}
                                 href={toHref(link.href)}
@@ -137,7 +140,7 @@ export default function Navbar() {
                         } bg-[var(--surface)] border-t border-[var(--border)] mt-3 pb-5`}
                 >
                     <div className="px-6 py-5 flex flex-col gap-1">
-                        {navLinks.map((link, i) => (
+                        {links.map((link, i) => (
                             <Link
                                 key={link.label}
                                 href={toHref(link.href)}
