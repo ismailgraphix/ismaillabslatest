@@ -75,26 +75,27 @@ export default function Sidebar({
     }
 
     return (
-        <aside className={`h-screen sticky top-0 flex flex-col bg-[#0d0d0d] border-r border-white/[0.06] transition-all duration-300 flex-shrink-0 ${collapsed ? "w-[56px]" : "w-[220px]"}`}>
+        <aside className={`h-screen sticky top-0 flex flex-col bg-[var(--surface)] border-r border-[var(--border)] transition-all duration-300 flex-shrink-0 ${collapsed ? "w-[56px]" : "w-[220px]"}`}>
 
             {/* Logo */}
-            <div className="flex items-center justify-between px-4 py-4 border-b border-white/[0.06] min-h-[60px]">
+            <div className="flex items-center justify-between px-4 py-4 border-b border-[var(--border)] min-h-[60px]">
                 {!collapsed && (
                     <div className="flex items-center gap-2.5 overflow-hidden">
-                        <div className="w-7 h-7 bg-[#4353FF] flex items-center justify-center flex-shrink-0">
-                            <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+                        <div className="relative w-7 h-7 rounded-full bg-[#4353FF] flex items-center justify-center flex-shrink-0">
+                            <span className="absolute inline-flex h-full w-full rounded-full bg-[#4353FF] opacity-50" style={{ animation: "pulseDot 2.4s ease-in-out infinite" }} />
+                            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" className="relative">
                                 <path d="M4 3h7.5C13.985 3 16 5.015 16 7.5S13.985 12 11.5 12H4V3z" fill="white" />
                                 <path d="M4 12l5 5" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
                             </svg>
                         </div>
                         <div className="min-w-0">
-                            <p className="font-heading font-black text-white text-[13px] tracking-tight leading-none truncate">ismaillabs</p>
-                            <p className="font-body text-[9px] text-gray-600 uppercase tracking-[0.15em] mt-0.5">admin</p>
+                            <p className="font-heading font-black text-[var(--text)] text-[13px] tracking-tight leading-none truncate">ismaillabs</p>
+                            <p className="font-body text-[9px] text-[var(--text-faint)] uppercase tracking-[0.15em] mt-0.5">admin</p>
                         </div>
                     </div>
                 )}
                 <button onClick={() => setCollapsed(!collapsed)}
-                    className={`w-6 h-6 flex items-center justify-center text-gray-600 hover:text-white hover:bg-white/5 rounded transition-colors flex-shrink-0 ${collapsed ? "mx-auto" : ""}`}>
+                    className={`w-6 h-6 flex items-center justify-center text-[var(--text-faint)] hover:text-[var(--text)] hover:bg-[var(--surface-2)] rounded-full transition-colors flex-shrink-0 ${collapsed ? "mx-auto" : ""}`}>
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                         <path d={collapsed ? "M4 2l4 4-4 4" : "M8 2L4 6l4 4"} stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
@@ -108,7 +109,7 @@ export default function Sidebar({
                         const active = pathname === item.href || pathname.startsWith(item.href + "/");
                         return (
                             <Link key={item.href} href={item.href}
-                                className={`relative flex items-center gap-2.5 px-3 py-2.5 text-sm transition-all duration-150 group rounded-sm ${active ? "bg-[#4353FF] text-white" : "text-gray-400 hover:text-white hover:bg-white/5"
+                                className={`relative flex items-center gap-2.5 px-3 py-2.5 text-sm transition-all duration-150 group rounded-full ${active ? "bg-[#4353FF] text-white" : "text-[var(--text-faint)] hover:text-[var(--text)] hover:bg-[var(--surface-2)]"
                                     }`}>
                                 <span className="flex-shrink-0">{ICONS[item.icon]}</span>
                                 {!collapsed && (
@@ -122,7 +123,7 @@ export default function Sidebar({
                                 )}
                                 {/* Collapsed tooltip */}
                                 {collapsed && (
-                                    <div className="absolute left-12 top-1/2 -translate-y-1/2 bg-[#1a1a1a] border border-white/10 text-white text-xs px-2.5 py-1.5 whitespace-nowrap rounded-sm opacity-0 pointer-events-none group-hover:opacity-100 z-50 transition-opacity shadow-xl">
+                                    <div className="absolute left-12 top-1/2 -translate-y-1/2 bg-[var(--surface)] border border-[var(--border)] text-[var(--text)] text-xs px-2.5 py-1.5 whitespace-nowrap rounded-full opacity-0 pointer-events-none group-hover:opacity-100 z-50 transition-opacity shadow-xl">
                                         {item.label}
                                         {item.badge && unreadCount > 0 && (
                                             <span className="ml-1.5 bg-[#4353FF] text-white text-[9px] px-1.5 py-0.5 rounded-full">{unreadCount}</span>
@@ -137,8 +138,8 @@ export default function Sidebar({
 
             {/* Role badge */}
             {!collapsed && (
-                <div className="px-4 py-2 border-t border-white/[0.04]">
-                    <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-body font-bold uppercase tracking-wider ${superAdmin ? "text-yellow-400 bg-yellow-400/10" : "text-[#4353FF] bg-[#4353FF]/10"
+                <div className="px-4 py-2 border-t border-[var(--border)]">
+                    <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-body font-bold uppercase tracking-wider ${superAdmin ? "text-yellow-400 bg-yellow-400/10" : "text-[#4353FF] bg-[#4353FF]/10"
                         }`}>
                         <div className={`w-1.5 h-1.5 rounded-full ${superAdmin ? "bg-yellow-400" : "bg-[#4353FF]"}`} />
                         {userRole.replace("_", " ")}
@@ -147,8 +148,8 @@ export default function Sidebar({
             )}
 
             {/* User */}
-            <div className="border-t border-white/[0.06] p-3 group relative">
-                <Link href="/admin/profile" className={`flex items-center gap-2.5 hover:bg-white/5 p-1 rounded-md transition-colors ${collapsed ? "justify-center" : ""}`}>
+            <div className="border-t border-[var(--border)] p-3 group relative">
+                <Link href="/admin/profile" className={`flex items-center gap-2.5 hover:bg-[var(--surface-2)] p-1 rounded-full transition-colors ${collapsed ? "justify-center" : ""}`}>
                     {userAvatar ? (
                         <img src={userAvatar} alt="Avatar" className={`rounded-full object-cover border border-[#4353FF]/30 flex-shrink-0 ${collapsed ? "w-8 h-8" : "w-7 h-7"}`} />
                     ) : (
@@ -159,15 +160,15 @@ export default function Sidebar({
                     {!collapsed && (
                         <>
                             <div className="flex-1 min-w-0">
-                                <p className="font-heading font-bold text-white text-xs truncate leading-none group-hover:text-[#4353FF] transition-colors">{userName}</p>
-                                <p className="font-body text-[10px] text-gray-600 truncate mt-0.5">{userEmail}</p>
+                                <p className="font-heading font-bold text-[var(--text)] text-xs truncate leading-none group-hover:text-[#4353FF] transition-colors">{userName}</p>
+                                <p className="font-body text-[10px] text-[var(--text-faint)] truncate mt-0.5">{userEmail}</p>
                             </div>
                         </>
                     )}
                 </Link>
                 {!collapsed && (
                     <button onClick={handleLogout} title="Sign out"
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-700 hover:text-red-400 transition-colors flex-shrink-0 p-2">
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-faint)] hover:text-red-400 transition-colors flex-shrink-0 p-2">
                         <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
                             <path d="M5 1H2a1 1 0 00-1 1v10a1 1 0 001 1h3M9 10l3-3-3-3M12 7H5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>

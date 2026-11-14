@@ -130,12 +130,12 @@ export default function PersonalPortfolioAdmin() {
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold">Personal Portfolio Configurator</h1>
-                    <p className="text-gray-500 text-sm mt-1">Manage the details matching the /portfolio public view.</p>
+                    <p className="text-[var(--text-faint)] text-sm mt-1">Manage the details matching the /portfolio public view.</p>
                 </div>
                 <button
                     onClick={handleSave}
                     disabled={saving}
-                    className="flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-md hover:bg-gray-800 disabled:opacity-50"
+                    className="flex items-center gap-2 bg-black text-[var(--text)] px-5 py-2.5 rounded-md hover:bg-gray-800 disabled:opacity-50"
                 >
                     <Save size={18} />
                     {saving ? "Saving..." : "Save Settings"}
@@ -174,11 +174,11 @@ export default function PersonalPortfolioAdmin() {
                                         </div>
                                     ) : (
                                         <div className="w-16 h-16 bg-gray-100 rounded flex items-center justify-center border border-dashed border-gray-300">
-                                            <ImageIcon size={24} className="text-gray-400" />
+                                            <ImageIcon size={24} className="text-[var(--text-soft)]" />
                                         </div>
                                     )}
                                     <div className="flex-1">
-                                        <p className="text-[10px] text-gray-500 mb-1">Normal</p>
+                                        <p className="text-[10px] text-[var(--text-faint)] mb-1">Normal</p>
                                         <input type="file" onChange={handleUpload} accept="image/*" className="text-xs w-full" />
                                         {uploadingImage && <p className="text-[10px] text-blue-500 mt-1">Uploading...</p>}
                                     </div>
@@ -191,11 +191,11 @@ export default function PersonalPortfolioAdmin() {
                                         </div>
                                     ) : (
                                         <div className="w-16 h-16 bg-gray-100 rounded flex items-center justify-center border border-dashed border-gray-300">
-                                            <ImageIcon size={24} className="text-gray-400" />
+                                            <ImageIcon size={24} className="text-[var(--text-soft)]" />
                                         </div>
                                     )}
                                     <div className="flex-1">
-                                        <p className="text-[10px] text-gray-500 mb-1">3D (Hover)</p>
+                                        <p className="text-[10px] text-[var(--text-faint)] mb-1">3D (Hover)</p>
                                         <input type="file" onChange={handleUpload3d} accept="image/*" className="text-xs w-full" />
                                         {uploadingImage3d && <p className="text-[10px] text-blue-500 mt-1">Uploading...</p>}
                                     </div>
@@ -227,7 +227,7 @@ export default function PersonalPortfolioAdmin() {
                         <div key={i} className="flex items-center gap-3 border p-3 rounded">
                             <input value={s.name} onChange={e => setSkills(all => { const cl = [...all]; cl[i].name = e.target.value; return cl; })} placeholder="React / Next.js" className={inputClass} />
                             <input type="number" min={0} max={100} value={s.level} onChange={e => setSkills(all => { const cl = [...all]; cl[i].level = Number(e.target.value); return cl; })} placeholder="92" className="w-20 p-2 border border-gray-200 rounded" />
-                            <strong className="text-gray-500">%</strong>
+                            <strong className="text-[var(--text-faint)]">%</strong>
                             <button onClick={() => setSkills(all => all.filter((_, idx) => idx !== i))} className="text-red-500 hover:text-red-700 p-2">
                                 <Trash2 size={16} />
                             </button>
@@ -255,27 +255,27 @@ export default function PersonalPortfolioAdmin() {
                                 <Trash2 size={18} />
                             </button>
                             <div className="grid md:grid-cols-3 gap-4 mb-3 pr-8">
-                                <div><label className="block text-xs text-gray-500 mb-1">Role</label>
+                                <div><label className="block text-xs text-[var(--text-faint)] mb-1">Role</label>
                                     <input value={exp.role} onChange={e => setExperiences(all => { const c = [...all]; c[i].role = e.target.value; return c; })} className={inputClass} placeholder="Senior Dev" />
                                 </div>
-                                <div><label className="block text-xs text-gray-500 mb-1">Company</label>
+                                <div><label className="block text-xs text-[var(--text-faint)] mb-1">Company</label>
                                     <input value={exp.company} onChange={e => setExperiences(all => { const c = [...all]; c[i].company = e.target.value; return c; })} className={inputClass} placeholder="TechFlow Inc." />
                                 </div>
-                                <div><label className="block text-xs text-gray-500 mb-1">Period</label>
+                                <div><label className="block text-xs text-[var(--text-faint)] mb-1">Period</label>
                                     <input value={exp.period} onChange={e => setExperiences(all => { const c = [...all]; c[i].period = e.target.value; return c; })} className={inputClass} placeholder="2022 — Present" />
                                 </div>
                             </div>
                             <div className="mb-3">
-                                <label className="block text-xs text-gray-500 mb-1">Description</label>
+                                <label className="block text-xs text-[var(--text-faint)] mb-1">Description</label>
                                 <textarea rows={2} value={exp.desc} onChange={e => setExperiences(all => { const c = [...all]; c[i].desc = e.target.value; return c; })} className={inputClass} placeholder="What did you do..." />
                             </div>
                             <div>
-                                <label className="block text-xs text-gray-500 mb-1">Tags (Comma separated)</label>
+                                <label className="block text-xs text-[var(--text-faint)] mb-1">Tags (Comma separated)</label>
                                 <input value={exp.tags?.join(", ")} onChange={e => setExperiences(all => { const c = [...all]; c[i].tags = e.target.value.split(",").map(t => t.trim()).filter(Boolean); return c; })} className={inputClass} placeholder="Next.js, TypeScript" />
                             </div>
                         </div>
                     ))}
-                    {experiences.length === 0 && <p className="text-gray-400 italic">No experiences added yet.</p>}
+                    {experiences.length === 0 && <p className="text-[var(--text-soft)] italic">No experiences added yet.</p>}
                 </div>
             </section>
 
@@ -294,24 +294,24 @@ export default function PersonalPortfolioAdmin() {
                                 <Trash2 size={16} />
                             </button>
                             <div className="space-y-3">
-                                <div><label className="block text-xs text-gray-500 mb-1">Degree</label>
+                                <div><label className="block text-xs text-[var(--text-faint)] mb-1">Degree</label>
                                     <input value={edu.degree} onChange={e => setEducation(all => { const c = [...all]; c[i].degree = e.target.value; return c; })} className={inputClass} placeholder="B.Sc. Computer Science" />
                                 </div>
                                 <div className="grid grid-cols-2 gap-2">
-                                    <div><label className="block text-xs text-gray-500 mb-1">School</label>
+                                    <div><label className="block text-xs text-[var(--text-faint)] mb-1">School</label>
                                         <input value={edu.school} onChange={e => setEducation(all => { const c = [...all]; c[i].school = e.target.value; return c; })} className={inputClass} placeholder="Univ. of X" />
                                     </div>
-                                    <div><label className="block text-xs text-gray-500 mb-1">Period</label>
+                                    <div><label className="block text-xs text-[var(--text-faint)] mb-1">Period</label>
                                         <input value={edu.period} onChange={e => setEducation(all => { const c = [...all]; c[i].period = e.target.value; return c; })} className={inputClass} placeholder="2014 — 2018" />
                                     </div>
                                 </div>
-                                <div><label className="block text-xs text-gray-500 mb-1">Grade</label>
+                                <div><label className="block text-xs text-[var(--text-faint)] mb-1">Grade</label>
                                     <input value={edu.grade} onChange={e => setEducation(all => { const c = [...all]; c[i].grade = e.target.value; return c; })} className={inputClass} placeholder="First Class Honours" />
                                 </div>
                             </div>
                         </div>
                     ))}
-                    {education.length === 0 && <p className="text-gray-400 italic">No education added yet.</p>}
+                    {education.length === 0 && <p className="text-[var(--text-soft)] italic">No education added yet.</p>}
                 </div>
             </section>
         </div>

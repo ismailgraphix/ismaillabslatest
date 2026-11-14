@@ -7,7 +7,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     if (!user) redirect("/admin/login");
 
     return (
-        <div className="flex h-screen bg-[#0a0a0a] overflow-hidden">
+        <div className="theme-admin-scope flex h-screen bg-[var(--app-bg)] overflow-hidden">
             <Sidebar
                 userName={user.name}
                 userRole={user.role}

@@ -55,7 +55,7 @@ function BarChart({ data }: { data: Daily[] }) {
                     <div key={day.date} className="flex-1 flex flex-col items-center gap-1.5 group cursor-default">
                         <div className="w-full flex items-end justify-center" style={{ height: "88px" }}>
                             <div
-                                className="w-full rounded-sm relative transition-all duration-300"
+                                className="w-full rounded-lg relative transition-all duration-300"
                                 style={{
                                     height: `${pct}%`,
                                     background: isToday
@@ -63,14 +63,14 @@ function BarChart({ data }: { data: Daily[] }) {
                                         : "rgba(67,83,255,0.25)",
                                 }}
                             >
-                                <div className="absolute -top-9 left-1/2 -translate-x-1/2 bg-[#1a1a1a] border border-white/10 text-white text-[10px] font-body px-2 py-1 rounded-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 shadow-xl">
+                                <div className="absolute -top-9 left-1/2 -translate-x-1/2 bg-[var(--surface)] border border-[var(--border)] text-[var(--text)] text-[10px] font-body px-2 py-1 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 shadow-xl">
                                     {day.views} view{day.views !== 1 ? "s" : ""}
                                 </div>
                                 {/* hover highlight */}
-                                <div className="absolute inset-0 rounded-sm bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <div className="absolute inset-0 rounded-lg bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                             </div>
                         </div>
-                        <span className={`text-[10px] font-body transition-colors ${isToday ? "text-[#4353FF] font-bold" : "text-gray-700 group-hover:text-gray-400"}`}>
+                        <span className={`text-[10px] font-body transition-colors ${isToday ? "text-[#4353FF] font-bold" : "text-[var(--text-faint)] group-hover:text-[var(--text-soft)]"}`}>
                             {label}
                         </span>
                     </div>
@@ -105,24 +105,24 @@ function StatCard({ label, value, sub, accent, icon }: {
     label: string; value: number; sub: string; accent: string; icon: React.ReactNode;
 }) {
     return (
-        <div className="relative bg-[#111] border border-white/[0.06] p-5 overflow-hidden group hover:border-white/[0.12] transition-all duration-300">
+        <div className="relative bg-[var(--surface)] border border-[var(--border)] p-5 overflow-hidden group hover:border-white/[0.12] transition-all duration-300">
             {/* Glow */}
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                 style={{ background: `radial-gradient(circle at top left, ${accent}08 0%, transparent 60%)` }} />
 
             <div className="relative">
                 <div className="flex items-start justify-between mb-4">
-                    <div className="w-8 h-8 flex items-center justify-center rounded-sm"
+                    <div className="w-8 h-8 flex items-center justify-center rounded-lg"
                         style={{ background: `${accent}15`, color: accent }}>
                         {icon}
                     </div>
                     <div className="h-0.5 w-6 rounded-full mt-4" style={{ background: accent }} />
                 </div>
-                <p className="font-heading font-black text-white text-3xl mb-0.5">
+                <p className="font-heading font-black text-[var(--text)] text-3xl mb-0.5">
                     <CountUp value={value} />
                 </p>
-                <p className="font-body text-[11px] text-gray-500 uppercase tracking-widest">{label}</p>
-                <p className="font-body text-[10px] text-gray-700 mt-0.5">{sub}</p>
+                <p className="font-body text-[11px] text-[var(--text-faint)] uppercase tracking-widest">{label}</p>
+                <p className="font-body text-[10px] text-[var(--text-faint)] mt-0.5">{sub}</p>
             </div>
         </div>
     );
@@ -132,8 +132,8 @@ function StatCard({ label, value, sub, accent, icon }: {
 function SectionHead({ title, sub }: { title: string; sub: string }) {
     return (
         <div className="flex items-center justify-between mb-5">
-            <h2 className="font-heading font-black text-white text-xs uppercase tracking-[0.15em]">{title}</h2>
-            <span className="font-body text-[10px] text-gray-600 uppercase tracking-wider">{sub}</span>
+            <h2 className="font-heading font-black text-[var(--text)] text-xs uppercase tracking-[0.15em]">{title}</h2>
+            <span className="font-body text-[10px] text-[var(--text-faint)] uppercase tracking-wider">{sub}</span>
         </div>
     );
 }
@@ -148,14 +148,14 @@ function ProgressRow({ label, value, max, accent = "#4353FF", prefix }: {
             <div className="flex items-center justify-between mb-1.5">
                 <div className="flex items-center gap-2 min-w-0">
                     {prefix && <span className="text-sm flex-shrink-0">{prefix}</span>}
-                    <span className="font-body text-xs text-gray-300 truncate">{label}</span>
+                    <span className="font-body text-xs text-[var(--text-soft)] truncate">{label}</span>
                 </div>
                 <div className="flex items-center gap-2 ml-4 flex-shrink-0">
-                    <span className="font-body text-[10px] text-gray-600">{pct}%</span>
-                    <span className="font-heading font-bold text-white text-xs">{value.toLocaleString()}</span>
+                    <span className="font-body text-[10px] text-[var(--text-faint)]">{pct}%</span>
+                    <span className="font-heading font-bold text-[var(--text)] text-xs">{value.toLocaleString()}</span>
                 </div>
             </div>
-            <div className="h-0.5 bg-white/[0.05] rounded-full overflow-hidden">
+            <div className="h-0.5 bg-[var(--surface-2)] rounded-full overflow-hidden">
                 <div
                     className="h-full rounded-full transition-all duration-700"
                     style={{ width: `${pct}%`, background: accent }}
@@ -167,7 +167,7 @@ function ProgressRow({ label, value, max, accent = "#4353FF", prefix }: {
 
 // ── Skeleton loader ───────────────────────────────────────────────────────
 function Skeleton({ className }: { className?: string }) {
-    return <div className={`animate-pulse bg-white/[0.04] rounded-sm ${className}`} />;
+    return <div className={`animate-pulse bg-[var(--surface-2)] rounded-lg ${className}`} />;
 }
 
 // ── Main page ─────────────────────────────────────────────────────────────
@@ -200,21 +200,21 @@ export default function AnalyticsPage() {
     return (
         <>
             {/* ── Header ── */}
-            <div className="sticky top-0 z-10 bg-[#0a0a0a]/95 backdrop-blur border-b border-white/[0.06] px-8 py-4 flex items-center justify-between">
+            <div className="sticky top-0 z-10 bg-[var(--app-bg)]/95 backdrop-blur border-b border-[var(--border)] px-8 py-4 flex items-center justify-between">
                 <div>
-                    <h1 className="font-heading font-black text-white text-xl uppercase tracking-tight">Analytics</h1>
-                    <p className="font-body text-gray-500 text-xs mt-0.5">
+                    <h1 className="font-heading font-black text-[var(--text)] text-xl uppercase tracking-tight">Analytics</h1>
+                    <p className="font-body text-[var(--text-faint)] text-xs mt-0.5">
                         Public page views · tracked in real time
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
                     {lastUpdated && (
-                        <span className="font-body text-[11px] text-gray-700">
+                        <span className="font-body text-[11px] text-[var(--text-faint)]">
                             Updated {lastUpdated.toLocaleTimeString()}
                         </span>
                     )}
                     <button onClick={load}
-                        className="flex items-center gap-1.5 font-body text-xs text-gray-400 hover:text-white border border-white/[0.08] hover:border-white/20 px-3 py-1.5 rounded-sm transition-all">
+                        className="flex items-center gap-1.5 font-body text-xs text-[var(--text-soft)] hover:text-[var(--text)] border border-[var(--border)] hover:border-white/20 px-3 py-1.5 rounded-lg transition-all">
                         <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
                             <path d="M13 2v4H9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                             <path d="M1 7a6 6 0 0110.5-4L13 6M1 12v-4h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -229,7 +229,7 @@ export default function AnalyticsPage() {
 
                 {/* ── Error ── */}
                 {error && (
-                    <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-body px-4 py-3 rounded-sm">
+                    <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-body px-4 py-3 rounded-lg">
                         {error}
                     </div>
                 )}
@@ -238,7 +238,7 @@ export default function AnalyticsPage() {
                 {loading ? (
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                         {Array.from({ length: 4 }).map((_, i) => (
-                            <div key={i} className="bg-[#111] border border-white/[0.06] p-5 space-y-3">
+                            <div key={i} className="bg-[var(--surface)] border border-[var(--border)] p-5 space-y-3">
                                 <Skeleton className="w-8 h-8" />
                                 <Skeleton className="w-16 h-7" />
                                 <Skeleton className="w-24 h-2" />
@@ -273,11 +273,11 @@ export default function AnalyticsPage() {
                 {/* ── Chart row ── */}
                 {loading ? (
                     <div className="grid lg:grid-cols-2 gap-4">
-                        <div className="bg-[#111] border border-white/[0.06] p-6 space-y-4">
+                        <div className="bg-[var(--surface)] border border-[var(--border)] p-6 space-y-4">
                             <Skeleton className="w-32 h-3" />
                             <Skeleton className="w-full h-28" />
                         </div>
-                        <div className="bg-[#111] border border-white/[0.06] p-6 space-y-3">
+                        <div className="bg-[var(--surface)] border border-[var(--border)] p-6 space-y-3">
                             <Skeleton className="w-24 h-3" />
                             {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="w-full h-6" />)}
                         </div>
@@ -285,32 +285,32 @@ export default function AnalyticsPage() {
                 ) : data && (
                     <div className="grid lg:grid-cols-2 gap-4">
                         {/* Bar chart */}
-                        <div className="bg-[#111] border border-white/[0.06] p-6">
+                        <div className="bg-[var(--surface)] border border-[var(--border)] p-6">
                             <SectionHead title="Last 7 Days" sub="Daily views" />
                             {data.daily.length === 0 && data.stats.total === 0 ? (
-                                <div className="h-28 flex items-center justify-center text-gray-700 text-sm font-body">
+                                <div className="h-28 flex items-center justify-center text-[var(--text-faint)] text-sm font-body">
                                     No data yet
                                 </div>
                             ) : (
                                 <BarChart data={data.daily} />
                             )}
-                            <div className="flex items-center gap-3 mt-4 pt-4 border-t border-white/[0.04]">
+                            <div className="flex items-center gap-3 mt-4 pt-4 border-t border-[var(--border)]">
                                 <div className="flex items-center gap-1.5">
-                                    <div className="w-2.5 h-2.5 rounded-sm bg-[#4353FF]" />
-                                    <span className="font-body text-[10px] text-gray-600">Today</span>
+                                    <div className="w-2.5 h-2.5 rounded-lg bg-[#4353FF]" />
+                                    <span className="font-body text-[10px] text-[var(--text-faint)]">Today</span>
                                 </div>
                                 <div className="flex items-center gap-1.5">
-                                    <div className="w-2.5 h-2.5 rounded-sm bg-[#4353FF]/25" />
-                                    <span className="font-body text-[10px] text-gray-600">Previous days</span>
+                                    <div className="w-2.5 h-2.5 rounded-lg bg-[#4353FF]/25" />
+                                    <span className="font-body text-[10px] text-[var(--text-faint)]">Previous days</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Top pages */}
-                        <div className="bg-[#111] border border-white/[0.06] p-6">
+                        <div className="bg-[var(--surface)] border border-[var(--border)] p-6">
                             <SectionHead title="Top Pages" sub="Last 30 days" />
                             {data.topPages.length === 0 ? (
-                                <div className="h-28 flex items-center justify-center text-gray-700 text-sm font-body">No data yet</div>
+                                <div className="h-28 flex items-center justify-center text-[var(--text-faint)] text-sm font-body">No data yet</div>
                             ) : (
                                 <div className="space-y-4">
                                     {data.topPages.map((page, i) => (
@@ -333,7 +333,7 @@ export default function AnalyticsPage() {
                 {loading ? (
                     <div className="grid lg:grid-cols-2 gap-4">
                         {[0, 1].map(i => (
-                            <div key={i} className="bg-[#111] border border-white/[0.06] p-6 space-y-3">
+                            <div key={i} className="bg-[var(--surface)] border border-[var(--border)] p-6 space-y-3">
                                 <Skeleton className="w-28 h-3" />
                                 {Array.from({ length: 5 }).map((_, j) => <Skeleton key={j} className="w-full h-6" />)}
                             </div>
@@ -343,13 +343,13 @@ export default function AnalyticsPage() {
                     <div className="grid lg:grid-cols-2 gap-4">
 
                         {/* Countries */}
-                        <div className="bg-[#111] border border-white/[0.06] p-6">
+                        <div className="bg-[var(--surface)] border border-[var(--border)] p-6">
                             <SectionHead title="Countries" sub="Last 30 days" />
                             {data.topCountries.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center py-8 text-center">
                                     <span className="text-3xl mb-2">🌍</span>
-                                    <p className="font-body text-gray-700 text-xs">No country data yet</p>
-                                    <p className="font-body text-gray-800 text-[10px] mt-1">Countries are resolved from visitor IPs</p>
+                                    <p className="font-body text-[var(--text-faint)] text-xs">No country data yet</p>
+                                    <p className="font-body text-[var(--text-faint)] text-[10px] mt-1">Countries are resolved from visitor IPs</p>
                                 </div>
                             ) : (
                                 <div className="space-y-4">
@@ -368,12 +368,12 @@ export default function AnalyticsPage() {
                         </div>
 
                         {/* Referrers */}
-                        <div className="bg-[#111] border border-white/[0.06] p-6">
+                        <div className="bg-[var(--surface)] border border-[var(--border)] p-6">
                             <SectionHead title="Traffic Sources" sub="Last 30 days" />
                             {data.topReferrers.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center py-8 text-center">
                                     <span className="text-3xl mb-2">🔗</span>
-                                    <p className="font-body text-gray-700 text-xs">No referrer data yet</p>
+                                    <p className="font-body text-[var(--text-faint)] text-xs">No referrer data yet</p>
                                 </div>
                             ) : (
                                 <div className="space-y-4">
@@ -402,15 +402,15 @@ export default function AnalyticsPage() {
 
                 {/* ── Empty state ── */}
                 {!loading && data && data.stats.total === 0 && (
-                    <div className="border border-dashed border-[#4353FF]/20 bg-[#4353FF]/[0.03] p-10 text-center rounded-sm">
-                        <div className="w-12 h-12 bg-[#4353FF]/10 border border-[#4353FF]/20 rounded-sm flex items-center justify-center mx-auto mb-4">
+                    <div className="border border-dashed border-[#4353FF]/20 bg-[#4353FF]/[0.03] p-10 text-center rounded-lg">
+                        <div className="w-12 h-12 bg-[#4353FF]/10 border border-[#4353FF]/20 rounded-lg flex items-center justify-center mx-auto mb-4">
                             <svg width="20" height="20" viewBox="0 0 16 16" fill="none" className="text-[#4353FF]">
                                 <path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" strokeWidth="1.5" />
                                 <circle cx="8" cy="8" r="2" stroke="currentColor" strokeWidth="1.5" />
                             </svg>
                         </div>
-                        <p className="font-heading font-black text-white text-base mb-1">No views recorded yet</p>
-                        <p className="font-body text-gray-500 text-sm">
+                        <p className="font-heading font-black text-[var(--text)] text-base mb-1">No views recorded yet</p>
+                        <p className="font-body text-[var(--text-faint)] text-sm">
                             Visit your public site to start tracking.
                             Make sure <code className="text-[#4353FF] bg-[#4353FF]/10 px-1.5 py-0.5 rounded text-xs mx-1">PageViewTracker</code>
                             is in your public layout.

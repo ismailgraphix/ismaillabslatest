@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { projects } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { requirePermission } from "@/lib/auth"; // ✅ correct path, correct export
+import { revalidatePath } from "next/cache";
 
 interface Params { params: { id: string } }
 
@@ -31,6 +32,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
             .returning();
 
         if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 });
+        revalidatePath("/portfolio");
         return NextResponse.json({ project: updated });
     } catch (err) {
         console.error("[projects PATCH]", err);
@@ -48,6 +50,7 @@ export async function DELETE(req: NextRequest, { params }: Params) {
             .returning();
 
         if (!deleted) return NextResponse.json({ error: "Not found" }, { status: 404 });
+        revalidatePath("/portfolio");
         return NextResponse.json({ success: true });
     } catch (err) {
         console.error("[projects DELETE]", err);

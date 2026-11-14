@@ -3,6 +3,10 @@
 // app/admin/projects/page.tsx
 
 import { useState, useEffect, useRef } from "react";
+import PageHeader from "@/components/admin/PageHeader";
+import PillButton from "@/components/admin/PillButton";
+import StatCard from "@/components/admin/StatCard";
+import EmptyState from "@/components/admin/EmptyState";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type ProjectType = "web" | "landing" | "mobile_app";
@@ -54,17 +58,11 @@ function ConfirmModal({ message, onConfirm, onCancel }: {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
 
-            <div className="bg-[#111] border border-white/10 rounded-sm w-full max-w-sm mx-4 p-6 shadow-2xl">
-                <p className="text-white text-sm font-body leading-relaxed">{message}</p>
+            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg w-full max-w-sm mx-4 p-6 shadow-2xl">
+                <p className="text-[var(--text)] text-sm font-body leading-relaxed">{message}</p>
                 <div className="flex justify-end gap-2 mt-6">
-                    <button onClick={onCancel}
-                        className="px-4 py-2 text-xs font-body font-medium text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-sm transition-colors">
-                        Cancel
-                    </button>
-                    <button onClick={onConfirm}
-                        className="px-4 py-2 text-xs font-body font-medium text-white bg-red-500/80 hover:bg-red-500 rounded-sm transition-colors">
-                        Delete
-                    </button>
+                    <PillButton variant="ghost" size="sm" onClick={onCancel}>Cancel</PillButton>
+                    <PillButton variant="primary" size="sm" onClick={onConfirm} className="!bg-red-500 !border-red-500 hover:!bg-red-600 hover:!border-red-600">Delete</PillButton>
                 </div>
             </div>
         </div>
@@ -79,15 +77,15 @@ function ProjectCard({ project, onEdit, onDelete, onTogglePublish }: {
     onTogglePublish: (p: Project) => void;
 }) {
     return (
-        <div className="group bg-[#111] border border-white/[0.06] rounded-sm overflow-hidden hover:border-white/[0.12] transition-all duration-200">
+        <div className="group bg-[var(--surface)] border border-[var(--border)] rounded-lg overflow-hidden hover:border-white/[0.15] transition-all duration-200">
             {/* Image */}
-            <div className="relative h-44 bg-[#0d0d0d] overflow-hidden">
+            <div className="relative h-44 bg-[var(--app-bg)] overflow-hidden">
                 {project.image ? (
                     <img src={project.image} alt={project.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                        <svg width="32" height="32" viewBox="0 0 16 16" fill="none" className="text-gray-700">
+                        <svg width="32" height="32" viewBox="0 0 16 16" fill="none" className="text-[var(--text-faint)]">
                             <rect x="1" y="2" width="14" height="12" rx="2" stroke="currentColor" strokeWidth="1.5" />
                             <circle cx="5.5" cy="6.5" r="1.5" stroke="currentColor" strokeWidth="1.3" />
                             <path d="M1 11l4-3 3 2.5 2-1.5 5 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
@@ -95,46 +93,47 @@ function ProjectCard({ project, onEdit, onDelete, onTogglePublish }: {
                     </div>
                 )}
                 {/* Publish badge */}
-                <div className={`absolute top-2 right-2 px-2 py-0.5 text-[9px] font-body font-bold uppercase tracking-wider rounded-sm ${project.published ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : "bg-gray-500/20 text-gray-500 border border-gray-500/20"
+                <div className={`absolute top-2 right-2 px-2.5 py-0.5 text-[9px] font-body font-bold uppercase tracking-wider rounded-full flex items-center gap-1 ${project.published ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : "bg-gray-500/20 text-gray-400 border border-gray-500/20"
                     }`}>
+                    <span className={`w-1 h-1 rounded-full ${project.published ? "bg-emerald-400" : "bg-gray-400"}`} />
                     {project.published ? "Live" : "Draft"}
                 </div>
                 {/* Type badge */}
-                <div className={`absolute top-2 left-2 px-2 py-0.5 text-[9px] font-body font-bold uppercase tracking-wider rounded-sm border ${TYPE_COLORS[project.type]}`}>
+                <div className={`absolute top-2 left-2 px-2.5 py-0.5 text-[9px] font-body font-bold uppercase tracking-wider rounded-full border ${TYPE_COLORS[project.type]}`}>
                     {TYPE_LABELS[project.type]}
                 </div>
             </div>
 
             {/* Content */}
             <div className="p-4">
-                <h3 className="font-heading font-black text-white text-sm truncate mb-1">{project.title}</h3>
+                <h3 className="font-heading font-black text-[var(--text)] text-sm truncate mb-1">{project.title}</h3>
                 {project.description && (
-                    <p className="text-gray-500 text-xs font-body line-clamp-2 leading-relaxed mb-3">{project.description}</p>
+                    <p className="text-[var(--text-faint)] text-xs font-body line-clamp-2 leading-relaxed mb-3">{project.description}</p>
                 )}
                 {/* Tech Stack */}
                 {project.techStack.length > 0 && (
                     <div className="flex flex-wrap gap-1 mb-3">
                         {project.techStack.slice(0, 4).map(tag => (
-                            <span key={tag} className="px-1.5 py-0.5 bg-white/5 text-gray-400 text-[10px] font-body rounded-sm border border-white/[0.04]">
+                            <span key={tag} className="px-2 py-0.5 bg-[var(--surface-2)] text-[var(--text-soft)] text-[10px] font-body rounded-full border border-[var(--border)]">
                                 {tag}
                             </span>
                         ))}
                         {project.techStack.length > 4 && (
-                            <span className="px-1.5 py-0.5 bg-white/5 text-gray-600 text-[10px] font-body rounded-sm border border-white/[0.04]">
+                            <span className="px-2 py-0.5 bg-[var(--surface-2)] text-[var(--text-faint)] text-[10px] font-body rounded-full border border-[var(--border)]">
                                 +{project.techStack.length - 4}
                             </span>
                         )}
                     </div>
                 )}
                 {/* Actions */}
-                <div className="flex items-center gap-1.5 pt-3 border-t border-white/[0.06]">
+                <div className="flex items-center gap-1.5 pt-3 border-t border-[var(--border)]">
                     <button onClick={() => onEdit(project)}
-                        className="flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-body font-medium text-gray-400 hover:text-white hover:bg-white/5 rounded-sm transition-colors">
+                        className="flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-body font-medium text-[var(--text-faint)] hover:text-[var(--text)] hover:bg-[var(--surface-2)] rounded-full transition-colors">
                         <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M2 10.5L8.5 4l2 2L4 12.5H2v-2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" /><path d="M7 5l2 2" stroke="currentColor" strokeWidth="1.5" /></svg>
                         Edit
                     </button>
                     <button onClick={() => onTogglePublish(project)}
-                        className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-body font-medium rounded-sm transition-colors ${project.published
+                        className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-body font-medium rounded-full transition-colors ${project.published
                             ? "text-yellow-500 hover:text-yellow-400 hover:bg-yellow-500/5"
                             : "text-emerald-500 hover:text-emerald-400 hover:bg-emerald-500/5"
                             }`}>
@@ -142,12 +141,12 @@ function ProjectCard({ project, onEdit, onDelete, onTogglePublish }: {
                     </button>
                     {project.link && (
                         <a href={project.link} target="_blank" rel="noopener noreferrer"
-                            className="p-1.5 text-gray-600 hover:text-white hover:bg-white/5 rounded-sm transition-colors">
+                            className="p-1.5 text-[var(--text-faint)] hover:text-[var(--text)] hover:bg-[var(--surface-2)] rounded-full transition-colors">
                             <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M6 2H2a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /><path d="M9 1h4m0 0v4m0-4L7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
                         </a>
                     )}
                     <button onClick={() => onDelete(project.id)}
-                        className="p-1.5 text-gray-600 hover:text-red-400 hover:bg-red-500/5 rounded-sm transition-colors">
+                        className="p-1.5 text-[var(--text-faint)] hover:text-red-400 hover:bg-red-500/5 rounded-full transition-colors">
                         <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M2 4h10M5 4V2h4v2M6 7v4M8 7v4M3 4l.7 8.3A1 1 0 004.7 13h4.6a1 1 0 001-.7L11 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
                     </button>
                 </div>
@@ -231,14 +230,14 @@ function ProjectDrawer({ project, onClose, onSave }: {
             {/* Overlay */}
             <div className="flex-1 bg-black/50 backdrop-blur-sm" onClick={onClose} />
             {/* Panel */}
-            <div className="w-full max-w-lg bg-[#0d0d0d] border-l border-white/[0.08] flex flex-col shadow-2xl overflow-hidden">
+            <div className="w-full max-w-lg bg-[var(--surface)] border-l border-[var(--border)] flex flex-col shadow-2xl overflow-hidden">
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)]">
                     <div>
-                        <h2 className="font-heading font-black text-white text-sm">{isNew ? "New Project" : "Edit Project"}</h2>
-                        <p className="text-gray-600 text-[11px] font-body mt-0.5">{isNew ? "Add a new agency project" : `Editing: ${project?.title}`}</p>
+                        <h2 className="font-heading font-black text-[var(--text)] text-sm">{isNew ? "New Project" : "Edit Project"}</h2>
+                        <p className="text-[var(--text-faint)] text-[11px] font-body mt-0.5">{isNew ? "Add a new agency project" : `Editing: ${project?.title}`}</p>
                     </div>
-                    <button onClick={onClose} className="w-7 h-7 flex items-center justify-center text-gray-600 hover:text-white hover:bg-white/5 rounded-sm transition-colors">
+                    <button onClick={onClose} className="w-7 h-7 flex items-center justify-center text-[var(--text-faint)] hover:text-[var(--text)] hover:bg-[var(--surface-2)] rounded-full transition-colors">
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
                     </button>
                 </div>
@@ -246,33 +245,33 @@ function ProjectDrawer({ project, onClose, onSave }: {
                 {/* Form */}
                 <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
                     {error && (
-                        <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-body px-3 py-2 rounded-sm">
+                        <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-body px-3 py-2 rounded-md">
                             {error}
                         </div>
                     )}
 
                     {/* Title */}
                     <div>
-                        <label className="block text-[11px] font-body font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Title *</label>
+                        <label className="block text-[11px] font-body font-semibold text-[var(--text-faint)] uppercase tracking-wider mb-1.5">Title *</label>
                         <input
                             ref={titleRef}
                             type="text"
                             value={form.title}
                             onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
                             placeholder="e.g. E-commerce Dashboard"
-                            className="w-full bg-white/[0.04] border border-white/[0.08] text-white text-sm font-body placeholder:text-gray-700 px-3 py-2.5 rounded-sm focus:outline-none focus:border-[#4353FF]/50 focus:bg-[#4353FF]/[0.03] transition-colors"
+                            className="w-full bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)] text-sm font-body placeholder:text-[var(--text-faint)] px-3 py-2.5 rounded-md focus:outline-none focus:border-[#4353FF]/50 focus:bg-[#4353FF]/[0.03] transition-colors"
                         />
                     </div>
 
                     {/* Image Upload */}
                     <div>
-                        <label className="block text-[11px] font-body font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Project Image</label>
-                        <div className="border border-dashed border-white/10 hover:border-[#4353FF]/40 transition-colors cursor-pointer relative"
+                        <label className="block text-[11px] font-body font-semibold text-[var(--text-faint)] uppercase tracking-wider mb-1.5">Project Image</label>
+                        <div className="border border-dashed border-[var(--border)] hover:border-[#4353FF]/40 rounded-md transition-colors cursor-pointer relative overflow-hidden"
                             onClick={() => fileRef.current?.click()}>
                             {form.image ? (
                                 <img src={form.image} className="w-full h-36 object-cover" alt="preview" />
                             ) : (
-                                <div className="h-36 flex flex-col items-center justify-center gap-2 text-gray-600">
+                                <div className="h-36 flex flex-col items-center justify-center gap-2 text-[var(--text-faint)]">
                                     {uploading ? (
                                         <svg className="animate-spin w-6 h-6 text-[#4353FF]" viewBox="0 0 24 24" fill="none">
                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -297,14 +296,14 @@ function ProjectDrawer({ project, onClose, onSave }: {
 
                     {/* Type */}
                     <div>
-                        <label className="block text-[11px] font-body font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Type *</label>
+                        <label className="block text-[11px] font-body font-semibold text-[var(--text-faint)] uppercase tracking-wider mb-1.5">Type *</label>
                         <div className="grid grid-cols-3 gap-2">
                             {(["web", "landing", "mobile_app"] as ProjectType[]).map(t => (
                                 <button key={t} type="button"
                                     onClick={() => setForm(f => ({ ...f, type: t }))}
-                                    className={`py-2 text-xs font-body font-medium rounded-sm border transition-all ${form.type === t
+                                    className={`py-2 text-xs font-body font-medium rounded-full border transition-all ${form.type === t
                                         ? "bg-[#4353FF] border-[#4353FF] text-white"
-                                        : "bg-white/[0.03] border-white/[0.08] text-gray-400 hover:text-white hover:border-white/20"
+                                        : "bg-[var(--surface-2)] border-[var(--border)] text-[var(--text-faint)] hover:text-[var(--text)] hover:border-white/20"
                                         }`}>
                                     {TYPE_LABELS[t]}
                                 </button>
@@ -314,7 +313,7 @@ function ProjectDrawer({ project, onClose, onSave }: {
 
                     {/* Tech Stack */}
                     <div>
-                        <label className="block text-[11px] font-body font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Tech Stack</label>
+                        <label className="block text-[11px] font-body font-semibold text-[var(--text-faint)] uppercase tracking-wider mb-1.5">Tech Stack</label>
                         <div className="flex gap-2">
                             <input
                                 type="text"
@@ -322,19 +321,19 @@ function ProjectDrawer({ project, onClose, onSave }: {
                                 onChange={e => setTechInput(e.target.value)}
                                 onKeyDown={e => { if (e.key === "Enter" || e.key === ",") { e.preventDefault(); addTech(); } }}
                                 placeholder="React, Node.js… press Enter"
-                                className="flex-1 bg-white/[0.04] border border-white/[0.08] text-white text-sm font-body placeholder:text-gray-700 px-3 py-2.5 rounded-sm focus:outline-none focus:border-[#4353FF]/50 transition-colors"
+                                className="flex-1 bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)] text-sm font-body placeholder:text-[var(--text-faint)] px-3 py-2.5 rounded-md focus:outline-none focus:border-[#4353FF]/50 transition-colors"
                             />
                             <button type="button" onClick={addTech}
-                                className="px-3 py-2 bg-[#4353FF]/20 text-[#4353FF] hover:bg-[#4353FF]/30 text-xs font-body font-medium rounded-sm transition-colors border border-[#4353FF]/20">
+                                className="px-3 py-2 bg-[#4353FF]/20 text-[#4353FF] hover:bg-[#4353FF]/30 text-xs font-body font-medium rounded-full transition-colors border border-[#4353FF]/20">
                                 Add
                             </button>
                         </div>
                         {form.techStack.length > 0 && (
                             <div className="flex flex-wrap gap-1.5 mt-2">
                                 {form.techStack.map(tag => (
-                                    <span key={tag} className="flex items-center gap-1 px-2 py-1 bg-white/5 border border-white/[0.08] text-gray-300 text-[11px] font-body rounded-sm">
+                                    <span key={tag} className="flex items-center gap-1 px-2.5 py-1 bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text-soft)] text-[11px] font-body rounded-full">
                                         {tag}
-                                        <button type="button" onClick={() => removeTech(tag)} className="text-gray-600 hover:text-red-400 transition-colors">
+                                        <button type="button" onClick={() => removeTech(tag)} className="text-[var(--text-faint)] hover:text-red-400 transition-colors">
                                             <svg width="8" height="8" viewBox="0 0 8 8" fill="none"><path d="M1 1l6 6M7 1L1 7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /></svg>
                                         </button>
                                     </span>
@@ -345,46 +344,46 @@ function ProjectDrawer({ project, onClose, onSave }: {
 
                     {/* Description */}
                     <div>
-                        <label className="block text-[11px] font-body font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Description</label>
+                        <label className="block text-[11px] font-body font-semibold text-[var(--text-faint)] uppercase tracking-wider mb-1.5">Description</label>
                         <textarea
                             rows={4}
                             value={form.description ?? ""}
                             onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                             placeholder="Brief description of the project…"
-                            className="w-full bg-white/[0.04] border border-white/[0.08] text-white text-sm font-body placeholder:text-gray-700 px-3 py-2.5 rounded-sm focus:outline-none focus:border-[#4353FF]/50 transition-colors resize-none leading-relaxed"
+                            className="w-full bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)] text-sm font-body placeholder:text-[var(--text-faint)] px-3 py-2.5 rounded-md focus:outline-none focus:border-[#4353FF]/50 transition-colors resize-none leading-relaxed"
                         />
                     </div>
 
                     {/* Link */}
                     <div>
-                        <label className="block text-[11px] font-body font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Live URL</label>
+                        <label className="block text-[11px] font-body font-semibold text-[var(--text-faint)] uppercase tracking-wider mb-1.5">Live URL</label>
                         <input
                             type="text"
                             value={form.link ?? ""}
                             onChange={e => setForm(f => ({ ...f, link: e.target.value }))}
                             placeholder="https://project.com"
-                            className="w-full bg-white/[0.04] border border-white/[0.08] text-white text-sm font-body placeholder:text-gray-700 px-3 py-2.5 rounded-sm focus:outline-none focus:border-[#4353FF]/50 transition-colors"
+                            className="w-full bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)] text-sm font-body placeholder:text-[var(--text-faint)] px-3 py-2.5 rounded-md focus:outline-none focus:border-[#4353FF]/50 transition-colors"
                         />
                     </div>
 
                     {/* Order & Publish row */}
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-[11px] font-body font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Display Order</label>
+                            <label className="block text-[11px] font-body font-semibold text-[var(--text-faint)] uppercase tracking-wider mb-1.5">Display Order</label>
                             <input
                                 type="number"
                                 value={form.order}
                                 onChange={e => setForm(f => ({ ...f, order: parseInt(e.target.value) || 0 }))}
-                                className="w-full bg-white/[0.04] border border-white/[0.08] text-white text-sm font-body px-3 py-2.5 rounded-sm focus:outline-none focus:border-[#4353FF]/50 transition-colors"
+                                className="w-full bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)] text-sm font-body px-3 py-2.5 rounded-md focus:outline-none focus:border-[#4353FF]/50 transition-colors"
                             />
                         </div>
                         <div>
-                            <label className="block text-[11px] font-body font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Status</label>
+                            <label className="block text-[11px] font-body font-semibold text-[var(--text-faint)] uppercase tracking-wider mb-1.5">Status</label>
                             <button type="button"
                                 onClick={() => setForm(f => ({ ...f, published: !f.published }))}
-                                className={`w-full py-2.5 text-xs font-body font-medium rounded-sm border transition-all ${form.published
+                                className={`w-full py-2.5 text-xs font-body font-medium rounded-full border transition-all ${form.published
                                     ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-                                    : "bg-white/[0.03] border-white/[0.08] text-gray-500"
+                                    : "bg-[var(--surface-2)] border-[var(--border)] text-[var(--text-faint)]"
                                     }`}>
                                 {form.published ? "● Published" : "○ Draft"}
                             </button>
@@ -393,19 +392,11 @@ function ProjectDrawer({ project, onClose, onSave }: {
                 </div>
 
                 {/* Footer */}
-                <div className="px-6 py-4 border-t border-white/[0.06] flex items-center justify-end gap-2">
-                    <button onClick={onClose} className="px-4 py-2 text-xs font-body font-medium text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-sm transition-colors">
-                        Cancel
-                    </button>
-                    <button onClick={handleSubmit} disabled={saving}
-                        className="flex items-center gap-2 px-5 py-2 text-xs font-body font-semibold text-white bg-[#4353FF] hover:bg-[#3344ee] rounded-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                        {saving && (
-                            <svg className="animate-spin" width="11" height="11" viewBox="0 0 14 14" fill="none">
-                                <circle cx="7" cy="7" r="5" stroke="currentColor" strokeWidth="2" strokeDasharray="20" strokeDashoffset="5" />
-                            </svg>
-                        )}
+                <div className="px-6 py-4 border-t border-[var(--border)] flex items-center justify-end gap-2">
+                    <PillButton variant="ghost" size="sm" onClick={onClose}>Cancel</PillButton>
+                    <PillButton variant="primary" size="sm" onClick={handleSubmit} loading={saving}>
                         {saving ? "Saving…" : isNew ? "Create Project" : "Save Changes"}
-                    </button>
+                    </PillButton>
                 </div>
             </div>
         </div>
@@ -506,7 +497,7 @@ export default function ProjectsPage() {
 
             {/* Toast */}
             {toast && (
-                <div className={`fixed top-4 right-4 z-50 flex items-center gap-2 px-4 py-2.5 rounded-sm shadow-xl text-xs font-body font-medium border transition-all ${toast.ok ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : "bg-red-500/10 border-red-500/20 text-red-400"
+                <div className={`fixed top-4 right-4 z-50 flex items-center gap-2 px-4 py-2.5 rounded-full shadow-xl text-xs font-body font-medium border transition-all ${toast.ok ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : "bg-red-500/10 border-red-500/20 text-red-400"
                     }`}>
                     {toast.ok
                         ? <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2 7l4 4 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -516,54 +507,48 @@ export default function ProjectsPage() {
                 </div>
             )}
 
-            <div className="p-8">
-                {/* Header */}
-                <div className="flex items-start justify-between mb-8">
-                    <div>
-                        <h1 className="font-heading font-black text-white text-2xl tracking-tight">Projects</h1>
-                        <p className="text-gray-500 text-sm font-body mt-1">Agency work shown on the homepage</p>
-                    </div>
-                    <button onClick={() => setDrawerProject({})}
-                        className="flex items-center gap-2 px-4 py-2.5 bg-[#4353FF] hover:bg-[#3344ee] text-white text-xs font-body font-semibold rounded-sm transition-colors">
-                        <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
+            <PageHeader
+                title="Projects"
+                subtitle="Agency work shown on the homepage"
+                actions={
+                    <PillButton onClick={() => setDrawerProject({})}>
                         New Project
-                    </button>
-                </div>
+                    </PillButton>
+                }
+            />
 
+            <div className="p-8">
                 {/* Stats row */}
-                <div className="grid grid-cols-5 gap-3 mb-6">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
                     {[
-                        { label: "Total", value: stats.total, color: "text-white" },
-                        { label: "Published", value: stats.published, color: "text-emerald-400" },
-                        { label: "Web Apps", value: stats.web, color: "text-blue-400" },
-                        { label: "Landing", value: stats.landing, color: "text-purple-400" },
-                        { label: "Mobile", value: stats.mobile, color: "text-amber-400" },
-                    ].map(stat => (
-                        <div key={stat.label} className="bg-[#111] border border-white/[0.06] rounded-sm px-4 py-3">
-                            <p className={`font-heading font-black text-xl ${stat.color}`}>{stat.value}</p>
-                            <p className="text-gray-600 text-[10px] font-body uppercase tracking-wider mt-0.5">{stat.label}</p>
-                        </div>
+                        { label: "Total", value: stats.total, color: "#f5f5f5" },
+                        { label: "Published", value: stats.published, color: "#34d399" },
+                        { label: "Web Apps", value: stats.web, color: "#60a5fa" },
+                        { label: "Landing", value: stats.landing, color: "#c084fc" },
+                        { label: "Mobile", value: stats.mobile, color: "#fbbf24" },
+                    ].map((stat, i) => (
+                        <StatCard key={stat.label} label={stat.label} value={stat.value} color={stat.color} delay={i * 50} />
                     ))}
                 </div>
 
                 {/* Filters */}
                 <div className="flex flex-wrap items-center gap-3 mb-6">
                     <div className="relative flex-1 min-w-48">
-                        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600">
+                        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-faint)]">
                             <circle cx="6" cy="6" r="4" stroke="currentColor" strokeWidth="1.5" />
                             <path d="M9.5 9.5l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                         </svg>
                         <input type="text" value={search} onChange={e => setSearch(e.target.value)}
                             placeholder="Search projects…"
-                            className="w-full bg-white/[0.04] border border-white/[0.08] text-white text-sm font-body placeholder:text-gray-700 pl-9 pr-3 py-2 rounded-sm focus:outline-none focus:border-[#4353FF]/50 transition-colors" />
+                            className="w-full bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)] text-sm font-body placeholder:text-[var(--text-faint)] pl-9 pr-3 py-2 rounded-full focus:outline-none focus:border-[#4353FF]/50 transition-colors" />
                     </div>
                     {/* Type filter */}
                     <div className="flex gap-1">
                         {(["all", "web", "landing", "mobile_app"] as const).map(t => (
                             <button key={t} onClick={() => setFilterType(t)}
-                                className={`px-3 py-2 text-xs font-body font-medium rounded-sm transition-colors ${filterType === t
+                                className={`px-3 py-2 text-xs font-body font-medium rounded-full transition-colors ${filterType === t
                                     ? "bg-[#4353FF] text-white"
-                                    : "bg-white/[0.03] border border-white/[0.08] text-gray-500 hover:text-white"
+                                    : "bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text-faint)] hover:text-[var(--text)]"
                                     }`}>
                                 {t === "all" ? "All" : TYPE_LABELS[t as ProjectType]}
                             </button>
@@ -573,9 +558,9 @@ export default function ProjectsPage() {
                     <div className="flex gap-1">
                         {(["all", "published", "draft"] as const).map(s => (
                             <button key={s} onClick={() => setFilterStatus(s)}
-                                className={`px-3 py-2 text-xs font-body font-medium rounded-sm capitalize transition-colors ${filterStatus === s
+                                className={`px-3 py-2 text-xs font-body font-medium rounded-full capitalize transition-colors ${filterStatus === s
                                     ? "bg-[#4353FF] text-white"
-                                    : "bg-white/[0.03] border border-white/[0.08] text-gray-500 hover:text-white"
+                                    : "bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text-faint)] hover:text-[var(--text)]"
                                     }`}>
                                 {s}
                             </button>
@@ -587,36 +572,33 @@ export default function ProjectsPage() {
                 {loading ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                         {Array.from({ length: 8 }).map((_, i) => (
-                            <div key={i} className="bg-[#111] border border-white/[0.06] rounded-sm overflow-hidden animate-pulse">
-                                <div className="h-44 bg-white/[0.03]" />
+                            <div key={i} className="bg-[var(--surface)] border border-[var(--border)] rounded-lg overflow-hidden animate-pulse">
+                                <div className="h-44 bg-[var(--surface-2)]" />
                                 <div className="p-4 space-y-2">
-                                    <div className="h-3 bg-white/[0.04] rounded-sm w-3/4" />
-                                    <div className="h-2 bg-white/[0.03] rounded-sm w-full" />
-                                    <div className="h-2 bg-white/[0.03] rounded-sm w-2/3" />
+                                    <div className="h-3 bg-[var(--surface-2)] rounded-full w-3/4" />
+                                    <div className="h-2 bg-[var(--surface-2)] rounded-full w-full" />
+                                    <div className="h-2 bg-[var(--surface-2)] rounded-full w-2/3" />
                                 </div>
                             </div>
                         ))}
                     </div>
                 ) : filtered.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-24 text-center">
-                        <div className="w-12 h-12 bg-white/[0.03] border border-white/[0.06] rounded-sm flex items-center justify-center mb-4">
-                            <svg width="20" height="20" viewBox="0 0 16 16" fill="none" className="text-gray-700">
+                    <EmptyState
+                        icon={
+                            <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
                                 <path d="M8 1L15 5l-7 4L1 5l7-4z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
                                 <path d="M1 9l7 4 7-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
-                        </div>
-                        <p className="text-gray-500 text-sm font-body">
-                            {search || filterType !== "all" || filterStatus !== "all"
-                                ? "No projects match your filters."
-                                : "No projects yet. Create your first one!"}
-                        </p>
-                        {!(search || filterType !== "all" || filterStatus !== "all") && (
-                            <button onClick={() => setDrawerProject({})}
-                                className="mt-4 px-4 py-2 bg-[#4353FF]/10 text-[#4353FF] text-xs font-body font-medium rounded-sm hover:bg-[#4353FF]/20 transition-colors border border-[#4353FF]/20">
+                        }
+                        message={search || filterType !== "all" || filterStatus !== "all"
+                            ? "No projects match your filters."
+                            : "No projects yet. Create your first one!"}
+                        action={!(search || filterType !== "all" || filterStatus !== "all") && (
+                            <PillButton variant="outline" size="sm" onClick={() => setDrawerProject({})}>
                                 Create Project
-                            </button>
+                            </PillButton>
                         )}
-                    </div>
+                    />
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                         {filtered.map(p => (

@@ -3,6 +3,7 @@ import { db, services } from "@/db";
 import { requirePermission } from "@/lib/auth";
 import { desc, eq, asc } from "drizzle-orm";
 import { z } from "zod";
+import { revalidatePath } from "next/cache";
 
 const serviceSchema = z.object({
     title: z.string().min(1),
@@ -36,6 +37,8 @@ export async function POST(req: NextRequest) {
         }
 
         const [service] = await db.insert(services).values(parsed.data).returning();
+        revalidatePath("/");
+        revalidatePath(`/services/${service.slug}`);
         return NextResponse.json({ service });
     } catch (err: any) {
         if (err.code === "23505") {

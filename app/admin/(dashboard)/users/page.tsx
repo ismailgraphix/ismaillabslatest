@@ -17,7 +17,7 @@ const ROLE_COLORS: Record<string, string> = {
     super_admin: "text-yellow-400 bg-yellow-400/10 border-yellow-400/30",
     admin: "text-[#4353FF] bg-[#4353FF]/10 border-[#4353FF]/30",
     editor: "text-purple-400 bg-purple-400/10 border-purple-400/30",
-    viewer: "text-gray-400 bg-gray-400/10 border-gray-400/20",
+    viewer: "text-[var(--text-soft)] bg-gray-400/10 border-gray-400/20",
 };
 
 const ROLE_DESC: Record<string, string> = {
@@ -143,16 +143,16 @@ export default function Page() {
     return (
         <>
             {/* Header */}
-            <div className="sticky top-0 z-10 bg-[#0a0a0a]/95 backdrop-blur border-b border-white/[0.06] px-8 py-4 flex items-center justify-between">
+            <div className="sticky top-0 z-10 bg-[var(--app-bg)]/95 backdrop-blur border-b border-[var(--border)] px-8 py-4 flex items-center justify-between">
                 <div>
-                    <h1 className="font-heading font-black text-white text-xl uppercase tracking-tight">Admin Users</h1>
-                    <p className="font-body text-gray-500 text-xs mt-0.5">
+                    <h1 className="font-heading font-black text-[var(--text)] text-xl uppercase tracking-tight">Admin Users</h1>
+                    <p className="font-body text-[var(--text-faint)] text-xs mt-0.5">
                         {users.length} user{users.length !== 1 ? "s" : ""} · super admin has unrestricted access
                     </p>
                 </div>
                 {isSuperAdmin && (
                     <button onClick={openAdd}
-                        className="flex items-center gap-2 bg-[#4353FF] text-white font-body font-semibold text-sm px-5 py-2.5 hover:bg-white hover:text-[#0f0f0f] transition-all duration-200">
+                        className="flex items-center gap-2 bg-[#4353FF] text-[var(--text)] font-body font-semibold text-sm px-5 py-2.5 hover:bg-white hover:text-[#0f0f0f] transition-all duration-200">
                         + Add User
                     </button>
                 )}
@@ -162,29 +162,29 @@ export default function Page() {
                 {/* Role legend */}
                 <div className="grid sm:grid-cols-3 gap-3">
                     {ROLES.map(role => (
-                        <div key={role} className="bg-[#111] border border-white/[0.06] p-4">
+                        <div key={role} className="bg-[var(--surface)] border border-[var(--border)] p-4">
                             <div className="flex items-center gap-2 mb-2">
                                 <span className={`font-body font-bold text-[11px] uppercase tracking-wider px-2 py-0.5 border capitalize ${ROLE_COLORS[role]}`}>
                                     {role}
                                 </span>
                             </div>
-                            <p className="font-body text-gray-500 text-xs leading-relaxed">{ROLE_DESC[role]}</p>
-                            <div className="mt-2 pt-2 border-t border-white/[0.04]">
-                                <p className="font-body text-gray-600 text-[10px]">Requires explicit permission grants</p>
+                            <p className="font-body text-[var(--text-faint)] text-xs leading-relaxed">{ROLE_DESC[role]}</p>
+                            <div className="mt-2 pt-2 border-t border-[var(--border)]">
+                                <p className="font-body text-[var(--text-faint)] text-[10px]">Requires explicit permission grants</p>
                             </div>
                         </div>
                     ))}
                 </div>
 
                 {/* Users table */}
-                <div className="bg-[#111] border border-white/[0.06] overflow-hidden">
+                <div className="bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
                     {loading ? (
-                        <div className="py-16 text-center font-body text-gray-600 text-sm">Loading…</div>
+                        <div className="py-16 text-center font-body text-[var(--text-faint)] text-sm">Loading…</div>
                     ) : users.length === 0 ? (
                         <div className="py-16 text-center">
-                            <p className="font-body text-gray-600 text-sm mb-3">No users yet</p>
+                            <p className="font-body text-[var(--text-faint)] text-sm mb-3">No users yet</p>
                             {isSuperAdmin && (
-                                <button onClick={openAdd} className="font-body text-sm text-[#4353FF] hover:text-white transition-colors">
+                                <button onClick={openAdd} className="font-body text-sm text-[#4353FF] hover:text-[var(--text)] transition-colors">
                                     + Add first user
                                 </button>
                             )}
@@ -192,33 +192,33 @@ export default function Page() {
                     ) : (
                         <table className="w-full">
                             <thead>
-                                <tr className="border-b border-white/[0.06]">
+                                <tr className="border-b border-[var(--border)]">
                                     {["User", "Role", "Extra Permissions", "Status", "Last Login", "Actions"].map(h => (
-                                        <th key={h} className="text-left px-5 py-3 font-body font-semibold text-[11px] text-gray-500 uppercase tracking-widest whitespace-nowrap">
+                                        <th key={h} className="text-left px-5 py-3 font-body font-semibold text-[11px] text-[var(--text-faint)] uppercase tracking-widest whitespace-nowrap">
                                             {h}
                                         </th>
                                     ))}
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-white/[0.04]">
+                            <tbody className="divide-y divide-[var(--border)]">
                                 {users.map(u => {
                                     const extraCount = u.permissions?.length ?? 0;
                                     const isSelf = u.id === currentUserId;
                                     const isSuper = u.role === "super_admin";
 
                                     return (
-                                        <tr key={u.id} className="hover:bg-white/[0.02] transition-colors group">
+                                        <tr key={u.id} className="hover:bg-[var(--surface-2)] transition-colors group">
                                             <td className="px-5 py-4">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-8 h-8 rounded-full bg-[#4353FF]/20 border border-[#4353FF]/20 flex items-center justify-center flex-shrink-0">
                                                         <span className="font-heading font-black text-[#4353FF] text-xs">{u.name[0]?.toUpperCase()}</span>
                                                     </div>
                                                     <div>
-                                                        <p className="font-heading font-bold text-white text-sm flex items-center gap-1.5">
+                                                        <p className="font-heading font-bold text-[var(--text)] text-sm flex items-center gap-1.5">
                                                             {u.name}
-                                                            {isSelf && <span className="font-body text-[9px] text-gray-600 bg-white/5 px-1.5 py-0.5 rounded">you</span>}
+                                                            {isSelf && <span className="font-body text-[9px] text-[var(--text-faint)] bg-[var(--surface-2)] px-1.5 py-0.5 rounded">you</span>}
                                                         </p>
-                                                        <p className="font-body text-gray-500 text-xs">{u.email}</p>
+                                                        <p className="font-body text-[var(--text-faint)] text-xs">{u.email}</p>
                                                     </div>
                                                 </div>
                                             </td>
@@ -233,7 +233,7 @@ export default function Page() {
                                                 ) : extraCount > 0 ? (
                                                     <span className="font-body text-[11px] text-[#4353FF]">{extraCount} granted</span>
                                                 ) : (
-                                                    <span className="font-body text-[11px] text-gray-700">No permissions</span>
+                                                    <span className="font-body text-[11px] text-[var(--text-faint)]">No permissions</span>
                                                 )}
                                             </td>
                                             <td className="px-5 py-4">
@@ -241,7 +241,7 @@ export default function Page() {
                                                     ● {u.status}
                                                 </span>
                                             </td>
-                                            <td className="px-5 py-4 font-body text-gray-500 text-xs whitespace-nowrap">
+                                            <td className="px-5 py-4 font-body text-[var(--text-faint)] text-xs whitespace-nowrap">
                                                 {u.lastLoginAt
                                                     ? new Date(u.lastLoginAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
                                                     : "Never"}
@@ -250,13 +250,13 @@ export default function Page() {
                                                 <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                                                     {!isSuper && isSuperAdmin && (
                                                         <button onClick={() => openPerms(u)}
-                                                            className="font-body text-xs text-[#4353FF] hover:text-white border border-[#4353FF]/30 hover:border-white/30 hover:bg-[#4353FF] px-2.5 py-1 transition-all">
+                                                            className="font-body text-xs text-[#4353FF] hover:text-[var(--text)] border border-[#4353FF]/30 hover:border-white/30 hover:bg-[#4353FF] px-2.5 py-1 transition-all">
                                                             Permissions
                                                         </button>
                                                     )}
                                                     {!isSuper && isSuperAdmin && (
                                                         <button onClick={() => openEdit(u)}
-                                                            className="font-body text-xs text-gray-400 hover:text-white border border-white/10 hover:border-white/30 px-2.5 py-1 transition-all">
+                                                            className="font-body text-xs text-[var(--text-soft)] hover:text-[var(--text)] border border-[var(--border)] hover:border-white/30 px-2.5 py-1 transition-all">
                                                             Edit
                                                         </button>
                                                     )}
@@ -271,7 +271,7 @@ export default function Page() {
                                                     )}
                                                     {!isSuper && isSuperAdmin && !isSelf && (
                                                         <button onClick={() => deleteUser(u.id)}
-                                                            className="font-body text-xs text-red-500 hover:text-white hover:bg-red-500 border border-red-500/20 hover:border-red-500 px-2.5 py-1 transition-all">
+                                                            className="font-body text-xs text-red-500 hover:text-[var(--text)] hover:bg-red-500 border border-red-500/20 hover:border-red-500 px-2.5 py-1 transition-all">
                                                             Delete
                                                         </button>
                                                     )}
@@ -289,12 +289,12 @@ export default function Page() {
             {/* ── Add / Edit User Modal ── */}
             {showForm && (
                 <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-[#111] border border-white/10 w-full max-w-md">
-                        <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
-                            <h3 className="font-heading font-black text-white uppercase tracking-tight">
+                    <div className="bg-[var(--surface)] border border-[var(--border)] w-full max-w-md">
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)]">
+                            <h3 className="font-heading font-black text-[var(--text)] uppercase tracking-tight">
                                 {editUser ? "Edit User" : "Add New User"}
                             </h3>
-                            <button onClick={() => setShowForm(false)} className="text-gray-500 hover:text-white transition-colors">
+                            <button onClick={() => setShowForm(false)} className="text-[var(--text-faint)] hover:text-[var(--text)] transition-colors">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                                     <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
                                 </svg>
@@ -305,42 +305,42 @@ export default function Page() {
                                 <p className="font-body text-red-400 text-sm bg-red-500/10 border border-red-500/20 px-4 py-3">{formError}</p>
                             )}
                             <div>
-                                <label className="block font-body text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-2">Full Name</label>
+                                <label className="block font-body text-[11px] font-semibold text-[var(--text-soft)] uppercase tracking-widest mb-2">Full Name</label>
                                 <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
                                     placeholder="Jane Smith"
-                                    className="w-full bg-white/5 border border-white/10 text-white font-body text-sm px-4 py-3 placeholder-gray-600 focus:outline-none focus:border-[#4353FF] transition-colors" />
+                                    className="w-full bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)] font-body text-sm px-4 py-3 placeholder:text-[var(--text-faint)] focus:outline-none focus:border-[#4353FF] transition-colors" />
                             </div>
                             {!editUser && (
                                 <div>
-                                    <label className="block font-body text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-2">Email</label>
+                                    <label className="block font-body text-[11px] font-semibold text-[var(--text-soft)] uppercase tracking-widest mb-2">Email</label>
                                     <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
                                         placeholder="jane@ismaillabs.com"
-                                        className="w-full bg-white/5 border border-white/10 text-white font-body text-sm px-4 py-3 placeholder-gray-600 focus:outline-none focus:border-[#4353FF] transition-colors" />
+                                        className="w-full bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)] font-body text-sm px-4 py-3 placeholder:text-[var(--text-faint)] focus:outline-none focus:border-[#4353FF] transition-colors" />
                                 </div>
                             )}
                             {!editUser && (
                                 <div>
-                                    <label className="block font-body text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-2">
-                                        Password <span className="text-gray-600 normal-case tracking-normal">(min 8 chars)</span>
+                                    <label className="block font-body text-[11px] font-semibold text-[var(--text-soft)] uppercase tracking-widest mb-2">
+                                        Password <span className="text-[var(--text-faint)] normal-case tracking-normal">(min 8 chars)</span>
                                     </label>
                                     <input type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })}
                                         placeholder="••••••••"
-                                        className="w-full bg-white/5 border border-white/10 text-white font-body text-sm px-4 py-3 placeholder-gray-600 focus:outline-none focus:border-[#4353FF] transition-colors" />
+                                        className="w-full bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)] font-body text-sm px-4 py-3 placeholder:text-[var(--text-faint)] focus:outline-none focus:border-[#4353FF] transition-colors" />
                                 </div>
                             )}
                             <div>
-                                <label className="block font-body text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-2">Role</label>
+                                <label className="block font-body text-[11px] font-semibold text-[var(--text-soft)] uppercase tracking-widest mb-2">Role</label>
                                 <div className="space-y-2">
                                     {ROLES.map(role => (
-                                        <label key={role} className={`flex items-start gap-3 p-3 border cursor-pointer transition-all ${form.role === role ? "border-[#4353FF] bg-[#4353FF]/5" : "border-white/[0.06] hover:border-white/15"}`}>
+                                        <label key={role} className={`flex items-start gap-3 p-3 border cursor-pointer transition-all ${form.role === role ? "border-[#4353FF] bg-[#4353FF]/5" : "border-[var(--border)] hover:border-white/15"}`}>
                                             <input type="radio" name="role" value={role}
                                                 checked={form.role === role}
                                                 onChange={() => setForm({ ...form, role })}
                                                 className="accent-[#4353FF] mt-0.5 flex-shrink-0" />
                                             <div>
-                                                <p className={`font-heading font-bold text-sm capitalize ${form.role === role ? "text-[#4353FF]" : "text-white"}`}>{role}</p>
-                                                <p className="font-body text-gray-500 text-xs mt-0.5">{ROLE_DESC[role]}</p>
-                                                <p className="font-body text-gray-700 text-[10px] mt-1">Manual permission assignment required</p>
+                                                <p className={`font-heading font-bold text-sm capitalize ${form.role === role ? "text-[#4353FF]" : "text-[var(--text)]"}`}>{role}</p>
+                                                <p className="font-body text-[var(--text-faint)] text-xs mt-0.5">{ROLE_DESC[role]}</p>
+                                                <p className="font-body text-[var(--text-faint)] text-[10px] mt-1">Manual permission assignment required</p>
                                             </div>
                                         </label>
                                     ))}
@@ -349,7 +349,7 @@ export default function Page() {
                         </div>
                         <div className="px-6 pb-6">
                             <button onClick={saveUser} disabled={formSaving}
-                                className="w-full bg-[#4353FF] text-white font-heading font-black py-3.5 uppercase tracking-wider text-sm hover:bg-white hover:text-[#0f0f0f] transition-all duration-300 disabled:opacity-50">
+                                className="w-full bg-[#4353FF] text-[var(--text)] font-heading font-black py-3.5 uppercase tracking-wider text-sm hover:bg-white hover:text-[#0f0f0f] transition-all duration-300 disabled:opacity-50">
                                 {formSaving ? "Saving…" : editUser ? "Save Changes" : "Create User"}
                             </button>
                         </div>
@@ -360,18 +360,18 @@ export default function Page() {
             {/* ── Permissions Modal ── */}
             {permUser && (
                 <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-[#111] border border-white/10 w-full max-w-2xl max-h-[88vh] flex flex-col">
-                        <div className="flex items-start justify-between px-6 py-4 border-b border-white/[0.06]">
+                    <div className="bg-[var(--surface)] border border-[var(--border)] w-full max-w-2xl max-h-[88vh] flex flex-col">
+                        <div className="flex items-start justify-between px-6 py-4 border-b border-[var(--border)]">
                             <div>
-                                <h3 className="font-heading font-black text-white uppercase tracking-tight">
+                                <h3 className="font-heading font-black text-[var(--text)] uppercase tracking-tight">
                                     Permissions — {permUser.name}
                                 </h3>
-                                <p className="font-body text-gray-500 text-xs mt-1">
-                                    Role: <span className="text-white capitalize">{permUser.role}</span>
+                                <p className="font-body text-[var(--text-faint)] text-xs mt-1">
+                                    Role: <span className="text-[var(--text)] capitalize">{permUser.role}</span>
                                     {" · "}Explicitly check the boxes below to grant access to the user.
                                 </p>
                             </div>
-                            <button onClick={() => setPermUser(null)} className="text-gray-500 hover:text-white transition-colors flex-shrink-0 ml-4">
+                            <button onClick={() => setPermUser(null)} className="text-[var(--text-faint)] hover:text-[var(--text)] transition-colors flex-shrink-0 ml-4">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                                     <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
                                 </svg>
@@ -384,7 +384,7 @@ export default function Page() {
                                 return (
                                     <div key={mod}>
                                         <div className="flex items-center gap-3 mb-3">
-                                            <p className="font-heading font-bold text-white text-xs uppercase tracking-widest capitalize">{mod}</p>
+                                            <p className="font-heading font-bold text-[var(--text)] text-xs uppercase tracking-widest capitalize">{mod}</p>
                                             {allGranted && (
                                                 <span className="font-body text-[10px] text-green-400 bg-green-400/10 px-2 py-0.5 border border-green-400/20">Full access</span>
                                             )}
@@ -397,19 +397,19 @@ export default function Page() {
                                                 return (
                                                     <label key={perm.name}
                                                         className={`flex items-center gap-3 px-4 py-2.5 border transition-all cursor-pointer ${isDefault
-                                                            ? "border-white/[0.04] bg-white/[0.02] cursor-not-allowed"
+                                                            ? "border-[var(--border)] bg-[var(--surface-2)] cursor-not-allowed"
                                                             : isExtra
                                                                 ? "border-[#4353FF]/40 bg-[#4353FF]/5"
-                                                                : "border-white/[0.04] hover:border-white/10"
+                                                                : "border-[var(--border)] hover:border-[var(--border)]"
                                                             }`}>
                                                         <input type="checkbox" checked={isGranted} disabled={isDefault}
                                                             onChange={() => !isDefault && togglePerm(perm.name)}
                                                             className="accent-[#4353FF] w-3.5 h-3.5 flex-shrink-0" />
                                                         <div className="min-w-0">
-                                                            <p className={`font-body text-xs font-medium truncate ${isGranted ? "text-white" : "text-gray-500"}`}>{perm.label}</p>
-                                                            <p className="font-body text-[10px] text-gray-700 truncate">{perm.name}</p>
+                                                            <p className={`font-body text-xs font-medium truncate ${isGranted ? "text-[var(--text)]" : "text-[var(--text-faint)]"}`}>{perm.label}</p>
+                                                            <p className="font-body text-[10px] text-[var(--text-faint)] truncate">{perm.name}</p>
                                                         </div>
-                                                        {isDefault && <span className="font-body text-[9px] text-gray-600 ml-auto flex-shrink-0">default</span>}
+                                                        {isDefault && <span className="font-body text-[9px] text-[var(--text-faint)] ml-auto flex-shrink-0">default</span>}
                                                         {isExtra && <span className="font-body text-[9px] text-[#4353FF] ml-auto flex-shrink-0">granted</span>}
                                                     </label>
                                                 );
@@ -419,17 +419,17 @@ export default function Page() {
                                 );
                             })}
                         </div>
-                        <div className="p-6 border-t border-white/[0.06] flex items-center justify-between gap-4">
-                            <div className="font-body text-gray-500 text-xs">
+                        <div className="p-6 border-t border-[var(--border)] flex items-center justify-between gap-4">
+                            <div className="font-body text-[var(--text-faint)] text-xs">
                                 {extraPerms.length} explicit permission{extraPerms.length !== 1 ? "s" : ""} granted
                             </div>
                             <div className="flex gap-3">
                                 <button onClick={() => setPermUser(null)}
-                                    className="font-body font-semibold text-sm px-5 py-2.5 border border-white/10 text-gray-400 hover:text-white hover:border-white/30 transition-colors">
+                                    className="font-body font-semibold text-sm px-5 py-2.5 border border-[var(--border)] text-[var(--text-soft)] hover:text-[var(--text)] hover:border-white/30 transition-colors">
                                     Cancel
                                 </button>
                                 <button onClick={savePerms} disabled={permSaving}
-                                    className="font-body font-semibold text-sm px-5 py-2.5 bg-[#4353FF] text-white hover:bg-white hover:text-[#0f0f0f] transition-all disabled:opacity-50">
+                                    className="font-body font-semibold text-sm px-5 py-2.5 bg-[#4353FF] text-[var(--text)] hover:bg-white hover:text-[#0f0f0f] transition-all disabled:opacity-50">
                                     {permSaving ? "Saving…" : "Save Permissions"}
                                 </button>
                             </div>

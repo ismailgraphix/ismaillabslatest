@@ -3,6 +3,7 @@ import { db, services } from "@/db";
 import { requirePermission } from "@/lib/auth";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
+import { revalidatePath } from "next/cache";
 
 const serviceSchema = z.object({
     title: z.string().min(1),
@@ -30,6 +31,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
             .returning();
 
         if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 });
+        revalidatePath("/");
+        revalidatePath(`/services/${updated.slug}`);
         return NextResponse.json({ service: updated });
     } catch (err: any) {
         if (err.code === "23505") return NextResponse.json({ error: "Slug already exists" }, { status: 409 });
@@ -41,6 +44,8 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     const { forbidden } = await requirePermission("services.delete");
     if (forbidden) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-    await db.delete(services).where(eq(services.id, params.id));
+    const [deleted] = await db.delete(services).where(eq(services.id, params.id)).returning();
+    revalidatePath("/");
+    if (deleted) revalidatePath(`/services/${deleted.slug}`);
     return NextResponse.json({ success: true });
 }

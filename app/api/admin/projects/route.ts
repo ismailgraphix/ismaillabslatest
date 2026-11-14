@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { projects } from "@/db/schema";
 import { desc } from "drizzle-orm";
 import { requirePermission } from "@/lib/auth"; // ✅ correct path, correct export
+import { revalidatePath } from "next/cache";
 
 export async function GET(req: NextRequest) {
     const { forbidden } = await requirePermission("projects.view");
@@ -42,6 +43,7 @@ export async function POST(req: NextRequest) {
             order: order ?? 0,
         }).returning();
 
+        revalidatePath("/portfolio");
         return NextResponse.json({ project: created }, { status: 201 });
     } catch (err) {
         console.error("[projects POST]", err);

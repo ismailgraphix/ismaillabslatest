@@ -15,6 +15,7 @@ export const metadata: Metadata = {
       { url: "/logo.png", type: "image/png", sizes: "192x192" },
     ],
     apple: { url: "/logo.png", sizes: "180x180" },
+
   },
 };
 

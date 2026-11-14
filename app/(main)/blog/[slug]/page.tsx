@@ -3,8 +3,13 @@ import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
+import { unstable_noStore as noStore } from 'next/cache';
+
+export const dynamic = 'force-dynamic';
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+    noStore(); // Explicitly opt out of Next.js caching so edits show immediately
+
     const [data] = await db
         .select({
             post: blogPosts,

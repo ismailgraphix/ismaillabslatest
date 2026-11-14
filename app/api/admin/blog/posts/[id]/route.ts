@@ -3,6 +3,7 @@ import { db, blogPosts } from "@/db";
 import { requirePermission } from "@/lib/auth";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
+import { revalidatePath } from "next/cache";
 
 const postSchema = z.object({
     title: z.string().min(1),
@@ -33,6 +34,9 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
         const [post] = await db.update(blogPosts).set(updateData).where(eq(blogPosts.id, params.id)).returning();
         if (!post) return NextResponse.json({ error: "Post not found" }, { status: 404 });
+        revalidatePath("/blog");
+        revalidatePath("/");
+        revalidatePath(`/blog/${post.slug}`);
         return NextResponse.json({ post });
     } catch (err: any) {
         if (err.code === "23505") return NextResponse.json({ error: "Slug already exists" }, { status: 409 });
@@ -47,6 +51,9 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     try {
         const [post] = await db.delete(blogPosts).where(eq(blogPosts.id, params.id)).returning();
         if (!post) return NextResponse.json({ error: "Post not found" }, { status: 404 });
+        revalidatePath("/blog");
+        revalidatePath("/");
+        revalidatePath(`/blog/${post.slug}`);
         return NextResponse.json({ success: true });
     } catch {
         return NextResponse.json({ error: "Failed to delete" }, { status: 500 });

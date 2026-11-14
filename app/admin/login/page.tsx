@@ -42,7 +42,7 @@ export default function AdminLogin() {
     }
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] flex overflow-hidden">
+        <div className="min-h-screen bg-[var(--app-bg)] flex overflow-hidden">
 
             {/* ── LEFT panel ── */}
             <div className="hidden lg:flex lg:w-[52%] relative flex-col justify-between p-14 overflow-hidden">
@@ -59,15 +59,15 @@ export default function AdminLogin() {
                 {/* Logo */}
                 <div className={`relative z-10 transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-[#4353FF] flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-[#4353FF] flex items-center justify-center">
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                                 <path d="M4 3h7.5C13.985 3 16 5.015 16 7.5S13.985 12 11.5 12H4V3z" fill="white"/>
                                 <path d="M4 12l5 5" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
                             </svg>
                         </div>
                         <div>
-                            <p className="font-heading font-black text-white text-lg tracking-tight leading-none">ismaillabs</p>
-                            <p className="font-body text-[10px] text-gray-500 uppercase tracking-[0.2em]">admin panel</p>
+                            <p className="font-heading font-black text-[var(--text)] text-lg tracking-tight leading-none">ismaillabs</p>
+                            <p className="font-body text-[10px] text-[var(--text-faint)] uppercase tracking-[0.2em]">admin panel</p>
                         </div>
                     </div>
                 </div>
@@ -75,11 +75,11 @@ export default function AdminLogin() {
                 {/* Hero copy */}
                 <div className="relative z-10">
                     <div className={`transition-all duration-700 delay-150 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-                        <h1 className="font-heading font-black text-white leading-[0.92] uppercase tracking-tight mb-6"
+                        <h1 className="font-heading font-black text-[var(--text)] leading-[0.92] uppercase tracking-tight mb-6"
                             style={{ fontSize: "clamp(2.4rem,4vw,3.8rem)" }}>
                             MANAGE<br />YOUR<br /><span className="text-[#4353FF]">AGENCY.</span>
                         </h1>
-                        <p className="font-body text-gray-400 leading-relaxed max-w-sm text-sm">
+                        <p className="font-body text-[var(--text-soft)] leading-relaxed max-w-sm text-sm">
                             One dashboard to handle clients, projects, team permissions, and everything your agency needs to grow.
                         </p>
                     </div>
@@ -97,17 +97,17 @@ export default function AdminLogin() {
                                         <path d="M1 3.5l2 2 5-5" stroke="#4353FF" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
                                     </svg>
                                 </div>
-                                <span className="font-body text-sm text-gray-400">{f}</span>
+                                <span className="font-body text-sm text-[var(--text-soft)]">{f}</span>
                             </div>
                         ))}
                     </div>
                 </div>
 
-                <div className={`relative z-10 flex gap-10 pt-8 border-t border-white/10 transition-all duration-700 delay-500 ${mounted ? "opacity-100" : "opacity-0"}`}>
+                <div className={`relative z-10 flex gap-10 pt-8 border-t border-[var(--border)] transition-all duration-700 delay-500 ${mounted ? "opacity-100" : "opacity-0"}`}>
                     {[{n:"4",l:"Role Levels"},{n:"25+",l:"Permissions"},{n:"∞",l:"Clients"}].map(s => (
                         <div key={s.l}>
-                            <p className="font-heading font-black text-white text-2xl">{s.n}</p>
-                            <p className="font-body text-gray-500 text-xs mt-0.5">{s.l}</p>
+                            <p className="font-heading font-black text-[var(--text)] text-2xl">{s.n}</p>
+                            <p className="font-body text-[var(--text-faint)] text-xs mt-0.5">{s.l}</p>
                         </div>
                     ))}
                 </div>
@@ -115,29 +115,29 @@ export default function AdminLogin() {
 
             {/* ── RIGHT panel ── */}
             <div className="flex-1 flex items-center justify-center px-6 py-12 relative">
-                <div className="hidden lg:block absolute left-0 top-0 bottom-0 w-px bg-white/5" />
+                <div className="hidden lg:block absolute left-0 top-0 bottom-0 w-px bg-[var(--surface-2)]" />
 
                 <div className={`w-full max-w-[420px] transition-all duration-700 delay-100 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
 
                     {/* Mobile logo */}
                     <div className="flex items-center gap-2 mb-10 lg:hidden">
-                        <div className="w-8 h-8 bg-[#4353FF] flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-full bg-[#4353FF] flex items-center justify-center">
                             <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
                                 <path d="M4 3h7.5C13.985 3 16 5.015 16 7.5S13.985 12 11.5 12H4V3z" fill="white"/>
                                 <path d="M4 12l5 5" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
                             </svg>
                         </div>
-                        <p className="font-heading font-black text-white">ismaillabs</p>
+                        <p className="font-heading font-black text-[var(--text)]">ismaillabs</p>
                     </div>
 
                     <div className="mb-8">
-                        <h2 className="font-heading font-black text-white text-3xl uppercase tracking-tight mb-2">Welcome back</h2>
-                        <p className="font-body text-gray-500 text-sm">Sign in to your admin account</p>
+                        <h2 className="font-heading font-black text-[var(--text)] text-3xl uppercase tracking-tight mb-2">Welcome back</h2>
+                        <p className="font-body text-[var(--text-faint)] text-sm">Sign in to your admin account</p>
                     </div>
 
                     {/* Error */}
                     {error && (
-                        <div className="mb-6 flex items-start gap-3 bg-red-500/10 border border-red-500/20 px-4 py-3">
+                        <div className="mb-6 flex items-start gap-3 bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3">
                             <svg width="15" height="15" viewBox="0 0 16 16" fill="none" className="flex-shrink-0 mt-0.5">
                                 <circle cx="8" cy="8" r="7" stroke="#ef4444" strokeWidth="1.5"/>
                                 <path d="M8 5v3.5M8 11h.01" stroke="#ef4444" strokeWidth="1.5" strokeLinecap="round"/>
@@ -150,11 +150,11 @@ export default function AdminLogin() {
 
                         {/* Email */}
                         <div>
-                            <label className="block font-body font-semibold text-[11px] text-gray-400 uppercase tracking-widest mb-2">
+                            <label className="block font-body font-semibold text-[11px] text-[var(--text-soft)] uppercase tracking-widest mb-2">
                                 Email Address
                             </label>
                             <div className="relative">
-                                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+                                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-faint)] pointer-events-none">
                                     <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
                                         <rect x="1" y="3" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.4"/>
                                         <path d="M1 5l7 5 7-5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
@@ -167,18 +167,18 @@ export default function AdminLogin() {
                                     placeholder="you@ismaillabs.com"
                                     required
                                     autoComplete="email"
-                                    className="w-full bg-white/5 border border-white/10 text-white font-body text-sm pl-10 pr-4 py-3.5 placeholder-gray-600 focus:outline-none focus:border-[#4353FF] focus:bg-[#4353FF]/5 transition-all"
+                                    className="w-full bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)] font-body text-sm rounded-full pl-10 pr-4 py-3.5 placeholder:text-[var(--text-faint)] focus:outline-none focus:border-[#4353FF] focus:bg-[#4353FF]/5 transition-all"
                                 />
                             </div>
                         </div>
 
                         {/* Password */}
                         <div>
-                            <label className="block font-body font-semibold text-[11px] text-gray-400 uppercase tracking-widest mb-2">
+                            <label className="block font-body font-semibold text-[11px] text-[var(--text-soft)] uppercase tracking-widest mb-2">
                                 Password
                             </label>
                             <div className="relative">
-                                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+                                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-faint)] pointer-events-none">
                                     <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
                                         <rect x="3" y="7" width="10" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.4"/>
                                         <path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
@@ -192,10 +192,10 @@ export default function AdminLogin() {
                                     placeholder="••••••••••"
                                     required
                                     autoComplete="current-password"
-                                    className="w-full bg-white/5 border border-white/10 text-white font-body text-sm pl-10 pr-12 py-3.5 placeholder-gray-600 focus:outline-none focus:border-[#4353FF] focus:bg-[#4353FF]/5 transition-all"
+                                    className="w-full bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)] font-body text-sm rounded-full pl-10 pr-12 py-3.5 placeholder:text-[var(--text-faint)] focus:outline-none focus:border-[#4353FF] focus:bg-[#4353FF]/5 transition-all"
                                 />
                                 <button type="button" onClick={() => setShowPass(v => !v)}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors">
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-faint)] hover:text-[var(--text-soft)] transition-colors">
                                     <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
                                         <path d="M2 8s2.5-4.5 6-4.5S14 8 14 8s-2.5 4.5-6 4.5S2 8 2 8z" stroke="currentColor" strokeWidth="1.4"/>
                                         <circle cx="8" cy="8" r="2" stroke="currentColor" strokeWidth="1.4"/>
@@ -209,7 +209,7 @@ export default function AdminLogin() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full mt-2 bg-[#4353FF] text-white font-heading font-black py-4 uppercase tracking-wider text-sm relative overflow-hidden group
+                            className="w-full mt-2 rounded-full bg-[#4353FF] text-white font-heading font-black py-4 uppercase tracking-wider text-sm relative overflow-hidden group
                          hover:bg-white hover:text-[#0f0f0f] transition-all duration-300
                          disabled:opacity-60 disabled:cursor-not-allowed"
                         >
@@ -235,15 +235,15 @@ export default function AdminLogin() {
                         </button>
                     </form>
 
-                    <div className="mt-8 pt-6 border-t border-white/[0.06] text-center space-y-3">
-                        {/*<p className="font-body text-gray-600 text-xs">
+                    <div className="mt-8 pt-6 border-t border-[var(--border)] text-center space-y-3">
+                        {/*<p className="font-body text-[var(--text-faint)] text-xs">
                             First time?{" "}
-                            <a href="/admin/setup" className="text-[#4353FF] hover:text-white transition-colors font-semibold">
+                            <a href="/admin/setup" className="text-[#4353FF] hover:text-[var(--text)] transition-colors font-semibold">
                                 Create super admin →
                             </a>
                         </p>
                         */}
-                        <a href="/" className="block font-body text-gray-700 text-xs hover:text-gray-400 transition-colors">
+                        <a href="/" className="block font-body text-[var(--text-faint)] text-xs hover:text-[var(--text-soft)] transition-colors">
                             ← Back to main site
                         </a>
                     </div>

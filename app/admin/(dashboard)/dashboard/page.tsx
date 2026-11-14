@@ -3,6 +3,9 @@ import { db, messages, clients, portfolioItems, users } from "@/db";
 import { eq, count } from "drizzle-orm";
 import Link from "next/link";
 import { hasPermission } from "@/lib/permissions";
+import PageHeader from "@/components/admin/PageHeader";
+import PillButton from "@/components/admin/PillButton";
+import StatCard from "@/components/admin/StatCard";
 
 export default async function Dashboard() {
     const user = await getSession();
@@ -42,32 +45,29 @@ export default async function Dashboard() {
 
     return (
         <>
-            {/* Sticky header */}
-            <div className="sticky top-0 z-10 bg-[#0a0a0a]/95 backdrop-blur border-b border-white/[0.06] px-8 py-4 flex items-center justify-between">
-                <div>
-                    <h1 className="font-heading font-black text-white text-xl uppercase tracking-tight">Dashboard</h1>
-                    <p className="font-body text-gray-500 text-xs mt-0.5">
-                        {new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
-                    </p>
-                </div>
-                <div className={`font-body text-xs px-3 py-1.5 uppercase tracking-wider font-bold ${superAdmin
-                        ? "text-yellow-400 bg-yellow-400/10 border border-yellow-400/20"
-                        : "text-[#4353FF] bg-[#4353FF]/10 border border-[#4353FF]/20"
-                    }`}>
-                    {user.role.replace("_", " ")}
-                </div>
-            </div>
+            <PageHeader
+                title="Dashboard"
+                subtitle={new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+                actions={
+                    <div className={`rounded-full font-body text-xs px-3 py-1.5 uppercase tracking-wider font-bold ${superAdmin
+                            ? "text-yellow-400 bg-yellow-400/10 border border-yellow-400/20"
+                            : "text-[#4353FF] bg-[#4353FF]/10 border border-[#4353FF]/20"
+                        }`}>
+                        {user.role.replace("_", " ")}
+                    </div>
+                }
+            />
 
             <div className="p-8">
                 {/* Welcome */}
-                <div className="mb-8 bg-gradient-to-r from-[#4353FF]/10 to-transparent border border-[#4353FF]/20 p-6 flex items-center justify-between">
+                <div className="fade-up mb-8 bg-gradient-to-r from-[#4353FF]/10 to-transparent border border-[#4353FF]/20 rounded-lg p-6 flex items-center justify-between">
                     <div>
-                        <h2 className="font-heading font-black text-white text-2xl mb-1">
+                        <h2 className="font-heading font-black text-[var(--text)] text-2xl mb-1">
                             Welcome back, {user.name.split(" ")[0]} 👋
                         </h2>
-                        <p className="font-body text-gray-400 text-sm">{user.email}</p>
+                        <p className="font-body text-[var(--text-soft)] text-sm">{user.email}</p>
                         {!superAdmin && (
-                            <p className="font-body text-gray-600 text-xs mt-1">
+                            <p className="font-body text-[var(--text-faint)] text-xs mt-1">
                                 {perms.length === 0
                                     ? "⚠️ You have no permissions yet — contact your super admin."
                                     : `You have ${perms.length} permission${perms.length === 1 ? "" : "s"} assigned.`}
@@ -75,36 +75,24 @@ export default async function Dashboard() {
                         )}
                     </div>
                     {(superAdmin || hasPermission(user.role, perms, "messages.view")) && (
-                        <Link href="/admin/messages"
-                            className="hidden md:flex items-center gap-2 bg-[#4353FF] text-white font-body font-semibold text-sm px-5 py-2.5 hover:bg-white hover:text-[#0f0f0f] transition-all duration-300">
-                            View Messages →
-                        </Link>
+                        <PillButton href="/admin/messages" className="hidden md:inline-flex">
+                            View Messages
+                        </PillButton>
                     )}
                 </div>
 
                 {/* Stats */}
                 {stats.length > 0 ? (
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                        {stats.map(s => (
-                            <Link key={s.label} href={s.href}
-                                className="bg-[#111] border border-white/[0.06] p-6 hover:border-white/15 transition-all duration-200 group">
-                                <div className="flex items-start justify-between mb-4">
-                                    <span className="text-2xl">{s.icon}</span>
-                                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="text-gray-700 group-hover:text-gray-400 transition-colors">
-                                        <path d="M3 13L13 3M13 3H6M13 3v7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
-                                </div>
-                                <p className="font-heading font-black text-4xl text-white mb-1">{s.value}</p>
-                                <p className="font-body text-gray-500 text-xs uppercase tracking-widest">{s.label}</p>
-                                <div className="mt-4 h-0.5 w-0 group-hover:w-full transition-all duration-500" style={{ background: s.color }} />
-                            </Link>
+                        {stats.map((s, i) => (
+                            <StatCard key={s.label} label={s.label} value={s.value} color={s.color} href={s.href} icon={s.icon} delay={i * 60} />
                         ))}
                     </div>
                 ) : (
                     !superAdmin && perms.length === 0 && (
-                        <div className="mb-8 border border-dashed border-yellow-400/20 bg-yellow-400/5 p-8 text-center">
+                        <div className="mb-8 border border-dashed border-yellow-400/20 bg-yellow-400/5 rounded-lg p-8 text-center">
                             <p className="font-heading font-black text-yellow-400 text-lg mb-2">No Permissions Assigned</p>
-                            <p className="font-body text-gray-500 text-sm">
+                            <p className="font-body text-[var(--text-soft)] text-sm">
                                 Your account has been created but no permissions have been granted yet.<br />
                                 Please contact your super admin to get access.
                             </p>
@@ -114,29 +102,29 @@ export default async function Dashboard() {
 
                 {/* Recent messages */}
                 {(superAdmin || hasPermission(user.role, perms, "messages.view")) && (
-                    <div className="bg-[#111] border border-white/[0.06]">
-                        <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
-                            <h3 className="font-heading font-black text-white text-sm uppercase tracking-wider">Recent Messages</h3>
-                            <Link href="/admin/messages" className="font-body text-xs text-[#4353FF] hover:text-white transition-colors">View all →</Link>
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg overflow-hidden">
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)]">
+                            <h3 className="font-heading font-black text-[var(--text)] text-sm uppercase tracking-wider">Recent Messages</h3>
+                            <Link href="/admin/messages" className="font-body text-xs text-[#4353FF] hover:text-[var(--text)] transition-colors">View all →</Link>
                         </div>
                         {recentMessages.length === 0 ? (
                             <div className="px-6 py-12 text-center">
-                                <p className="font-body text-gray-600 text-sm">No messages yet.</p>
+                                <p className="font-body text-[var(--text-faint)] text-sm">No messages yet.</p>
                             </div>
                         ) : (
-                            <div className="divide-y divide-white/[0.04]">
+                            <div className="divide-y divide-[var(--border)]">
                                 {recentMessages.map((msg) => (
                                     <Link key={msg.id} href="/admin/messages"
-                                        className="flex items-start gap-4 px-6 py-4 hover:bg-white/[0.02] transition-colors group">
-                                        <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${msg.status === "unread" ? "bg-[#4353FF]" : "bg-gray-700"}`} />
+                                        className="flex items-start gap-4 px-6 py-4 hover:bg-[var(--surface-2)] transition-colors group">
+                                        <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${msg.status === "unread" ? "bg-[#4353FF]" : "bg-[var(--text-faint)]"}`} />
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-2 mb-0.5">
-                                                <span className="font-heading font-bold text-white text-sm">{msg.name}</span>
-                                                <span className="font-body text-gray-600 text-xs truncate">{msg.email}</span>
+                                                <span className="font-heading font-bold text-[var(--text)] text-sm">{msg.name}</span>
+                                                <span className="font-body text-[var(--text-faint)] text-xs truncate">{msg.email}</span>
                                             </div>
-                                            {msg.subject && <p className="font-body text-gray-500 text-xs truncate">{msg.subject}</p>}
+                                            {msg.subject && <p className="font-body text-[var(--text-soft)] text-xs truncate">{msg.subject}</p>}
                                         </div>
-                                        <span className="font-body text-gray-600 text-xs whitespace-nowrap flex-shrink-0">
+                                        <span className="font-body text-[var(--text-faint)] text-xs whitespace-nowrap flex-shrink-0">
                                             {new Date(msg.createdAt).toLocaleDateString()}
                                         </span>
                                     </Link>
