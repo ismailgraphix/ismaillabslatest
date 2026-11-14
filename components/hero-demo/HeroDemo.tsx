@@ -403,7 +403,7 @@ export default function HeroDemo({ autoplay }: { autoplay: boolean }) {
                                 type="button"
                                 data-demo="pay-button"
                                 onClick={pay}
-                                className="w-full rounded-md bg-accent text-white font-semibold py-2.5 hover:bg-[var(--text)] hover:text-[var(--app-bg)] transition-colors duration-[180ms]"
+                                className="btn-wipe w-full rounded-md bg-accent text-white font-semibold py-2.5 hover:text-[var(--app-bg)]"
                             >
                                 Pay {naira.format(invoiceTotal)}
                             </button>

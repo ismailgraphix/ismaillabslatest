@@ -16,12 +16,12 @@ export interface ServiceSummary {
 /** The service cards on their own, for pages that supply their own heading. */
 export function ServiceGrid({ services }: { services: ServiceSummary[] }) {
     return (
-        <ul className="grid sm:grid-cols-2 lg:grid-cols-3 border-t border-l border-[var(--border)] rounded-lg overflow-hidden">
+        <ul className="grid sm:grid-cols-2 lg:grid-cols-3 border-t border-l border-[var(--border)] rounded-lg overflow-hidden" data-reveal-list>
             {services.map((s, i) => (
                 <li key={s.id} className="border-r border-b border-[var(--border)]">
                     <Link
                         href={`/services/${s.slug}`}
-                        className="group relative flex h-full flex-col p-7 hover:bg-[var(--surface)] transition-colors duration-300"
+                        className="group relative flex h-full flex-col p-7 hover:bg-[var(--surface)] transition-colors duration-[120ms]"
                     >
                         <div className="mb-6 flex items-start justify-between gap-4">
                             {/* Icon SVG as entered in the admin */}
@@ -37,7 +37,7 @@ export function ServiceGrid({ services }: { services: ServiceSummary[] }) {
                             </span>
                         </div>
 
-                        <h3 className="font-heading font-bold text-[var(--text)] text-lg leading-snug mb-3 group-hover:text-[var(--accent-text)] transition-colors duration-300">
+                        <h3 className="font-heading font-bold text-[var(--text)] text-lg leading-snug mb-3 group-hover:text-[var(--accent-text)] transition-colors duration-[120ms]">
                             {s.title}
                         </h3>
                         <p className="font-body text-[15px] leading-relaxed text-[var(--muted)] mb-6">
@@ -51,7 +51,7 @@ export function ServiceGrid({ services }: { services: ServiceSummary[] }) {
                             </svg>
                         </span>
 
-                        <span className="absolute bottom-0 left-0 h-[3px] w-0 bg-accent group-hover:w-full transition-all duration-500" aria-hidden="true" />
+                        <span className="absolute bottom-0 left-0 h-[3px] w-full bg-accent origin-left scale-x-0 transition-transform duration-[120ms] ease-in group-hover:scale-x-100 group-hover:duration-[240ms] group-hover:ease-[cubic-bezier(0.2,0,0,1)] group-focus-visible:scale-x-100" aria-hidden="true" />
                     </Link>
                 </li>
             ))}
@@ -65,7 +65,7 @@ export default function Services({ services = [] }: { services?: ServiceSummary[
     return (
         <section id="services" className="bg-[var(--app-bg)] py-24">
             <div className="max-w-[1300px] mx-auto px-6 md:px-10">
-                <div className="mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+                <div className="mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6" data-reveal>
                     <div className="max-w-2xl">
                         <SectionLabel className="mb-5">Services</SectionLabel>
                         <h2 className="font-heading font-bold text-[2.6rem] leading-[1.02] tracking-[-0.03em] sm:text-[3.4rem] text-[var(--text)]">
@@ -74,7 +74,7 @@ export default function Services({ services = [] }: { services?: ServiceSummary[
                     </div>
                     <Link
                         href="/services"
-                        className="inline-flex items-center gap-2 self-start md:self-auto rounded-md border border-[var(--text)] text-[var(--text)] font-body font-semibold px-6 py-3.5 text-sm hover:border-accent hover:text-[var(--accent-text)] transition-colors duration-300"
+                        className="inline-flex items-center gap-2 self-start md:self-auto rounded-md border border-[var(--text)] text-[var(--text)] font-body font-semibold px-6 py-3.5 text-sm hover:border-accent hover:text-[var(--accent-text)] transition-colors duration-[120ms]"
                     >
                         All services
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">

@@ -76,7 +76,7 @@ export default async function ServiceDetailsPage({ params }: { params: { slug: s
 
                     <div className="mt-20 pt-16 border-t border-[var(--border)] text-center">
                         <h2 className="font-heading font-bold text-[var(--text)] text-3xl tracking-tight mb-6">Tell us what you need built</h2>
-                        <Link href="/contact" className="inline-flex items-center gap-3 bg-accent text-white border border-accent font-body font-semibold px-8 py-4 rounded-md hover:bg-[var(--text)] hover:border-[var(--text)] hover:text-[var(--app-bg)] transition-colors duration-300 text-[15px]">
+                        <Link href="/contact" className="btn-wipe inline-flex items-center gap-3 bg-accent text-white border border-accent font-body font-semibold px-8 py-4 rounded-md hover:border-[var(--text)] hover:text-[var(--app-bg)] text-[15px]">
                             Start a project
                         </Link>
                     </div>

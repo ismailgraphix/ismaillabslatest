@@ -25,22 +25,23 @@ export default async function Notes() {
   return (
     <section id="notes" className="py-28 bg-[var(--app-bg)]">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-14">
+        <div className="text-center mb-14" data-reveal>
           <SectionLabel className="justify-center mb-4">From the work</SectionLabel>
           <h2 className="font-heading font-bold text-[clamp(2rem,4vw,3.25rem)] leading-tight tracking-tight text-[var(--text)]">
             Notes
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <ul className="grid md:grid-cols-3 gap-6" data-reveal-list>
           {posts.map(({ post, author, category }) => (
-            <Link href={`/notes/${post.slug}`} key={post.id} className="group rounded-lg overflow-hidden border border-[var(--border)] hover:border-accent/40 transition-colors duration-300 cursor-pointer block bg-[var(--surface)]">
+            <li key={post.id}>
+            <Link href={`/notes/${post.slug}`} className="group rounded-lg overflow-hidden border border-[var(--border)] hover:border-accent/40 transition-colors duration-[120ms] cursor-pointer block h-full bg-[var(--surface)]">
               <div className="relative aspect-video overflow-hidden bg-[var(--chip-bg)]">
                 {post.image ? (
                   <img
                     src={post.image}
                     alt=""
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-full object-cover transition-transform duration-[120ms] ease-in group-hover:scale-[1.03] group-hover:duration-[240ms] group-hover:ease-[cubic-bezier(0.2,0,0,1)]"
                   />
                 ) : (
                   <div className="w-full h-full bg-accent/[0.06]" aria-hidden="true" />
@@ -71,11 +72,12 @@ export default async function Notes() {
                 </div>
               </div>
             </Link>
+            </li>
           ))}
-        </div>
+        </ul>
 
         <div className="mt-16 text-center">
-          <Link href="/notes" className="inline-flex items-center justify-center rounded-md bg-accent text-white border border-accent font-body font-semibold px-8 py-4 text-sm hover:bg-[var(--text)] hover:border-[var(--text)] hover:text-[var(--app-bg)] transition-colors duration-300">
+          <Link href="/notes" className="btn-wipe inline-flex items-center justify-center rounded-md bg-accent text-white border border-accent font-body font-semibold px-8 py-4 text-sm hover:border-[var(--text)] hover:text-[var(--app-bg)]">
             All notes
           </Link>
         </div>

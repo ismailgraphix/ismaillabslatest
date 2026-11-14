@@ -136,11 +136,11 @@ export default function ContactForm({ needs }: { needs: string[] }) {
             <button
                 type="submit"
                 disabled={state === "loading"}
-                className="w-full bg-accent text-white border border-accent font-body font-semibold text-[15px] rounded-md py-4 hover:bg-[var(--text)] hover:border-[var(--text)] hover:text-[var(--app-bg)] transition-colors duration-300 disabled:opacity-50 flex items-center justify-center gap-2"
+                className="btn-wipe w-full bg-accent text-white border border-accent font-body font-semibold text-[15px] rounded-md py-4 hover:border-[var(--text)] hover:text-[var(--app-bg)] disabled:opacity-50 flex items-center justify-center gap-2"
             >
                 {state === "loading" ? (
                     <>
-                        <BarLoader label="" size={14} />
+                        <BarLoader delayed label="" size={14} />
                         Sending…
                     </>
                 ) : "Send brief →"}

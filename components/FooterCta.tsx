@@ -25,10 +25,10 @@ export default function FooterCta() {
                 </h2>
                 <Link
                     href="/contact"
-                    className="relative flex-shrink-0 inline-flex items-center gap-2 bg-white text-ink font-body font-semibold px-8 py-4 rounded-md hover:bg-ink hover:text-white transition-colors duration-300"
+                    className="btn-wipe [--wipe:#0F0F0F] relative flex-shrink-0 inline-flex items-center gap-2 bg-white text-ink font-body font-semibold px-8 py-4 rounded-md hover:text-white"
                 >
                     Start a project
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" className="btn-arrow">
                         <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                 </Link>

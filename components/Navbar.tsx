@@ -3,9 +3,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "@/components/ThemeToggle";
-import Logo from "@/components/Logo";
+import HeaderLogo from "@/components/HeaderLogo";
+import BarLoader from "@/components/BarLoader";
 import { site } from "@/lib/site";
-import CommandPalette, { OPEN_PALETTE_EVENT } from "@/components/CommandPalette";
+import CommandPalette, { OPEN_PALETTE_EVENT, NAVIGATION_START_EVENT } from "@/components/CommandPalette";
 
 // The logo links home, so "Home" is not repeated here.
 const navLinks = [
@@ -29,6 +30,37 @@ export default function Navbar({ showNotes = false }: { showNotes?: boolean }) {
     useEffect(() => {
         setShortcut(/Mac|iPhone|iPad/.test(navigator.platform) ? "⌘K" : "Ctrl K");
     }, []);
+
+    // Navigation loader. Server-rendered pages can take a moment to arrive after
+    // a click; the logo's bars show beside the logo for any wait over 300 ms
+    // (the delay is in CSS). A wait starts on a click on an internal link to
+    // another page, or a NAVIGATION_START_EVENT from code that navigates
+    // (the command palette), and ends when the path changes.
+    const [navigating, setNavigating] = useState(false);
+    useEffect(() => { setNavigating(false); }, [pathname]);
+    useEffect(() => {
+        const start = () => setNavigating(true);
+        const onClick = (e: MouseEvent) => {
+            if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            const a = (e.target as HTMLElement | null)?.closest?.("a[href]") as HTMLAnchorElement | null;
+            if (!a || a.target === "_blank" || a.hasAttribute("download")) return;
+            const url = new URL(a.href, location.href);
+            if (url.origin !== location.origin || url.pathname === location.pathname) return;
+            start();
+        };
+        document.addEventListener("click", onClick);
+        window.addEventListener(NAVIGATION_START_EVENT, start);
+        return () => {
+            document.removeEventListener("click", onClick);
+            window.removeEventListener(NAVIGATION_START_EVENT, start);
+        };
+    }, []);
+    // Never spin forever (a failed navigation leaves the path unchanged).
+    useEffect(() => {
+        if (!navigating) return;
+        const id = window.setTimeout(() => setNavigating(false), 10_000);
+        return () => window.clearTimeout(id);
+    }, [navigating]);
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 40);
@@ -61,18 +93,21 @@ export default function Navbar({ showNotes = false }: { showNotes?: boolean }) {
     return (
         <>
             <header
-                className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${scrolled
-                    ? "bg-[var(--nav-bg)] backdrop-blur-xl shadow-[0_1px_0_0_var(--border)] py-3"
-                    : "bg-transparent py-5"
+                className={`fixed top-0 left-0 w-full z-50 py-4 transition-[background-color,box-shadow] duration-[240ms] ${scrolled
+                    ? "bg-[var(--nav-bg)] backdrop-blur-xl shadow-[0_1px_0_0_var(--border)]"
+                    : "bg-transparent"
                     }`}
             >
                 <div className="max-w-[1400px] mx-auto px-6 md:px-12 flex items-center justify-between">
 
                     {/* ── Logo: the mark alone on small screens, the full logo from sm up ── */}
-                    <Link href="/" aria-label={`${site.name}, home`} className="flex items-center flex-shrink-0">
-                        <Logo kind="mark" height={36} className="inline-block sm:hidden" />
-                        <Logo kind="full" height={32} className="hidden sm:inline-block" />
-                    </Link>
+                    <div className="flex items-center gap-3 flex-shrink-0">
+                        <Link href="/" aria-label={`${site.name}, home`} className="logo-link flex items-center rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
+                            <HeaderLogo kind="mark" height={36} className="block sm:hidden" />
+                            <HeaderLogo kind="full" height={32} className="hidden sm:block" />
+                        </Link>
+                        {navigating && <BarLoader delayed label="Loading page" size={14} className="text-accent" />}
+                    </div>
 
                     {/* ── Desktop nav — absolutely centered ── */}
                     <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-1 rounded-lg px-1.5 py-1.5 bg-[var(--surface)] border border-[var(--border)]">
@@ -91,7 +126,7 @@ export default function Navbar({ showNotes = false }: { showNotes?: boolean }) {
                                 {isActive(link.href) ? (
                                     <span className="absolute bottom-[4px] left-1/2 -translate-x-1/2 h-1 w-1 bg-accent" aria-hidden="true" />
                                 ) : (
-                                    <span className="absolute bottom-[5px] left-1/2 -translate-x-1/2 h-[2px] w-0 bg-accent transition-all duration-[240ms] group-hover:w-5 group-focus-visible:w-5" aria-hidden="true" />
+                                    <span className="absolute bottom-[5px] left-1/2 -ml-2.5 h-[2px] w-5 bg-accent origin-left scale-x-0 transition-transform duration-[120ms] ease-in group-hover:scale-x-100 group-hover:duration-[240ms] group-hover:ease-[cubic-bezier(0.2,0,0,1)] group-focus-visible:scale-x-100" aria-hidden="true" />
                                 )}
                             </Link>
                         ))}
@@ -112,10 +147,10 @@ export default function Navbar({ showNotes = false }: { showNotes?: boolean }) {
                         <ThemeToggle />
                         <Link
                             href="/contact"
-                            className="hidden md:inline-flex items-center gap-2 bg-accent text-white border border-accent rounded-md font-body font-semibold text-[13px] px-5 py-2.5 hover:bg-[var(--text)] hover:border-[var(--text)] hover:text-[var(--app-bg)] transition-colors duration-300"
+                            className="btn-wipe hidden md:inline-flex items-center gap-2 bg-accent text-white border border-accent rounded-md font-body font-semibold text-[13px] px-5 py-2.5 hover:border-[var(--text)] hover:text-[var(--app-bg)]"
                         >
                             Start a project
-                            <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+                            <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true" className="btn-arrow">
                                 <path d="M1 11L11 1M11 1H4M11 1v7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
                         </Link>
@@ -125,54 +160,55 @@ export default function Navbar({ showNotes = false }: { showNotes?: boolean }) {
                             aria-label="Toggle menu"
                             aria-expanded={menuOpen}
                             aria-controls="mobile-nav-panel"
-                            className={`md:hidden w-11 h-11 rounded-md border flex flex-col items-center justify-center gap-[5px] transition-colors duration-300 ${menuOpen
+                            className={`md:hidden w-11 h-11 rounded-md border flex flex-col items-center justify-center gap-[5px] transition-colors duration-[120ms] ${menuOpen
                                 ? "border-accent bg-accent"
                                 : "border-[var(--border)] bg-[var(--surface)] hover:border-accent"
                                 }`}
                         >
-                            <span className={`block h-[2px] transition-all duration-300 origin-center ${menuOpen
-                                ? "w-[14px] rotate-45 translate-y-[3.5px] bg-white"
-                                : "w-[18px] bg-[var(--text)]"
+                            {/* Two bars that cross into an X; transform and colour only. */}
+                            <span className={`block h-[2px] w-[18px] origin-center transition-[transform,background-color] duration-[240ms] ease-[cubic-bezier(0.2,0,0,1)] ${menuOpen
+                                ? "translate-y-[3.5px] rotate-45 scale-x-[0.78] bg-white"
+                                : "bg-[var(--text)]"
                                 }`} />
-                            <span className={`block h-[2px] transition-all duration-300 origin-center ${menuOpen
-                                ? "w-[14px] -rotate-45 -translate-y-[3.5px] bg-white"
-                                : "w-[12px] bg-[var(--text)]"
+                            <span className={`block h-[2px] w-[18px] origin-center transition-[transform,background-color] duration-[240ms] ease-[cubic-bezier(0.2,0,0,1)] ${menuOpen
+                                ? "-translate-y-[3.5px] -rotate-45 scale-x-[0.78] bg-white"
+                                : "scale-x-[0.667] bg-[var(--text)]"
                                 }`} />
                         </button>
                     </div>
                 </div>
 
-                {/* ── Mobile dropdown ── */}
-                <div
-                    id="mobile-nav-panel"
-                    className={`md:hidden overflow-hidden transition-all duration-400 ease-in-out ${menuOpen ? "max-h-[calc(100vh-6rem)] opacity-100" : "max-h-0 opacity-0"
-                        } bg-[var(--surface)] border-t border-[var(--border)] mt-3 pb-5`}
-                >
-                    <div className="px-6 py-5 flex flex-col gap-1">
-                        {links.map((link, i) => (
+                {/* ── Mobile dropdown: fades and rises in on open, closes at once ── */}
+                {menuOpen && (
+                    <div
+                        id="mobile-nav-panel"
+                        className="md:hidden menu-in bg-[var(--surface)] border-t border-[var(--border)] mt-3 pb-5 max-h-[calc(100vh-6rem)] overflow-y-auto"
+                    >
+                        <div className="px-6 py-5 flex flex-col gap-1">
+                            {links.map((link, i) => (
+                                <Link
+                                    key={link.label}
+                                    href={link.href}
+                                    onClick={() => setMenuOpen(false)}
+                                    style={{ animationDelay: `${Math.min(i, 5) * 40}ms` }}
+                                    className={`menu-in font-body font-medium text-base py-3 border-b border-[var(--border)] ${isActive(link.href) ? "text-[var(--accent-text)]" : "text-[var(--text)]"}`}
+                                >
+                                    <span className="inline-flex items-center gap-3">
+                                        {isActive(link.href) && <span className="h-1.5 w-1.5 bg-accent" aria-hidden="true" />}
+                                        {link.label}
+                                    </span>
+                                </Link>
+                            ))}
                             <Link
-                                key={link.label}
-                                href={link.href}
+                                href="/contact"
                                 onClick={() => setMenuOpen(false)}
-                                style={{ transitionDelay: menuOpen ? `${i * 40}ms` : "0ms" }}
-                                className={`font-body font-medium text-base py-3 border-b border-[var(--border)] transition-all duration-300 ${menuOpen ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0"
-                                    } ${isActive(link.href) ? "text-[var(--accent-text)]" : "text-[var(--text)]"}`}
+                                className="btn-wipe mt-4 text-center rounded-md bg-accent text-white border border-accent font-body font-semibold py-3 text-sm hover:border-[var(--text)] hover:text-[var(--app-bg)]"
                             >
-                                <span className="inline-flex items-center gap-3">
-                                    {isActive(link.href) && <span className="h-1.5 w-1.5 bg-accent" aria-hidden="true" />}
-                                    {link.label}
-                                </span>
+                                Start a project
                             </Link>
-                        ))}
-                        <Link
-                            href="/contact"
-                            onClick={() => setMenuOpen(false)}
-                            className="mt-4 text-center rounded-md bg-accent text-white border border-accent font-body font-semibold py-3 text-sm hover:bg-[var(--text)] hover:border-[var(--text)] hover:text-[var(--app-bg)] transition-colors duration-300"
-                        >
-                            Start a project
-                        </Link>
+                        </div>
                     </div>
-                </div>
+                )}
             </header>
 
             <CommandPalette showNotes={showNotes} />

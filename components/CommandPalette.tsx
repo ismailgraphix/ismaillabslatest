@@ -8,9 +8,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { site } from "@/lib/site";
+import { switchTheme } from "@/lib/theme-switch";
 
 /** Other components open the palette by dispatching this event on window. */
 export const OPEN_PALETTE_EVENT = "open-command-palette";
+/** Dispatched on window by code that navigates without a link click, so the header can show its loader. */
+export const NAVIGATION_START_EVENT = "navigation-start";
 
 interface Item {
     id: string;
@@ -100,6 +103,7 @@ export default function CommandPalette({ showNotes = false }: { showNotes?: bool
     const go = useCallback(
         (href: string) => () => {
             close();
+            if (href !== window.location.pathname) window.dispatchEvent(new Event(NAVIGATION_START_EVENT));
             router.push(href);
         },
         [close, router],
@@ -153,8 +157,8 @@ export default function CommandPalette({ showNotes = false }: { showNotes?: bool
                 label: `Switch to ${isDark ? "light" : "dark"} theme`,
                 keywords: "theme dark light mode colour",
                 run: () => {
-                    setTheme(isDark ? "light" : "dark");
                     close();
+                    switchTheme(setTheme, isDark ? "light" : "dark");
                 },
             },
         ];
@@ -221,7 +225,7 @@ export default function CommandPalette({ showNotes = false }: { showNotes?: bool
                 role="dialog"
                 aria-modal="true"
                 aria-label="Command menu"
-                className="relative w-full max-w-xl overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] shadow-2xl"
+                className="menu-in relative w-full max-w-xl overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] shadow-2xl"
             >
                 <div className="flex items-center gap-3 border-b border-[var(--border)] px-4">
                     <span className="h-2 w-2 shrink-0 bg-accent" aria-hidden="true" />

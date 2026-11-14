@@ -62,10 +62,10 @@ export default async function NotesPage({ searchParams }: { searchParams: { cate
                     ) : (
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {posts.map(({ post, author, category }) => (
-                                <Link href={`/notes/${post.slug}`} key={post.id} className="group relative bg-[var(--surface)] border border-[var(--border)] hover:border-accent/40 transition-colors duration-300 overflow-hidden flex flex-col rounded-lg">
+                                <Link href={`/notes/${post.slug}`} key={post.id} className="group relative bg-[var(--surface)] border border-[var(--border)] hover:border-accent/40 transition-colors duration-[120ms] overflow-hidden flex flex-col rounded-lg">
                                     <div className="relative h-[240px] w-full overflow-hidden bg-[var(--chip-bg)]">
                                         {post.image ? (
-                                            <img src={post.image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                            <img src={post.image} alt="" className="w-full h-full object-cover transition-transform duration-[120ms] ease-in group-hover:scale-[1.03] group-hover:duration-[240ms] group-hover:ease-[cubic-bezier(0.2,0,0,1)]" />
                                         ) : (
                                             <div className="w-full h-full bg-accent/[0.06]" aria-hidden="true" />
                                         )}

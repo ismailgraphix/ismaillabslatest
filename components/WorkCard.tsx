@@ -13,7 +13,7 @@ export default function WorkCard({ project, headingLevel = "h3" }: { project: Wo
         <TransitionLink
             href={`/work/${project.slug}`}
             sharedSelector="[data-shared-image]"
-            className="group flex h-full flex-col overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] hover:border-accent/40 transition-colors duration-300"
+            className="group flex h-full flex-col overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] hover:border-accent/40 transition-colors duration-[240ms] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
             <div className="relative aspect-[16/10] overflow-hidden bg-[var(--chip-bg)] border-b border-[var(--border)]">
                 {project.image ? (
@@ -22,11 +22,16 @@ export default function WorkCard({ project, headingLevel = "h3" }: { project: Wo
                         src={project.image}
                         alt={`Screenshot of ${project.title}`}
                         loading="lazy"
-                        className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
+                        className="w-full h-full object-cover object-top transition-transform duration-[120ms] ease-in group-hover:scale-[1.03] group-hover:duration-[240ms] group-hover:ease-[cubic-bezier(0.2,0,0,1)] group-focus-visible:scale-[1.03]"
                     />
                 ) : (
                     <div className="w-full h-full bg-accent/[0.06]" aria-hidden="true" />
                 )}
+                {/* Hover or focus: an accent square appears in the corner */}
+                <span
+                    aria-hidden="true"
+                    className="absolute top-4 right-4 h-3 w-3 bg-accent opacity-0 scale-50 transition-[opacity,transform] duration-[120ms] ease-in group-hover:opacity-100 group-hover:scale-100 group-hover:duration-[240ms] group-hover:ease-[cubic-bezier(0.2,0,0,1)] group-focus-visible:opacity-100 group-focus-visible:scale-100"
+                />
             </div>
 
             <div className="flex flex-1 flex-col p-6 md:p-7">
@@ -35,8 +40,13 @@ export default function WorkCard({ project, headingLevel = "h3" }: { project: Wo
                     <span className="h-1 w-1 bg-accent" aria-hidden="true" />
                     <span className="tabular-nums">{project.year}</span>
                 </p>
-                <Heading className="font-heading font-bold text-[var(--text)] text-xl leading-snug mb-3 group-hover:text-[var(--accent-text)] transition-colors">
+                <Heading className="font-heading font-bold text-[var(--text)] text-xl leading-snug mb-3 group-hover:text-[var(--accent-text)] transition-colors duration-[120ms]">
                     {project.title}
+                    {/* Hover or focus: an underline grows from the left */}
+                    <span
+                        aria-hidden="true"
+                        className="mt-1 block h-[2px] w-12 bg-accent origin-left scale-x-0 transition-transform duration-[120ms] ease-in group-hover:scale-x-100 group-hover:duration-[240ms] group-hover:ease-[cubic-bezier(0.2,0,0,1)] group-focus-visible:scale-x-100"
+                    />
                 </Heading>
                 <p className="font-body text-[15px] leading-relaxed text-[var(--muted)] mb-6">
                     {firstSentence(project.description)}

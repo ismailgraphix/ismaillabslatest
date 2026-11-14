@@ -11,7 +11,9 @@ import Process from "@/components/Process";
 import Testimonials from "@/components/Testimonials";
 import Notes from "@/components/Notes";
 import DatabaseErrorModal from "@/components/DatabaseErrorModal";
-import { getPublishedServices, getWork, type WorkItem } from "@/lib/queries";
+import SectionIndex from "@/components/SectionIndex";
+import { getPublishedServices, getWork, hasEnoughPosts, type WorkItem } from "@/lib/queries";
+import { site } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
@@ -29,8 +31,20 @@ export default async function Home() {
         dbError = "Failed to load the page content due to a database connection error.";
     }
 
+    const showNotes = await hasEnoughPosts();
+    // The section index lists only the sections that are on the page.
+    const sections = [
+        { id: "home", label: "Intro" },
+        ...(work.length > 0 ? [{ id: "work", label: "Work" }] : []),
+        ...(services.length > 0 ? [{ id: "services", label: "What we build" }] : []),
+        { id: "process", label: "How a project runs" },
+        ...(site.testimonials.length >= 2 ? [{ id: "testimonials", label: "From clients" }] : []),
+        ...(showNotes ? [{ id: "notes", label: "Notes" }] : []),
+    ];
+
     return (
         <main>
+            <SectionIndex sections={sections} />
             {dbError && <DatabaseErrorModal error={dbError} />}
             <Hero />
             {/* Each section below renders nothing until it has real content. */}

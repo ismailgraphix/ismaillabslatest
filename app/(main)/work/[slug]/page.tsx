@@ -109,10 +109,10 @@ export default async function WorkDetailPage({ params }: { params: { slug: strin
                                 href={project.link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2.5 bg-accent text-white font-body font-semibold text-sm px-6 py-3.5 rounded-md border border-accent hover:bg-[var(--text)] hover:border-[var(--text)] hover:text-[var(--app-bg)] transition-colors duration-300"
+                                className="btn-wipe inline-flex items-center gap-2.5 bg-accent text-white font-body font-semibold text-sm px-6 py-3.5 rounded-md border border-accent hover:border-[var(--text)] hover:text-[var(--app-bg)]"
                             >
                                 Visit the live site
-                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" className="btn-arrow">
                                     <path d="M1 11L11 1M11 1H4M11 1v7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
                                 <span className="sr-only">(opens in a new tab)</span>

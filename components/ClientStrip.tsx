@@ -10,7 +10,7 @@ export default function ClientStrip() {
 
     return (
         <section aria-labelledby="clients-heading" className="bg-[var(--app-bg)] border-y border-[var(--border)]">
-            <div className="max-w-[1300px] mx-auto px-6 md:px-10 py-8 flex flex-col md:flex-row md:items-center gap-6 md:gap-12">
+            <div data-reveal className="max-w-[1300px] mx-auto px-6 md:px-10 py-8 flex flex-col md:flex-row md:items-center gap-6 md:gap-12">
                 <h2 id="clients-heading" className="font-mono text-xs uppercase tracking-[0.14em] text-[var(--muted)] shrink-0">
                     Built for
                 </h2>

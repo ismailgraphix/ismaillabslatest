@@ -60,6 +60,8 @@ export const metadata: Metadata = {
   },
 };
 
+const LOGO_INTRO_SCRIPT = `try{var d=document.documentElement;if(!sessionStorage.getItem("il-logo-intro")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){d.classList.add("logo-intro");setTimeout(function(){d.classList.remove("logo-intro")},1500)}sessionStorage.setItem("il-logo-intro","1")}catch(e){}`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
@@ -67,6 +69,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
       className={`${headingFont.variable} ${bodyFont.variable} ${monoFont.variable}`}
     >
+      <head>
+        {/* Runs before first paint: plays the header logo intro (app/globals.css,
+            "Header logo") once per browser session, never under reduced motion.
+            The class is removed after the 600 ms intro so it cannot replay. */}
+        <script dangerouslySetInnerHTML={{ __html: LOGO_INTRO_SCRIPT }} />
+      </head>
       <body>
         <ThemeProvider>
           <PageViewTracker />

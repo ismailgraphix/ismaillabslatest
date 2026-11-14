@@ -33,6 +33,12 @@
   --border: rgb(var(--ink-rgb) / 0.12);
   --nav-bg: rgba(255, 255, 255, 0.96);
   --chip-bg: rgb(var(--ink-rgb) / 0.05);
+
+  /* Motion (Phase 5 of the rebuild plan): 120 ms small state changes, 240 ms
+     standard, 480 ms reveals, 800 ms at most for drawn diagrams. Entrances use
+     --ease-out; exits are faster and use a plain ease-in. Only transform and
+     opacity are animated. */
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
 }
 
 * {
@@ -152,14 +158,18 @@ html.dark {
   position: absolute;
   left: 0;
   bottom: -2px;
-  width: 0;
+  width: 100%;
   height: 2px;
   background: var(--accent);
-  transition: width 0.3s ease;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 120ms ease-in; /* exit: faster, plain ease-in */
 }
 
-.hover-line:hover::after {
-  width: 100%;
+.hover-line:hover::after,
+.hover-line:focus-visible::after {
+  transform: scaleX(1);
+  transition: transform 240ms var(--ease-out);
 }
 
 /* ── Living logo ──────────────────────────────────────────────────────────
@@ -222,5 +232,160 @@ html.dark {
   ::view-transition-old(work-hero),
   ::view-transition-new(work-hero) {
     animation: none;
+  }
+}
+
+
+/* ══ Motion system ═══════════════════════════════════════════════════════ */
+
+/* ── Section content reveals (components/RevealObserver.tsx) ──
+   [data-reveal] fades in with an 8 px rise the first time it enters the
+   viewport. [data-reveal-list] does the same for each child, staggered 40 ms,
+   six steps at most. Content is only hidden once the observer is running
+   (html.reveal-ready), so the page reads fine without JavaScript. */
+[data-reveal],
+[data-reveal-list] > * {
+  transition: opacity 240ms var(--ease-out), transform 240ms var(--ease-out);
+}
+html.reveal-ready [data-reveal]:not(.is-revealed),
+html.reveal-ready [data-reveal-list]:not(.is-revealed) > * {
+  opacity: 0;
+  transform: translateY(8px);
+}
+[data-reveal-list].is-revealed > :nth-child(2) { transition-delay: 40ms; }
+[data-reveal-list].is-revealed > :nth-child(3) { transition-delay: 80ms; }
+[data-reveal-list].is-revealed > :nth-child(4) { transition-delay: 120ms; }
+[data-reveal-list].is-revealed > :nth-child(5) { transition-delay: 160ms; }
+[data-reveal-list].is-revealed > :nth-child(n + 6) { transition-delay: 200ms; }
+
+/* ── Hero entrance: runs from first paint, no JavaScript needed ── */
+@keyframes heroLineRise {
+  from { transform: translateY(110%); }
+  to   { transform: translateY(0); }
+}
+@keyframes fadeRise {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes growX {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.hero-line {
+  animation: heroLineRise 480ms var(--ease-out) both;
+}
+.hero-fade-rise {
+  animation: fadeRise 480ms var(--ease-out) both;
+}
+.hero-grow-x {
+  transform-origin: left;
+  animation: growX 480ms var(--ease-out) both;
+}
+.hero-fade-in {
+  animation: fadeIn 480ms ease-out both;
+}
+
+/* ── Header logo (components/HeaderLogo.tsx) ──
+   First page load in a session: the bars grow up from the baseline, short bar
+   first, the dot drops in last and the wordmark fades in. 600 ms in all, 80 ms
+   stagger. The class is set before first paint by the script in app/layout.tsx. */
+@keyframes logoBarGrow {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+@keyframes logoDotDrop {
+  from { opacity: 0; transform: translateY(-60%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.logo-bar,
+.logo-dot {
+  transform-box: fill-box;
+  transform-origin: bottom;
+}
+html.logo-intro .logo-bar-short { animation: logoBarGrow 320ms var(--ease-out) both; }
+html.logo-intro .logo-bar-tall  { animation: logoBarGrow 320ms var(--ease-out) 80ms both; }
+html.logo-intro .logo-dot       { animation: logoDotDrop 240ms var(--ease-out) 240ms both; }
+html.logo-intro .logo-wordmark  { animation: fadeIn 280ms ease-out 320ms both; }
+
+/* Hover or focus: the dot blinks once, like a text cursor. */
+@keyframes dotBlink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+.logo-link:hover .logo-dot,
+.logo-link:focus-visible .logo-dot {
+  animation: dotBlink 240ms steps(1, end) 1;
+}
+
+/* ── Primary buttons: the fill wipes in from the left, the arrow moves 4 px ── */
+.btn-wipe {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition: color 180ms var(--ease-out), border-color 180ms var(--ease-out);
+}
+.btn-wipe::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--wipe, var(--text));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 120ms ease-in; /* exit */
+}
+.btn-wipe:hover::before,
+.btn-wipe:focus-visible::before {
+  transform: scaleX(1);
+  transition: transform 180ms var(--ease-out); /* entrance */
+}
+.btn-wipe .btn-arrow {
+  transition: transform 120ms ease-in;
+}
+.btn-wipe:hover .btn-arrow,
+.btn-wipe:focus-visible .btn-arrow {
+  transform: translateX(4px);
+  transition: transform 180ms var(--ease-out);
+}
+
+/* Loader shown only for waits over 300 ms (BarLoader with `delayed`). */
+.bar-loader-delayed {
+  animation: fadeIn 120ms ease-out 300ms both;
+}
+
+/* Mobile menu: opens with a short fade and rise; closes at once. */
+.menu-in {
+  animation: fadeRise 240ms var(--ease-out) both;
+}
+
+/* ── Reduced motion: no movement; only short opacity fades remain ── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  html.reveal-ready [data-reveal]:not(.is-revealed),
+  html.reveal-ready [data-reveal-list]:not(.is-revealed) > * {
+    transform: none;
+  }
+  .hero-line,
+  .hero-grow-x {
+    animation: none;
+  }
+  .hero-fade-rise,
+  .menu-in {
+    animation-name: fadeIn;
+  }
+  html.logo-intro .logo-bar-short,
+  html.logo-intro .logo-bar-tall,
+  html.logo-intro .logo-dot {
+    animation: none;
+  }
+  .btn-wipe::before,
+  .btn-wipe .btn-arrow {
+    transition: none;
   }
 }

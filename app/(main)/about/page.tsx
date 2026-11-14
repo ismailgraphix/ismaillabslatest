@@ -71,7 +71,7 @@ export default async function AboutPage() {
 
             {/* ── Founder ── */}
             {bio && (
-                <section aria-labelledby="founder-heading" className="max-w-[1300px] mx-auto px-6 md:px-10 py-16 border-t border-[var(--border)]">
+                <section aria-labelledby="founder-heading" data-reveal className="max-w-[1300px] mx-auto px-6 md:px-10 py-16 border-t border-[var(--border)]">
                     <div className={`grid gap-12 ${hero?.image ? "lg:grid-cols-[1fr_380px]" : ""} items-start`}>
                         <div className="max-w-2xl">
                             <SectionLabel className="mb-4">Founder</SectionLabel>
@@ -81,7 +81,7 @@ export default async function AboutPage() {
                             {hasResumePdf && (
                                 <a
                                     href={resumeUrl}
-                                    className="mt-8 inline-flex items-center gap-2 border border-[var(--text)] text-[var(--text)] font-body font-semibold px-6 py-3.5 rounded-md hover:bg-[var(--text)] hover:text-[var(--app-bg)] transition-colors duration-300 text-sm"
+                                    className="mt-8 inline-flex items-center gap-2 border border-[var(--text)] text-[var(--text)] font-body font-semibold px-6 py-3.5 rounded-md hover:bg-[var(--text)] hover:text-[var(--app-bg)] transition-colors duration-[120ms] text-sm"
                                 >
                                     Download CV (PDF)
                                 </a>
@@ -102,7 +102,7 @@ export default async function AboutPage() {
 
             {/* ── Stack, as plain grouped text ── */}
             {stackGroups.length > 0 && (
-                <section aria-labelledby="stack-heading" className="max-w-[1300px] mx-auto px-6 md:px-10 py-16 border-t border-[var(--border)]">
+                <section aria-labelledby="stack-heading" data-reveal className="max-w-[1300px] mx-auto px-6 md:px-10 py-16 border-t border-[var(--border)]">
                     <SectionLabel className="mb-4">Stack</SectionLabel>
                     <h2 id="stack-heading" className={`${sectionHeading} mb-10`}>What we build with</h2>
                     <dl className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -120,7 +120,7 @@ export default async function AboutPage() {
 
             {/* ── Experience, only with entries ── */}
             {experiences.length > 0 && (
-                <section aria-labelledby="experience-heading" className="max-w-[1300px] mx-auto px-6 md:px-10 py-16 border-t border-[var(--border)]">
+                <section aria-labelledby="experience-heading" data-reveal className="max-w-[1300px] mx-auto px-6 md:px-10 py-16 border-t border-[var(--border)]">
                     <SectionLabel className="mb-4">Experience</SectionLabel>
                     <h2 id="experience-heading" className={`${sectionHeading} mb-10`}>Work experience</h2>
                     <ol className="space-y-6">
@@ -147,7 +147,7 @@ export default async function AboutPage() {
 
             {/* ── Education, only with entries ── */}
             {education.length > 0 && (
-                <section aria-labelledby="education-heading" className="max-w-[1300px] mx-auto px-6 md:px-10 py-16 border-t border-[var(--border)]">
+                <section aria-labelledby="education-heading" data-reveal className="max-w-[1300px] mx-auto px-6 md:px-10 py-16 border-t border-[var(--border)]">
                     <SectionLabel className="mb-4">Education</SectionLabel>
                     <h2 id="education-heading" className={`${sectionHeading} mb-10`}>Education</h2>
                     <ul className="grid md:grid-cols-2 gap-5">

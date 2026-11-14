@@ -37,7 +37,7 @@ export default async function WorkPage() {
                         Projects will be listed here soon.
                     </p>
                 ) : (
-                    <ul className="grid gap-6 md:grid-cols-2">
+                    <ul className="grid gap-6 md:grid-cols-2" data-reveal-list>
                         {work.map((project) => (
                             <li key={project.id}>
                                 <WorkCard project={project} headingLevel="h2" />
