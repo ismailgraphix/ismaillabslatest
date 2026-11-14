@@ -4,6 +4,24 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { site } from "@/lib/site";
 
+// One line of the heading, rising from behind a mask.
+function HeadingLine({ children, loaded, delay }: { children: React.ReactNode; loaded: boolean; delay: number }) {
+    return (
+        <span className="block overflow-hidden pb-[0.16em] -mb-[0.16em]">
+            <span
+                className="block"
+                style={{
+                    opacity: loaded ? 1 : 0,
+                    transform: loaded ? "translateY(0)" : "translateY(110%)",
+                    transition: `all 0.85s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+                }}
+            >
+                {children}
+            </span>
+        </span>
+    );
+}
+
 export default function Hero() {
     const [loaded, setLoaded] = useState(false);
 
@@ -13,269 +31,149 @@ export default function Hero() {
         return () => clearTimeout(t);
     }, []);
 
-    // Shared transition helper
-    const reveal = (delay: number, extra = "") =>
-        `transition-all duration-700 ease-out ${extra} ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-        }`;
-
     return (
-        <>
-            <style>{`
-                @keyframes fadeUp {
-                    from { opacity: 0; transform: translateY(24px); }
-                    to   { opacity: 1; transform: translateY(0); }
-                }
-                @keyframes scaleIn {
-                    from { opacity: 0; transform: scale(0.92); }
-                    to   { opacity: 1; transform: scale(1); }
-                }
-                @keyframes drawUnderline {
-                    from { stroke-dashoffset: 600; }
-                    to   { stroke-dashoffset: 0; }
-                }
-                @keyframes pulseDot {
-                    0%, 100% { opacity: 1;   transform: scale(1); }
-                    50%       { opacity: 0.4; transform: scale(0.7); }
-                }
-                @keyframes rotateSlow {
-                    from { transform: rotate(0deg); }
-                    to   { transform: rotate(360deg); }
-                }
-            `}</style>
+        <section
+            id="home"
+            className="relative w-full min-h-screen bg-[var(--app-bg)] flex flex-col overflow-hidden"
+        >
 
-            <section
-                id="home"
-                className="relative w-full min-h-screen bg-[var(--app-bg)] flex flex-col overflow-hidden"
+            {/* ──────────── Background geometry: squares and thin lines, from the logo ──────────── */}
+
+            {/* Accent square, right side */}
+            <div
+                className="absolute pointer-events-none"
+                style={{
+                    width: "clamp(10px, 1.2vw, 18px)",
+                    height: "clamp(10px, 1.2vw, 18px)",
+                    background: "var(--accent)",
+                    top: "30%",
+                    right: "8%",
+                    opacity: loaded ? 1 : 0,
+                    transition: "opacity 1s ease 1s",
+                }}
+            />
+
+            {/* Cross / plus mark — bottom left area */}
+            <svg
+                className="absolute pointer-events-none hidden md:block text-[var(--text)]"
+                style={{ bottom: "26%", left: "3%", opacity: loaded ? 0.18 : 0, transition: "opacity 1s ease 1.4s" }}
+                width="24" height="24" viewBox="0 0 24 24" fill="none"
             >
+                <line x1="12" y1="0" x2="12" y2="24" stroke="currentColor" strokeWidth="1.2" />
+                <line x1="0" y1="12" x2="24" y2="12" stroke="currentColor" strokeWidth="1.2" />
+            </svg>
 
-                {/* ──────────── Background geometry ──────────── */}
+            {/* ──────────── Main content ──────────── */}
+            <div className="relative z-10 flex-1 flex flex-col justify-center max-w-[1400px] mx-auto w-full px-6 md:px-14 pt-36 pb-16">
 
-                {/* Large ghost circle — top right, very subtle */}
+                {/* Eyebrow */}
                 <div
-                    className="absolute pointer-events-none rounded-full border border-[#0f0f0f]/[0.055]"
+                    className="flex items-center gap-3 mb-10"
                     style={{
-                        width: "min(68vw, 860px)",
-                        height: "min(68vw, 860px)",
-                        top: "-22%",
-                        right: "-14%",
                         opacity: loaded ? 1 : 0,
-                        transition: "opacity 1.4s ease 0.3s",
-                    }}
-                />
-                {/* Inner circle */}
-                <div
-                    className="absolute pointer-events-none rounded-full border border-[#0f0f0f]/[0.04]"
-                    style={{
-                        width: "min(48vw, 600px)",
-                        height: "min(48vw, 600px)",
-                        top: "-10%",
-                        right: "-4%",
-                        opacity: loaded ? 1 : 0,
-                        transition: "opacity 1.4s ease 0.5s",
-                    }}
-                />
-
-                {/* Blue filled square — right side accent, very quiet */}
-                <div
-                    className="absolute pointer-events-none"
-                    style={{
-                        width: "clamp(10px, 1.2vw, 18px)",
-                        height: "clamp(10px, 1.2vw, 18px)",
-                        background: "#4353FF",
-                        top: "30%",
-                        right: "8%",
-                        opacity: loaded ? 0.7 : 0,
-                        transition: "opacity 1s ease 1s",
-                    }}
-                />
-
-                {/* Rotating text ring — bottom right, ultra-subtle */}
-                <div
-                    className="absolute pointer-events-none select-none hidden lg:block"
-                    style={{
-                        bottom: "14%",
-                        right: "5%",
-                        width: "clamp(90px, 8vw, 130px)",
-                        height: "clamp(90px, 8vw, 130px)",
-                        opacity: loaded ? 0.3 : 0,
-                        transition: "opacity 1.2s ease 1.2s",
-                        animation: "rotateSlow 22s linear infinite",
+                        transform: loaded ? "translateY(0)" : "translateY(16px)",
+                        transition: "all 0.7s ease 0.1s",
                     }}
                 >
-                    <svg viewBox="0 0 130 130" fill="none">
-                        <path id="ring" d="M65,65 m-52,0 a52,52 0 1,1 104,0 a52,52 0 1,1 -104,0" fill="none" />
-                        <text style={{ fontSize: "12.5px", letterSpacing: "3.8px", fill: "#0f0f0f" }}>
-                            <textPath href="#ring">DIGITAL · AGENCY · EST. 2024 ·</textPath>
-                        </text>
-                        <circle cx="65" cy="65" r="2.5" fill="#4353FF" />
-                    </svg>
+                    {/* Status light: the logo's square dot */}
+                    <span className="relative flex h-2 w-2">
+                        <span
+                            className="absolute inline-flex h-full w-full bg-accent opacity-60"
+                            style={{ animation: "pulseDot 2.4s ease-in-out infinite" }}
+                        />
+                        <span className="relative inline-flex h-2 w-2 bg-accent" />
+                    </span>
+                    <span className="font-mono text-xs text-[var(--text-soft)] uppercase tracking-[0.14em]">
+                        Digital Agency · Available for Projects
+                    </span>
                 </div>
 
-                {/* Cross / plus mark — bottom left area */}
-                <svg
-                    className="absolute pointer-events-none hidden md:block"
-                    style={{ bottom: "26%", left: "3%", opacity: loaded ? 0.18 : 0, transition: "opacity 1s ease 1.4s" }}
-                    width="24" height="24" viewBox="0 0 24 24" fill="none"
+                {/* ── Headline: one h1, three lines, each rising from behind a mask.
+                       Set at the large display size the landing page had before the rebrand. ── */}
+                <h1
+                    className="font-heading font-bold text-[var(--text)] leading-[0.95] tracking-[-0.04em] mb-14"
+                    style={{ fontSize: "clamp(3.6rem, 10vw, 9.5rem)" }}
                 >
-                    <line x1="12" y1="0" x2="12" y2="24" stroke="#0f0f0f" strokeWidth="1.2" />
-                    <line x1="0" y1="12" x2="24" y2="12" stroke="#0f0f0f" strokeWidth="1.2" />
-                </svg>
+                    <HeadingLine loaded={loaded} delay={0.18}>We build</HeadingLine>
+                    <HeadingLine loaded={loaded} delay={0.3}>
+                        your{" "}
+                        <span className="relative inline-block text-accent">
+                            digital
+                            {/* Underline bar, growing from the left */}
+                            <span
+                                className="absolute left-0 bottom-[0.02em] h-[0.06em] w-full bg-accent origin-left"
+                                style={{
+                                    transform: loaded ? "scaleX(1)" : "scaleX(0)",
+                                    transition: "transform 0.9s cubic-bezier(0.2,0,0,1) 1.1s",
+                                }}
+                            />
+                        </span>
+                    </HeadingLine>
+                    <HeadingLine loaded={loaded} delay={0.42}>presence.</HeadingLine>
+                </h1>
 
-                {/* ──────────── Main content ──────────── */}
-                <div className="relative z-10 flex-1 flex flex-col justify-center max-w-[1400px] mx-auto w-full px-6 md:px-14 pt-36 pb-10">
-
-                    {/* Eyebrow */}
+                {/* ── Bottom row ── */}
+                <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-10">
+                    {/* Description + CTAs */}
                     <div
-                        className="flex items-center gap-3 mb-10"
+                        className="max-w-[460px]"
                         style={{
                             opacity: loaded ? 1 : 0,
-                            transform: loaded ? "translateY(0)" : "translateY(16px)",
-                            transition: "all 0.7s ease 0.1s",
+                            transform: loaded ? "translateY(0)" : "translateY(20px)",
+                            transition: "all 0.8s ease 0.6s",
                         }}
                     >
-                        {/* Live pulse dot */}
-                        <span className="relative flex h-2 w-2">
-                            <span
-                                className="absolute inline-flex h-full w-full rounded-full bg-[#4353FF] opacity-60"
-                                style={{ animation: "pulseDot 2.4s ease-in-out infinite" }}
-                            />
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#4353FF]" />
-                        </span>
-                        <span className="font-body text-[11px] text-[var(--text-soft)] uppercase tracking-[0.26em]">
-                            Digital Agency · Available for Projects
-                        </span>
-                    </div>
+                        <p className="font-body text-[var(--text-soft)] text-base md:text-lg leading-relaxed">
+                            From a stunning website to a complete digital product —
+                            we design, build, and scale your online presence so you
+                            can focus on running your business.
+                        </p>
 
-                    {/* ── Headline — three lines, clipped reveal ── */}
-                    {/* Line 1 */}
-                    <div className="overflow-hidden">
-                        <h1
-                            className="font-heading font-black text-[var(--text)] uppercase leading-[0.87] tracking-[-0.03em]"
-                            style={{
-                                fontSize: "clamp(3.6rem, 10vw, 9.5rem)",
-                                opacity: loaded ? 1 : 0,
-                                transform: loaded ? "translateY(0)" : "translateY(110%)",
-                                transition: "all 0.85s cubic-bezier(0.16,1,0.3,1) 0.18s",
-                            }}
-                        >
-                            We Build
-                        </h1>
-                    </div>
-
-                    {/* Line 2 — "Your Digital" with blue underline on "Digital" */}
-                    <div className="overflow-hidden">
-                        <h1
-                            className="font-heading font-black text-[var(--text)] uppercase leading-[0.87] tracking-[-0.03em] flex flex-wrap items-baseline gap-x-[0.2em]"
-                            style={{
-                                fontSize: "clamp(3.6rem, 10vw, 9.5rem)",
-                                opacity: loaded ? 1 : 0,
-                                transform: loaded ? "translateY(0)" : "translateY(110%)",
-                                transition: "all 0.85s cubic-bezier(0.16,1,0.3,1) 0.3s",
-                            }}
-                        >
-                            <span>Your</span>
-                            <span className="relative text-[#4353FF]">
-                                Digital
-                                {/* Animated underline */}
-                                <svg
-                                    className="absolute left-0 w-full"
-                                    style={{ bottom: "-8%", height: "clamp(5px, 0.7vw, 10px)" }}
-                                    viewBox="0 0 340 10" fill="none" preserveAspectRatio="none"
-                                >
-                                    <path
-                                        d="M2 7 Q85 1 170 7 Q255 13 338 7"
-                                        stroke="#4353FF" strokeWidth="2.5" fill="none"
-                                        strokeLinecap="round"
-                                        strokeDasharray="600"
-                                        strokeDashoffset={loaded ? "0" : "600"}
-                                        style={{ transition: "stroke-dashoffset 1.1s ease 1.1s" }}
-                                    />
-                                </svg>
-                            </span>
-                        </h1>
-                    </div>
-
-                    {/* Line 3 */}
-                    <div className="overflow-hidden mb-14">
-                        <h1
-                            className="font-heading font-black text-[var(--text)] uppercase leading-[0.87] tracking-[-0.03em]"
-                            style={{
-                                fontSize: "clamp(3.6rem, 10vw, 9.5rem)",
-                                opacity: loaded ? 1 : 0,
-                                transform: loaded ? "translateY(0)" : "translateY(110%)",
-                                transition: "all 0.85s cubic-bezier(0.16,1,0.3,1) 0.42s",
-                            }}
-                        >
-                            Presence.
-                        </h1>
-                    </div>
-
-                    {/* ── Bottom row ── */}
-                    <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-10">
-                        {/* Description + CTAs */}
-                        <div
-                            className="max-w-[400px]"
-                            style={{
-                                opacity: loaded ? 1 : 0,
-                                transform: loaded ? "translateY(0)" : "translateY(20px)",
-                                transition: "all 0.8s ease 0.6s",
-                            }}
-                        >
-                            <p
-                                className="font-body text-[var(--text-soft)] leading-relaxed"
-                                style={{ fontSize: "clamp(0.88rem, 1.15vw, 1rem)" }}
+                        <div className="flex flex-wrap items-center gap-4 mt-8">
+                            <Link
+                                href="/portfolio#work"
+                                className="inline-flex items-center gap-2.5 bg-accent text-white font-body font-semibold text-sm px-6 py-3.5 rounded-md border border-accent hover:bg-[var(--text)] hover:border-[var(--text)] hover:text-[var(--app-bg)] transition-colors duration-300 group"
                             >
-                                From a stunning website to a complete digital product —
-                                we design, build, and scale your online presence so you
-                                can focus on running your business.
-                            </p>
-
-                            <div className="flex items-center gap-4 mt-8">
-                                <Link
-                                    href="/portfolio#work"
-                                    className="inline-flex items-center gap-2.5 bg-[#4353FF] text-white font-body font-semibold text-[13px] px-6 py-3.5 rounded-full border border-[#4353FF] hover:bg-[var(--text)] hover:text-[var(--surface)] transition-all duration-300 hover:-translate-y-px group"
-                                >
-                                    See Our Work
-                                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
-                                        className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 text-inherit">
-                                        <path d="M1 11L11 1M11 1H4M11 1v7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
-                                </Link>
-                                <a
-                                    href="#contact"
-                                    className="inline-flex items-center gap-2 font-body font-medium text-[13px] text-[var(--text)] border-[1.5px] border-[var(--text)] px-6 py-3.5 rounded-full hover:border-[#4353FF] hover:text-[#4353FF] transition-all duration-300 hover:-translate-y-px group"
-                                >
-                                    Start a project
-                                    <svg width="11" height="11" viewBox="0 0 12 12" fill="none"
-                                        className="transition-transform duration-300 group-hover:translate-x-0.5">
-                                        <path d="M1 6h10M7 2l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
-                                </a>
-                            </div>
+                                See Our Work
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
+                                    className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 text-inherit">
+                                    <path d="M1 11L11 1M11 1H4M11 1v7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                            </Link>
+                            <a
+                                href="#contact"
+                                className="inline-flex items-center gap-2 font-body font-medium text-sm text-[var(--text)] border border-[var(--text)] px-6 py-3.5 rounded-md hover:border-accent hover:text-[var(--accent-text)] transition-colors duration-300 group"
+                            >
+                                Start a project
+                                <svg width="11" height="11" viewBox="0 0 12 12" fill="none"
+                                    className="transition-transform duration-300 group-hover:translate-x-0.5">
+                                    <path d="M1 6h10M7 2l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                            </a>
                         </div>
-
-                        {/* Stats: confirmed numbers from lib/site.ts, as static text. Hidden while there are none. */}
-                        {site.stats.length > 0 && (
-                            <div className="flex items-end gap-10 md:gap-16 shrink-0">
-                                {site.stats.map((s) => (
-                                    <div key={s.label} className="text-right">
-                                        <p
-                                            className="font-heading font-black text-[var(--text)] tabular-nums"
-                                            style={{ fontSize: "clamp(2rem, 3.8vw, 3.5rem)" }}
-                                        >
-                                            {s.value}
-                                        </p>
-                                        <p className="font-body text-[var(--text-faint)] text-[10px] uppercase tracking-[0.15em] leading-snug mt-0.5 whitespace-pre-line">
-                                            {s.label}
-                                        </p>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
                     </div>
-                </div>
 
-            </section>
-        </>
+                    {/* Stats: confirmed numbers from lib/site.ts, as static text. Hidden while there are none. */}
+                    {site.stats.length > 0 && (
+                        <div className="flex items-end gap-10 md:gap-16 shrink-0">
+                            {site.stats.map((s) => (
+                                <div key={s.label} className="text-right">
+                                    <p
+                                        className="font-heading font-bold text-[var(--text)] tabular-nums"
+                                        style={{ fontSize: "clamp(2rem, 3.8vw, 3.5rem)" }}
+                                    >
+                                        {s.value}
+                                    </p>
+                                    <p className="font-mono text-[var(--text-faint)] text-[11px] uppercase tracking-[0.12em] leading-snug mt-0.5 whitespace-pre-line">
+                                        {s.label}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+        </section>
     );
 }

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { unstable_noStore as noStore } from "next/cache";
 import { getPublishedServices, hasEnoughPosts } from "@/lib/queries";
 import { site } from "@/lib/site";
+import Logo from "@/components/Logo";
 
 // Icons for the platforms we can draw, keyed by lowercase label. A social link
 // whose label is not listed here still renders, as a text link.
@@ -66,18 +67,18 @@ export default async function Footer() {
     <footer className="bg-[var(--surface)] border-t border-[var(--border)]">
       {/* CTA Banner */}
       <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="bg-[#4353FF] rounded-3xl p-12 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
+        <div className="bg-accent rounded-lg p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
           <div className="absolute inset-0 opacity-10"
             style={{
               backgroundImage: `repeating-linear-gradient(45deg, white, white 1px, transparent 1px, transparent 20px)`,
             }}
           />
-          <h2 className="relative font-heading font-black text-white text-[clamp(1.5rem,3vw,2.5rem)] leading-tight">
-            Let's Start Your Next<br />Dream Project
+          <h2 className="relative font-heading font-bold text-white text-[clamp(1.5rem,3vw,2.5rem)] leading-tight tracking-tight">
+            Let&apos;s start your next<br />dream project
           </h2>
           <Link
             href="/#contact"
-            className="relative flex-shrink-0 inline-flex items-center gap-2 bg-white text-[#4353FF] font-heading font-black px-8 py-4 rounded-full hover:bg-[var(--text)] hover:text-[var(--surface)] transition-all duration-300"
+            className="relative flex-shrink-0 inline-flex items-center gap-2 bg-white text-ink font-body font-semibold px-8 py-4 rounded-md hover:bg-ink hover:text-white transition-colors duration-300"
           >
             Get in Touch
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -92,10 +93,8 @@ export default async function Footer() {
         <div className="grid md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr] gap-12 pb-12 border-b border-[var(--border)]">
           {/* Brand */}
           <div>
-            <Link href="/" className="inline-block mb-5">
-              <span className="font-heading font-black text-2xl text-[var(--text)] tracking-tight">
-                Ismail <span className="text-[#4353FF]">Labs</span>
-              </span>
+            <Link href="/" aria-label={`${site.name}, home`} className="inline-block mb-4 -ml-1.5">
+              <Logo height={36} />
             </Link>
             <p className="font-body text-[var(--muted)] text-sm leading-relaxed mb-6 max-w-sm">
               We bring business and the digital world together with passion for creative problem solving.
@@ -111,7 +110,7 @@ export default async function Footer() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={item.label}
-                      className="w-9 h-9 rounded-full bg-[var(--surface-2)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] hover:bg-[#4353FF] hover:border-[#4353FF] hover:text-white transition-all"
+                      className="w-9 h-9 rounded-md bg-[var(--surface-2)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] hover:bg-accent hover:border-accent hover:text-white transition-colors"
                     >
                       {icon}
                     </a>
@@ -121,7 +120,7 @@ export default async function Footer() {
                       href={item.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-body text-sm text-[var(--muted)] hover:text-[#4353FF] transition-colors hover-line"
+                      className="font-body text-sm text-[var(--muted)] hover:text-[var(--accent-text)] transition-colors hover-line"
                     >
                       {item.label}
                     </a>
@@ -133,11 +132,11 @@ export default async function Footer() {
 
           {/* Company */}
           <div>
-            <h4 className="font-heading font-black text-[var(--text)] mb-5">Company</h4>
+            <h4 className="font-mono text-xs uppercase tracking-[0.14em] text-[var(--muted)] mb-5">Company</h4>
             <ul className="space-y-3">
               {companyLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="font-body text-sm text-[var(--muted)] hover:text-[#4353FF] transition-colors hover-line">
+                  <Link href={link.href} className="font-body text-sm text-[var(--muted)] hover:text-[var(--accent-text)] transition-colors hover-line">
                     {link.label}
                   </Link>
                 </li>
@@ -148,11 +147,11 @@ export default async function Footer() {
           {/* Services, from the database */}
           {serviceLinks.length > 0 && (
             <div>
-              <h4 className="font-heading font-black text-[var(--text)] mb-5">Services</h4>
+              <h4 className="font-mono text-xs uppercase tracking-[0.14em] text-[var(--muted)] mb-5">Services</h4>
               <ul className="space-y-3">
                 {serviceLinks.map((service) => (
                   <li key={service.slug}>
-                    <Link href={`/services/${service.slug}`} className="font-body text-sm text-[var(--muted)] hover:text-[#4353FF] transition-colors hover-line">
+                    <Link href={`/services/${service.slug}`} className="font-body text-sm text-[var(--muted)] hover:text-[var(--accent-text)] transition-colors hover-line">
                       {service.title}
                     </Link>
                   </li>

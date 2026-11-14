@@ -24,9 +24,9 @@ export default function Team() {
     <section className="py-28 bg-[#F7F5F0]">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 bg-[#4A6CF7]/10 rounded-full px-4 py-2 mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#4A6CF7]" />
-            <span className="font-heading font-semibold text-sm text-[#4A6CF7] uppercase tracking-widest">Team Members</span>
+          <div className="inline-flex items-center gap-2 bg-accent/10 rounded-full px-4 py-2 mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+            <span className="font-heading font-semibold text-sm text-[var(--accent-text)] uppercase tracking-widest">Team Members</span>
           </div>
           <h2 className="font-heading font-black text-[clamp(2rem,4vw,3.5rem)] leading-tight text-[#0A0A0A]">
             Experience Team Member
@@ -44,7 +44,7 @@ export default function Team() {
                 {/* Social links */}
                 <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 translate-y-8 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
                   {socials.map((s) => (
-                    <div key={s} className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#0A0A0A] font-heading font-bold text-xs hover:bg-[#4A6CF7] hover:text-white transition-colors cursor-pointer">
+                    <div key={s} className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#0A0A0A] font-heading font-bold text-xs hover:bg-accent hover:text-white transition-colors cursor-pointer">
                       {s}
                     </div>
                   ))}
@@ -53,14 +53,14 @@ export default function Team() {
 
               {/* Info */}
               <div className="p-5">
-                <h3 className="font-heading font-black text-lg text-[#0A0A0A] group-hover:text-[#4A6CF7] transition-colors">
+                <h3 className="font-heading font-black text-lg text-[#0A0A0A] group-hover:text-[var(--accent-text)] transition-colors">
                   {member.name}
                 </h3>
                 <p className="font-body text-sm text-gray-500 mt-1">{member.role}</p>
               </div>
 
               {/* Bottom accent */}
-              <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#4A6CF7] group-hover:w-full transition-all duration-500" />
+              <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent group-hover:w-full transition-all duration-500" />
             </div>
           ))}
         </div>

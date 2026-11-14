@@ -28,6 +28,9 @@ export interface Testimonial {
 
 export const site = {
     name: "Ismail Labs",
+    // Canonical production origin (ismaillabs.com redirects here). Used to build
+    // absolute URLs for share images and, later, canonical links and the sitemap.
+    url: "https://www.ismaillabs.com",
     email: "hello@ismaillabs.com",
 
     // [REAL PHONE]: a phone or WhatsApp number in international format.

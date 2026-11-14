@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { Activity, Layers, PenTool, Search } from "lucide-react";
+import SectionLabel from "@/components/SectionLabel";
 
 const steps = [
   {
@@ -55,22 +56,13 @@ export default function Process() {
       viewport={{ once: true, amount: 0.2 }}
       variants={container}
     >
-      <div className="pointer-events-none absolute -right-16 top-12 h-64 w-64 rounded-full bg-[#4353FF]/10 blur-3xl" />
-      <div className="pointer-events-none absolute left-6 bottom-10 h-48 w-48 rounded-full bg-[var(--surface-2)] blur-3xl" />
-
       <div className="mx-auto max-w-7xl px-6 py-24 sm:px-8 lg:px-12">
         <div className="max-w-3xl">
-          <div className="flex items-center gap-3 mb-5">
-            <span className="block h-[3px] w-10 bg-[#4353FF] rounded-full" />
-            <p className="font-body text-xs uppercase tracking-[0.28em] text-[#4353FF]">
-              Our process
-            </p>
-          </div>
-          <h2 className="font-heading font-black text-[2.6rem] leading-[0.94] tracking-[-0.03em] sm:text-[3.4rem]">
-            A POLISHED WORKFLOW BUILT FOR PRODUCT CLARITY AND RELIABLE DELIVERY.
-            
+          <SectionLabel className="mb-5">Our process</SectionLabel>
+          <h2 className="font-heading font-bold text-[2.6rem] leading-[1.02] tracking-[-0.03em] sm:text-[3.4rem]">
+            A polished workflow built for product clarity and reliable delivery.
           </h2>
-          <p className="mt-6 max-w-2xl text-base leading-7 text-[var(--muted)]">
+          <p className="mt-6 max-w-2xl text-base md:text-[17px] leading-relaxed text-[var(--muted)]">
             We combine strategic planning, clean execution, and careful validation so every phase feels aligned with your business goals.
           </p>
         </div>
@@ -82,21 +74,21 @@ export default function Process() {
               <motion.article
                 key={step.id}
                 variants={item}
-                className="group relative overflow-hidden rounded-[2rem] border border-[var(--border)] bg-[var(--surface)] p-8 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-[#4353FF]/30"
+                className="group relative overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] p-8 transition-all duration-500 hover:-translate-y-1 hover:border-accent/40"
                 style={{ transitionDelay: `${index * 80}ms` }}
               >
-                <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-3xl border border-[#4353FF]/20 bg-[#4353FF]/10 text-[#4353FF]">
+                <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-md border border-accent/20 bg-accent/10 text-accent">
                   <StepIcon className="h-6 w-6" />
                 </div>
-                <div className="mb-4 inline-flex items-center gap-3 text-xs uppercase tracking-[0.26em] text-[#4353FF] font-semibold">
+                <div className="mb-4 inline-flex items-center gap-3 font-mono text-xs uppercase tracking-[0.14em] text-[var(--muted)]">
                   <span>{step.id}</span>
-                  <span className="block h-px w-10 bg-[#4353FF]/20" />
+                  <span className="block h-[2px] w-10 bg-accent/30" />
                   <span>Step</span>
                 </div>
-                <h3 className="font-heading text-xl font-black text-[var(--text)] mb-3">
+                <h3 className="font-heading text-xl font-bold text-[var(--text)] mb-3">
                   {step.title}
                 </h3>
-                <p className="text-sm leading-7 text-[var(--muted)]">
+                <p className="text-[15px] leading-relaxed text-[var(--muted)]">
                   {step.desc}
                 </p>
               </motion.article>

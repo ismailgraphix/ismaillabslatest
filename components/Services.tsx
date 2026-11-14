@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import SectionLabel from "@/components/SectionLabel";
 
 function useInView(threshold = 0.15) {
     const ref = useRef<HTMLDivElement>(null);
@@ -40,28 +41,23 @@ export default function Services({ services = [] }: { services?: ServiceData[] }
 
                     {/* ── LEFT: Title + CTA ── */}
                     <div className={`lg:sticky lg:top-28 transition-all duration-700 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-                        {/* Label */}
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-6 h-[3px] bg-[#4353FF]" />
-                            <span className="font-body font-semibold text-[#4353FF] text-xs uppercase tracking-[0.2em]">Service We Offer</span>
-                        </div>
+                        <SectionLabel className="mb-4">Service we offer</SectionLabel>
 
                         <h2
-                            className="font-heading font-black text-[var(--text)] uppercase leading-[1.0] tracking-tight mb-8"
+                            className="font-heading font-bold text-[var(--text)] leading-[1.1] tracking-tight mb-8"
                             style={{ fontSize: "clamp(1.7rem, 2.8vw, 2.4rem)" }}
                         >
-                            WE&apos;VE AMAZING WEB SOLUTIONS
+                            We&apos;ve amazing web solutions
                         </h2>
 
-                        {/* CTA — pill, theme-safe hover, no broken slide overlay */}
                         <a
                             href="#contact"
-                            className="inline-flex items-center gap-3 bg-[#4353FF] text-white border border-[#4353FF] font-body font-semibold px-7 py-4 rounded-full hover:bg-[var(--text)] hover:text-[var(--surface)] transition-all duration-[400ms] group"
+                            className="inline-flex items-center gap-3 bg-accent text-white border border-accent font-body font-semibold text-sm px-7 py-4 rounded-md hover:bg-[var(--text)] hover:border-[var(--text)] hover:text-[var(--app-bg)] transition-colors duration-300 group"
                         >
-                            <span className="text-sm">Contact Us</span>
+                            <span>Contact Us</span>
                             <span className="group-hover:rotate-45 transition-transform duration-300">
                                 <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                                    <path d="M1.5 1.5h10v10M1.5 11.5l10-10" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                                    <path d="M1.5 1.5h10v10M1.5 11.5l10-10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                                 </svg>
                             </span>
                         </a>
@@ -70,7 +66,7 @@ export default function Services({ services = [] }: { services?: ServiceData[] }
                     {/* ── RIGHT: 2×2 grid ── */}
                     <div>
                         {/* Outer wrapper — no border/bg, inner card borders form the grid lines */}
-                        <div className="grid sm:grid-cols-2 gap-0 rounded-2xl overflow-hidden">
+                        <div className="grid sm:grid-cols-2 gap-0 rounded-lg overflow-hidden">
                             {visible.map((s, i) => {
                                 // Alternate slide direction per column
                                 const isRightCol = i % 2 === 1;
@@ -89,30 +85,31 @@ export default function Services({ services = [] }: { services?: ServiceData[] }
                                     >
                                         {/* Faded number — top right */}
                                         <span
-                                            className="absolute top-4 right-5 font-heading font-black text-[#4353FF]/15 select-none group-hover:text-[#4353FF]/25 transition-colors duration-300"
-                                            style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}
+                                            className="absolute top-4 right-5 font-mono font-medium text-accent/20 select-none group-hover:text-accent/35 transition-colors duration-300"
+                                            style={{ fontSize: "clamp(2.25rem, 4.5vw, 3.5rem)" }}
+                                            aria-hidden="true"
                                         >
                                             {String(i + 1).padStart(2, '0')}
                                         </span>
 
                                         {/* Icon */}
-                                        <div className="mb-4 relative z-10 w-12 h-12 text-[#4353FF]">
+                                        <div className="mb-4 relative z-10 w-12 h-12 text-accent">
                                             {s.icon ? (
                                                 <div dangerouslySetInnerHTML={{ __html: s.icon }} />
                                             ) : (
-                                                <div className="w-full h-full border-2 border-[#4353FF]/30 rounded-full" />
+                                                <div className="w-full h-full border-2 border-accent/30 rounded-md" />
                                             )}
                                         </div>
 
                                         {/* Title */}
-                                        <h3 className="font-heading font-black text-[var(--text)] text-lg mb-4 relative z-10 group-hover:text-[#4353FF] transition-colors duration-300 line-clamp-2">
+                                        <h3 className="font-heading font-bold text-[var(--text)] text-lg mb-4 relative z-10 group-hover:text-[var(--accent-text)] transition-colors duration-300 line-clamp-2">
                                             {s.title}
                                         </h3>
 
                                         {/* Image. Decorative (the title sits right above it), so the alt is empty.
                                             A service with no image, or one whose image fails to load, gets a
                                             tinted panel with its own icon instead of an empty box. */}
-                                        <div className="relative w-full overflow-hidden rounded-xl" style={{ aspectRatio: "16/9" }}>
+                                        <div className="relative w-full overflow-hidden rounded-md" style={{ aspectRatio: "16/9" }}>
                                             {s.image && !brokenImages[s.id] ? (
                                                 <img
                                                     src={s.image}
@@ -122,12 +119,12 @@ export default function Services({ services = [] }: { services?: ServiceData[] }
                                                 />
                                             ) : (
                                                 <div
-                                                    className="w-full h-full flex items-center justify-center bg-[#4353FF]/[0.06] border border-[#4353FF]/10 rounded-xl"
+                                                    className="w-full h-full flex items-center justify-center bg-accent/[0.06] border border-accent/10 rounded-md"
                                                     aria-hidden="true"
                                                 >
                                                     {s.icon && (
                                                         <div
-                                                            className="w-16 h-16 text-[#4353FF]/40 [&_svg]:w-full [&_svg]:h-full"
+                                                            className="w-16 h-16 text-accent/40 [&_svg]:w-full [&_svg]:h-full"
                                                             dangerouslySetInnerHTML={{ __html: s.icon }}
                                                         />
                                                     )}
@@ -136,7 +133,7 @@ export default function Services({ services = [] }: { services?: ServiceData[] }
                                         </div>
 
                                         {/* Bottom border reveal on hover */}
-                                        <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-[#4353FF] group-hover:w-full transition-all duration-500" />
+                                        <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-accent group-hover:w-full transition-all duration-500" />
                                     </Link>
                                 );
                             })}
@@ -144,11 +141,10 @@ export default function Services({ services = [] }: { services?: ServiceData[] }
 
                         {services.length > 4 && (
                             <div className={`mt-8 flex justify-center transition-all duration-700 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-                                {/* Show all — pill, lighter border weight */}
                                 <button
                                     type="button"
                                     onClick={() => setShowAll(v => !v)}
-                                    className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-[var(--border)] text-[var(--text)] font-body font-semibold px-6 py-3.5 hover:bg-[var(--text)] hover:text-[var(--surface)] hover:border-[var(--text)] transition-all duration-300 text-sm"
+                                    className="inline-flex items-center gap-2 rounded-md border border-[var(--border)] text-[var(--text)] font-body font-semibold px-6 py-3.5 hover:bg-[var(--text)] hover:text-[var(--app-bg)] hover:border-[var(--text)] transition-colors duration-300 text-sm"
                                 >
                                     {showAll ? "Show less" : `View all (${services.length})`}
                                     <svg

@@ -1,23 +1,38 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ── Brand tokens ─────────────────────────────────────────────────────────
+   Ink #0F0F0F · Accent #4353FF · Accent on dark #8C96FF · Ground #EBEBEB · White #FFFFFF
+
+   The ink and accent values are written once, as the two channel lists
+   below. tailwind.config.ts turns them into the `ink` and `accent` utilities
+   (bg-accent, border-accent/30, bg-ink ...), and the theme variables that
+   follow are built from them.
+
+   Fonts are loaded with next/font in app/layout.tsx. */
 :root {
-  --accent: #10B981;
-  --dark: #242D2D;
-  /* Theme tokens (light defaults match current design) */
-  --app-bg: #EBEBEB;
-  --surface: #ffffff;
+  --ink-rgb: 15 15 15;
+  --accent-rgb: 67 83 255;
+
+  /* The accent as a shape or fill: buttons, bars, the logo dot, large type.
+     Identical in both themes. */
+  --accent: rgb(var(--accent-rgb));
+  /* The accent as body-size text. It switches to the lighter "accent on dark"
+     in the dark theme, where #4353FF does not have enough contrast for text. */
+  --accent-text: rgb(var(--accent-rgb));
+
+  /* Light theme */
+  --app-bg: #EBEBEB;                        /* Ground */
+  --surface: #ffffff;                       /* White: cards */
   --surface-2: rgba(255, 255, 255, 0.20);
-  --text: #0f0f0f;
-  --muted: #6b7280;
-  --text-soft: rgba(15, 15, 15, 0.55);
-  --text-faint: rgba(15, 15, 15, 0.40);
-  --border: rgba(17, 24, 39, 0.12);
+  --text: rgb(var(--ink-rgb));              /* Ink */
+  --muted: rgb(var(--ink-rgb) / 0.68);
+  --text-soft: rgb(var(--ink-rgb) / 0.68);
+  --text-faint: rgb(var(--ink-rgb) / 0.60);
+  --border: rgb(var(--ink-rgb) / 0.12);
   --nav-bg: rgba(255, 255, 255, 0.96);
-  --chip-bg: #f3f4f6;
+  --chip-bg: rgb(var(--ink-rgb) / 0.05);
 }
 
 * {
@@ -37,23 +52,26 @@ section[id] {
 }
 
 body {
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
   color: var(--text);
   background: var(--app-bg);
   overflow-x: hidden;
 }
 
-/* Dark theme values (kept close to your existing palette) */
+/* Dark theme: ink background, white text */
 html.dark {
-  --app-bg: #141b26;
-  --surface: #1b2433;
+  --accent-text: #8C96FF;                   /* Accent on dark */
+  --app-bg: rgb(var(--ink-rgb));            /* Ink */
+  --surface: #1a1a1a;
   --surface-2: rgba(255, 255, 255, 0.06);
-  --text: #f5f5f5;
-  --muted: rgba(245, 245, 245, 0.72);
-  --text-soft: rgba(245, 245, 245, 0.72);
-  --text-faint: rgba(245, 245, 245, 0.56);
-  --border: rgba(255, 255, 255, 0.12);
-  --nav-bg: rgba(20, 27, 38, 0.92);
+  --text: #ffffff;                          /* White */
+  --muted: rgba(255, 255, 255, 0.72);
+  --text-soft: rgba(255, 255, 255, 0.72);
+  --text-faint: rgba(255, 255, 255, 0.60);
+  --border: rgba(255, 255, 255, 0.14);
+  --nav-bg: rgb(var(--ink-rgb) / 0.92);
   --chip-bg: rgba(255, 255, 255, 0.06);
 }
 
@@ -64,12 +82,6 @@ html.dark {
 }
 .hide-scrollbar::-webkit-scrollbar {
   display: none; /* Chrome/Safari */
-}
-
-@layer utilities {
-  .font-heading {
-    font-family: 'Montserrat', sans-serif;
-  }
 }
 
 /* Marquee animation */
@@ -108,10 +120,10 @@ html.dark {
 
 /* ── Admin shell ──────────────────────────────────────────────────────────
    Always-dark, independent of the public site's light/dark toggle (which
-   is user-controlled via next-themes on <html class="dark">). Reuses the
-   exact same palette as html.dark so the admin visually ties back to the
-   same design tokens as the public site instead of inventing new ones. */
+   is user-controlled via next-themes on <html class="dark">). It keeps its
+   own palette here, so changes to html.dark above do not reach the admin. */
 .theme-admin-scope {
+  --accent-text: #8C96FF;
   --app-bg: #141b26;
   --surface: #1b2433;
   --surface-2: rgba(255, 255, 255, 0.06);

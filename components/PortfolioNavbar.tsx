@@ -67,10 +67,10 @@ export default function PortfolioNavbar({ shortTitle }: { shortTitle?: string })
                             <a
                                 key={link.label}
                                 href={link.href}
-                                className="relative font-body font-medium text-[13px] tracking-wide transition-all duration-200 group px-4 py-2 rounded-full text-[var(--text)] hover:text-[#4353FF] hover:bg-[var(--background)]/70"
+                                className="relative font-body font-medium text-[13px] tracking-wide transition-all duration-200 group px-4 py-2 rounded-full text-[var(--text)] hover:text-[var(--accent-text)] hover:bg-[var(--background)]/70"
                             >
                                 {link.label}
-                                <span className="absolute bottom-[5px] left-1/2 -translate-x-1/2 h-[1.5px] bg-[#4353FF] w-0 group-hover:w-5 transition-all duration-300" />
+                                <span className="absolute bottom-[5px] left-1/2 -translate-x-1/2 h-[1.5px] bg-accent w-0 group-hover:w-5 transition-all duration-300" />
                             </a>
                         ))}
                     </nav>
@@ -82,7 +82,7 @@ export default function PortfolioNavbar({ shortTitle }: { shortTitle?: string })
                         {/* "Hire Me" CTA — same shape/style as main "Let's Talk" */}
                         <a
                             href="#contact"
-                            className="hidden md:inline-flex items-center gap-2 bg-[#4353FF] text-white font-body font-semibold text-[13px] px-5 py-2.5 hover:bg-[#0f0f0f] transition-all duration-300"
+                            className="hidden md:inline-flex items-center gap-2 bg-accent text-white font-body font-semibold text-[13px] px-5 py-2.5 hover:bg-[#0f0f0f] transition-all duration-300"
                         >
                             Hire Me
                             <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
@@ -98,8 +98,8 @@ export default function PortfolioNavbar({ shortTitle }: { shortTitle?: string })
                             aria-controls="portfolio-mobile-nav"
                             className={`md:hidden w-11 h-11 rounded-full border-2 flex flex-col items-center justify-center gap-[5px] transition-all duration-300 hover:scale-105 ${
                                 menuOpen
-                                    ? "border-[#4353FF] bg-[#4353FF]"
-                                    : "border-[var(--border)] bg-[var(--surface)]/70 backdrop-blur-sm hover:border-[#4353FF]"
+                                    ? "border-accent bg-accent"
+                                    : "border-[var(--border)] bg-[var(--surface)]/70 backdrop-blur-sm hover:border-accent"
                             }`}
                         >
                             <span className={`block h-[1.5px] transition-all duration-300 origin-center ${
@@ -136,7 +136,7 @@ export default function PortfolioNavbar({ shortTitle }: { shortTitle?: string })
                         <a
                             href="#contact"
                             onClick={() => setMenuOpen(false)}
-                            className="mt-4 text-center rounded-xl bg-[#4353FF] text-white font-body font-semibold py-3 text-sm"
+                            className="mt-4 text-center rounded-xl bg-accent text-white font-body font-semibold py-3 text-sm"
                         >
                             Hire Me
                         </a>

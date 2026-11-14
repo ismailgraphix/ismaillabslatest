@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { unstable_noStore as noStore } from 'next/cache';
 import DatabaseErrorModal from "./DatabaseErrorModal";
+import SectionLabel from "@/components/SectionLabel";
 import { getLatestPosts, MIN_POSTS_TO_SHOW_BLOG } from "@/lib/queries";
 
 export default async function Blog() {
@@ -25,19 +26,16 @@ export default async function Blog() {
     <section className="py-28 bg-[var(--app-bg)]">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 bg-[#4353FF]/10 rounded-full px-4 py-2 mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#4353FF]" />
-            <span className="font-heading font-semibold text-sm text-[#4353FF] uppercase tracking-widest">News & Latest Updates</span>
-          </div>
-          <h2 className="font-heading font-black text-[clamp(2rem,4vw,3.5rem)] leading-tight text-[var(--text)]">
-            Check Our Company Inside Story
+          <SectionLabel className="justify-center mb-4">News & latest updates</SectionLabel>
+          <h2 className="font-heading font-bold text-[clamp(2rem,4vw,3.25rem)] leading-tight tracking-tight text-[var(--text)]">
+            Check our company inside story
           </h2>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
           {posts.map(({ post, author, category }) => (
-            <Link href={`/blog/${post.slug}`} key={post.id} className="group rounded-2xl overflow-hidden border border-[var(--border)] hover:shadow-xl transition-shadow duration-300 cursor-pointer block bg-[var(--surface)]">
-              <div className="relative aspect-video overflow-hidden bg-gray-100">
+            <Link href={`/blog/${post.slug}`} key={post.id} className="group rounded-lg overflow-hidden border border-[var(--border)] hover:border-accent/40 transition-colors duration-300 cursor-pointer block bg-[var(--surface)]">
+              <div className="relative aspect-video overflow-hidden bg-[var(--chip-bg)]">
                 {post.image ? (
                   <img
                     src={post.image}
@@ -45,27 +43,27 @@ export default async function Blog() {
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 ) : (
-                  <div className="w-full h-full bg-[#f1f1f1] flex items-center justify-center font-heading text-gray-300 font-black text-2xl">NO IMAGE</div>
+                  <div className="w-full h-full bg-accent/[0.06]" aria-hidden="true" />
                 )}
                 <div className="absolute top-4 left-4">
-                  <span className="bg-[#4353FF] text-white font-heading font-bold text-xs px-3 py-1.5 rounded-full uppercase tracking-wider">
+                  <span className="bg-accent text-white font-mono text-[11px] px-2.5 py-1.5 rounded uppercase tracking-[0.1em]">
                     {category?.name || "General"}
                   </span>
                 </div>
               </div>
 
               <div className="p-6">
-                <div className="flex items-center gap-3 text-gray-400 text-xs font-body mb-4">
+                <div className="flex items-center gap-3 text-[var(--text-faint)] text-xs font-mono mb-4">
                   <span>{new Date(post.createdAt).toLocaleDateString()}</span>
-                  <span className="w-1 h-1 rounded-full bg-gray-300" />
+                  <span className="w-1 h-1 bg-accent" />
                   <span>By {author?.name || "Admin"}</span>
                 </div>
 
-                <h3 className="font-heading font-black text-[var(--text)] text-lg leading-snug mb-4 group-hover:text-[#4353FF] transition-colors line-clamp-2">
+                <h3 className="font-heading font-bold text-[var(--text)] text-lg leading-snug mb-4 group-hover:text-[var(--accent-text)] transition-colors line-clamp-2">
                   {post.title}
                 </h3>
 
-                <div className="flex items-center gap-2 font-heading font-bold text-sm text-[#4353FF]">
+                <div className="flex items-center gap-2 font-body font-semibold text-sm text-[var(--accent-text)]">
                   Read More
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="group-hover:translate-x-1 transition-transform">
                     <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
@@ -77,8 +75,8 @@ export default async function Blog() {
         </div>
 
         <div className="mt-16 text-center">
-          <Link href="/blog" className="inline-flex items-center justify-center rounded-full bg-[#4353FF] text-white border border-[#4353FF] font-heading font-black px-8 py-4 uppercase tracking-wider text-sm hover:bg-[var(--text)] hover:text-[var(--surface)] hover:-translate-y-1 transition-all duration-300">
-            View All News
+          <Link href="/blog" className="inline-flex items-center justify-center rounded-md bg-accent text-white border border-accent font-body font-semibold px-8 py-4 text-sm hover:bg-[var(--text)] hover:border-[var(--text)] hover:text-[var(--app-bg)] transition-colors duration-300">
+            View all news
           </Link>
         </div>
       </div>

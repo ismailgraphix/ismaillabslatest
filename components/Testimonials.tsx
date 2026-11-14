@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { site, type Testimonial } from "@/lib/site";
+import SectionLabel from "@/components/SectionLabel";
 
 // The section stays off the page until there are this many real quotes.
 const MIN_QUOTES = 2;
@@ -41,7 +42,7 @@ function TestimonialCards({ testimonials }: { testimonials: Testimonial[] }) {
 
         {/* Big faint quote mark background */}
         <div
-            className="absolute -top-10 left-1/2 -translate-x-1/2 font-heading font-black text-[22rem] text-[#4353FF]/[0.03] leading-none pointer-events-none select-none"
+            className="absolute -top-10 left-1/2 -translate-x-1/2 font-heading font-bold text-[22rem] text-accent/[0.04] leading-none pointer-events-none select-none"
             aria-hidden
         >
           "
@@ -52,15 +53,12 @@ function TestimonialCards({ testimonials }: { testimonials: Testimonial[] }) {
           {/* Header */}
           <div className={`flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16 transition-all duration-700 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <div>
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-6 h-[3px] bg-[#4353FF]" />
-                <span className="font-body font-semibold text-[#4353FF] text-xs uppercase tracking-[0.2em]">Testimonials</span>
-              </div>
+              <SectionLabel className="mb-3">Testimonials</SectionLabel>
               <h2
-                  className="font-heading font-black text-[var(--text)] uppercase leading-tight tracking-tight"
+                  className="font-heading font-bold text-[var(--text)] leading-tight tracking-tight"
                   style={{ fontSize: "clamp(1.8rem, 3vw, 2.6rem)" }}
               >
-                WHAT CLIENTS SAY<br />ABOUT US
+                What clients say<br />about us
               </h2>
             </div>
 
@@ -70,8 +68,8 @@ function TestimonialCards({ testimonials }: { testimonials: Testimonial[] }) {
                   <button
                       key={i}
                       onClick={() => setActive(i)}
-                      className={`rounded-full transition-all duration-300 ${
-                          active === i ? "w-8 h-3 bg-[#4353FF]" : "w-3 h-3 bg-gray-300 hover:bg-[#4353FF]/50"
+                      className={`h-[4px] transition-all duration-300 ${
+                          active === i ? "w-8 bg-accent" : "w-4 bg-[var(--border)] hover:bg-accent/50"
                       }`}
                       aria-label={`Testimonial ${i + 1}`}
                   />
@@ -86,11 +84,11 @@ function TestimonialCards({ testimonials }: { testimonials: Testimonial[] }) {
                     key={i}
                     onClick={() => setActive(i)}
                     className={`
-                relative p-8 rounded-2xl cursor-pointer overflow-hidden
-                border-2 transition-all duration-500 group
+                relative p-8 rounded-lg cursor-pointer overflow-hidden
+                border transition-all duration-500 group
                 ${active === i
-                        ? "bg-[#4353FF] border-[#4353FF] -translate-y-3 shadow-[0_20px_60px_rgba(67,83,255,0.3)]"
-                        : "bg-[var(--surface)] border-[var(--border)] hover:-translate-y-1 hover:border-[#4353FF]/30 hover:shadow-lg"
+                        ? "bg-accent border-accent -translate-y-2"
+                        : "bg-[var(--surface)] border-[var(--border)] hover:-translate-y-1 hover:border-accent/40"
                     }
                 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}
               `}
@@ -98,8 +96,8 @@ function TestimonialCards({ testimonials }: { testimonials: Testimonial[] }) {
                 >
                   {/* Large quote */}
                   <div
-                      className={`absolute -top-2 right-5 font-heading font-black text-[7rem] leading-none select-none pointer-events-none transition-colors duration-300 ${
-                          active === i ? "text-white/10" : "text-gray-100"
+                      className={`absolute -top-2 right-5 font-heading font-bold text-[7rem] leading-none select-none pointer-events-none transition-colors duration-300 ${
+                          active === i ? "text-white/10" : "text-[var(--chip-bg)]"
                       }`}
                       aria-hidden
                   >
@@ -107,25 +105,25 @@ function TestimonialCards({ testimonials }: { testimonials: Testimonial[] }) {
                   </div>
 
                   {/* Quote text */}
-                  <p className={`font-body leading-relaxed text-[15px] mb-8 relative z-10 transition-colors duration-300 ${
-                      active === i ? "text-white/90" : "text-gray-500"
+                  <p className={`font-body leading-relaxed text-base mb-8 relative z-10 transition-colors duration-300 ${
+                      active === i ? "text-white" : "text-[var(--muted)]"
                   }`}>
                     "{t.quote}"
                   </p>
 
                   {/* Author */}
                   <div className="relative z-10">
-                    <p className={`font-heading font-black text-[15px] transition-colors duration-300 ${
+                    <p className={`font-heading font-bold text-[15px] transition-colors duration-300 ${
                         active === i ? "text-white" : "text-[var(--text)]"
                     }`}>{t.name}</p>
                     <p className={`font-body text-xs mt-0.5 transition-colors duration-300 ${
-                        active === i ? "text-white/60" : "text-gray-400"
+                        active === i ? "text-white/80" : "text-[var(--text-faint)]"
                     }`}>{t.role} · {t.organisation}</p>
                   </div>
 
                   {/* Bottom line for inactive cards */}
                   {active !== i && (
-                      <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-[#4353FF] group-hover:w-full transition-all duration-500" />
+                      <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-accent group-hover:w-full transition-all duration-500" />
                   )}
                 </div>
             ))}

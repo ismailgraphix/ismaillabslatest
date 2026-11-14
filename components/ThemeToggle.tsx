@@ -22,7 +22,7 @@ export default function ThemeToggle() {
       onClick={() => setTheme(nextTheme)}
       aria-label={`Switch to ${nextTheme} mode`}
       title={`Switch to ${nextTheme} mode`}
-      className="group w-11 h-11 rounded-full border border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-md hover:border-[#4353FF] hover:shadow-[0_8px_30px_rgba(67,83,255,0.22)] transition-all duration-300 flex items-center justify-center"
+      className="group w-11 h-11 rounded-md border border-[var(--border)] bg-[var(--surface)] hover:border-accent transition-colors duration-300 flex items-center justify-center"
     >
       <span className="sr-only">{isDark ? "Dark mode" : "Light mode"}</span>
 

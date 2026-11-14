@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "IsmailLabs Admin",
+    title: "Ismail Labs Admin",
     description: "Admin panel",
 };
 

@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "@/components/ThemeToggle";
+import Logo from "@/components/Logo";
+import { site } from "@/lib/site";
 
 const navLinks = [
     { label: "Home", href: "/" },
@@ -61,38 +63,32 @@ export default function Navbar({ showBlog = false }: { showBlog?: boolean }) {
         <>
             <header
                 className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${scrolled
-                    ? "bg-[var(--nav-bg)]/95 backdrop-blur-xl shadow-[0_1px_0_0_rgba(0,0,0,0.06)] py-3"
+                    ? "bg-[var(--nav-bg)] backdrop-blur-xl shadow-[0_1px_0_0_var(--border)] py-3"
                     : "bg-transparent py-5"
                     }`}
             >
                 <div className="max-w-[1400px] mx-auto px-6 md:px-12 flex items-center justify-between">
 
-                    {/* ── Logo ── */}
-                    <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
-                        <div className="leading-[1.15]">
-                            <span className="block font-heading font-black text-[15px] text-[var(--text)] tracking-tight">
-                                Ismail Labs
-                            </span>
-                            <span className="block font-body text-[9px] text-gray-400 uppercase tracking-[0.22em]">
-                                digital agency
-                            </span>
-                        </div>
+                    {/* ── Logo: the mark alone on small screens, the full logo from sm up ── */}
+                    <Link href="/" aria-label={`${site.name}, home`} className="flex items-center flex-shrink-0">
+                        <Logo kind="mark" height={36} className="inline-block sm:hidden" />
+                        <Logo kind="full" height={32} className="hidden sm:inline-block" />
                     </Link>
 
                     {/* ── Desktop nav — absolutely centered ── */}
-                    <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-2 rounded-full px-2.5 py-2 bg-[var(--surface)]/70 backdrop-blur-xl border border-[var(--border)] shadow-[0_10px_28px_rgba(8,8,20,0.08)]">
+                    <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-1 rounded-lg px-1.5 py-1.5 bg-[var(--surface)] border border-[var(--border)]">
                         {links.map((link) => (
                             <Link
                                 key={link.label}
                                 href={toHref(link.href)}
                                 aria-current={isActive(link.href) ? "page" : undefined}
-                                className={`relative font-body font-medium text-[13px] tracking-wide transition-all duration-200 group px-4 py-2 rounded-full ${isActive(link.href)
-                                    ? "text-[#4353FF] bg-[#4353FF]/10"
-                                    : "text-[var(--text)] hover:text-[#4353FF] hover:bg-[var(--background)]/70"
+                                className={`relative font-body font-medium text-[13px] tracking-wide transition-colors duration-200 group px-4 py-2 rounded-md ${isActive(link.href)
+                                    ? "text-[var(--accent-text)] bg-accent/10"
+                                    : "text-[var(--text)] hover:text-[var(--accent-text)] hover:bg-[var(--chip-bg)]"
                                     }`}
                             >
                                 {link.label}
-                                <span className={`absolute bottom-[5px] left-1/2 -translate-x-1/2 h-[1.5px] bg-[#4353FF] transition-all duration-300 ${isActive(link.href) ? "w-6" : "w-0 group-hover:w-5"
+                                <span className={`absolute bottom-[5px] left-1/2 -translate-x-1/2 h-[2px] bg-accent transition-all duration-300 ${isActive(link.href) ? "w-6" : "w-0 group-hover:w-5"
                                     }`} />
                             </Link>
                         ))}
@@ -103,11 +99,11 @@ export default function Navbar({ showBlog = false }: { showBlog?: boolean }) {
                         <ThemeToggle />
                         <Link
                             href={toHref("#contact")}
-                            className="hidden md:inline-flex items-center gap-2 bg-[#4353FF] text-white border border-[#4353FF] rounded-full font-body font-semibold text-[13px] px-5 py-2.5 hover:bg-[#3d4ce6] transition-all duration-300"
+                            className="hidden md:inline-flex items-center gap-2 bg-accent text-white border border-accent rounded-md font-body font-semibold text-[13px] px-5 py-2.5 hover:bg-[var(--text)] hover:border-[var(--text)] hover:text-[var(--app-bg)] transition-colors duration-300"
                         >
                             Let&apos;s Talk
                             <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
-                                <path d="M1 11L11 1M11 1H4M11 1v7" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M1 11L11 1M11 1H4M11 1v7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
                         </Link>
 
@@ -116,16 +112,16 @@ export default function Navbar({ showBlog = false }: { showBlog?: boolean }) {
                             aria-label="Toggle menu"
                             aria-expanded={menuOpen}
                             aria-controls="mobile-nav-panel"
-                            className={`md:hidden w-11 h-11 rounded-full border-2 flex flex-col items-center justify-center gap-[5px] transition-all duration-300 hover:scale-105 ${menuOpen
-                                ? "border-[#4353FF] bg-[#4353FF]"
-                                : "border-[var(--border)] bg-[var(--surface)]/70 backdrop-blur-sm hover:border-[#4353FF]"
+                            className={`md:hidden w-11 h-11 rounded-md border flex flex-col items-center justify-center gap-[5px] transition-colors duration-300 ${menuOpen
+                                ? "border-accent bg-accent"
+                                : "border-[var(--border)] bg-[var(--surface)] hover:border-accent"
                                 }`}
                         >
-                            <span className={`block h-[1.5px] transition-all duration-300 origin-center ${menuOpen
+                            <span className={`block h-[2px] transition-all duration-300 origin-center ${menuOpen
                                 ? "w-[14px] rotate-45 translate-y-[3.5px] bg-white"
                                 : "w-[18px] bg-[var(--text)]"
                                 }`} />
-                            <span className={`block h-[1.5px] transition-all duration-300 origin-center ${menuOpen
+                            <span className={`block h-[2px] transition-all duration-300 origin-center ${menuOpen
                                 ? "w-[14px] -rotate-45 -translate-y-[3.5px] bg-white"
                                 : "w-[12px] bg-[var(--text)]"
                                 }`} />
@@ -146,8 +142,8 @@ export default function Navbar({ showBlog = false }: { showBlog?: boolean }) {
                                 href={toHref(link.href)}
                                 onClick={() => setMenuOpen(false)}
                                 style={{ transitionDelay: menuOpen ? `${i * 40}ms` : "0ms" }}
-                                className={`font-body font-medium text-base py-3 border-b border-gray-50 transition-all duration-300 ${menuOpen ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0"
-                                    } ${isActive(link.href) ? "text-[#4353FF]" : "text-[var(--text)]"}`}
+                                className={`font-body font-medium text-base py-3 border-b border-[var(--border)] transition-all duration-300 ${menuOpen ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0"
+                                    } ${isActive(link.href) ? "text-[var(--accent-text)]" : "text-[var(--text)]"}`}
                             >
                                 {link.label}
                             </Link>
@@ -155,7 +151,7 @@ export default function Navbar({ showBlog = false }: { showBlog?: boolean }) {
                         <Link
                             href={toHref("#contact")}
                             onClick={() => setMenuOpen(false)}
-                            className="mt-4 text-center rounded-full bg-[#4353FF] text-white border border-[#4353FF] font-body font-semibold py-3 text-sm hover:bg-[#3d4ce6] transition-colors duration-300"
+                            className="mt-4 text-center rounded-md bg-accent text-white border border-accent font-body font-semibold py-3 text-sm hover:bg-[var(--text)] hover:border-[var(--text)] hover:text-[var(--app-bg)] transition-colors duration-300"
                         >
                             Let&apos;s Talk
                         </Link>

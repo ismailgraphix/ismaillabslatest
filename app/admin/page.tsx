@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Logo from "@/components/Logo";
 
 export default function AdminLogin() {
     const [form, setForm] = useState({ email: "", password: "" });
@@ -80,14 +81,9 @@ export default function AdminLogin() {
 
                 <div className={`relative z-10 transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-[#4353FF] flex items-center justify-center">
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                <path d="M4 3h7.5C13.985 3 16 5.015 16 7.5S13.985 12 11.5 12H4V3z" fill="white"/>
-                                <path d="M4 12l5 5" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
-                            </svg>
-                        </div>
+                        <Logo kind="mark" variant="on-dark" height={40} className="inline-block flex-shrink-0" />
                         <div>
-                            <p className="font-heading font-black text-white text-lg tracking-tight leading-none">ismaillabs</p>
+                            <p className="font-heading font-black text-white text-lg tracking-tight leading-none">Ismail Labs</p>
                             <p className="font-body text-[10px] text-gray-500 uppercase tracking-[0.2em]">admin panel</p>
                         </div>
                     </div>
@@ -132,13 +128,8 @@ export default function AdminLogin() {
                 <div className={`w-full max-w-[420px] transition-all duration-700 delay-100 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
 
                     <div className="flex items-center gap-2 mb-10 lg:hidden">
-                        <div className="w-8 h-8 bg-[#4353FF] flex items-center justify-center">
-                            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-                                <path d="M4 3h7.5C13.985 3 16 5.015 16 7.5S13.985 12 11.5 12H4V3z" fill="white"/>
-                                <path d="M4 12l5 5" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
-                            </svg>
-                        </div>
-                        <p className="font-heading font-black text-white">ismaillabs</p>
+                        <Logo kind="mark" variant="on-dark" height={32} className="inline-block flex-shrink-0" />
+                        <p className="font-heading font-black text-white">Ismail Labs</p>
                     </div>
 
                     <div className="mb-8">

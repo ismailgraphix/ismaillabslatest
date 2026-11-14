@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Logo from "@/components/Logo";
 
 const rules = [
     { label: "At least 8 characters", test: (p: string) => p.length >= 8 },
@@ -107,14 +108,9 @@ export default function AdminSetup() {
                 />
                 <div className="relative z-10">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-white flex items-center justify-center">
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                <path d="M4 3h7.5C13.985 3 16 5.015 16 7.5S13.985 12 11.5 12H4V3z" fill="#4353FF"/>
-                                <path d="M4 12l5 5" stroke="#4353FF" strokeWidth="2.5" strokeLinecap="round"/>
-                            </svg>
-                        </div>
+                        <span className="w-10 h-10 bg-white rounded flex items-center justify-center flex-shrink-0"><Logo kind="mark" variant="on-light" height={36} /></span>
                         <div>
-                            <p className="font-heading font-black text-[var(--text)] text-lg tracking-tight leading-none">ismaillabs</p>
+                            <p className="font-heading font-black text-[var(--text)] text-lg tracking-tight leading-none">Ismail Labs</p>
                             <p className="font-body text-[var(--text)]/60 text-[10px] uppercase tracking-[0.2em]">initial setup</p>
                         </div>
                     </div>

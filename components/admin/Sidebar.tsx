@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { NAV_PERMISSIONS } from "@/lib/permissions";
+import Logo from "@/components/Logo";
 
 const ALL_NAV = [
     { href: "/admin/dashboard", label: "Dashboard", icon: "grid" },
@@ -81,15 +82,9 @@ export default function Sidebar({
             <div className="flex items-center justify-between px-4 py-4 border-b border-[var(--border)] min-h-[60px]">
                 {!collapsed && (
                     <div className="flex items-center gap-2.5 overflow-hidden">
-                        <div className="relative w-7 h-7 rounded-full bg-[#4353FF] flex items-center justify-center flex-shrink-0">
-                            <span className="absolute inline-flex h-full w-full rounded-full bg-[#4353FF] opacity-50" style={{ animation: "pulseDot 2.4s ease-in-out infinite" }} />
-                            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" className="relative">
-                                <path d="M4 3h7.5C13.985 3 16 5.015 16 7.5S13.985 12 11.5 12H4V3z" fill="white" />
-                                <path d="M4 12l5 5" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
-                            </svg>
-                        </div>
+                        <Logo kind="mark" variant="on-dark" height={32} className="inline-block flex-shrink-0 -ml-1" />
                         <div className="min-w-0">
-                            <p className="font-heading font-black text-[var(--text)] text-[13px] tracking-tight leading-none truncate">ismaillabs</p>
+                            <p className="font-heading font-black text-[var(--text)] text-[13px] tracking-tight leading-none truncate">Ismail Labs</p>
                             <p className="font-body text-[9px] text-[var(--text-faint)] uppercase tracking-[0.15em] mt-0.5">admin</p>
                         </div>
                     </div>

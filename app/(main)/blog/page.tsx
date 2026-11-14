@@ -2,6 +2,7 @@ import { db, blogPosts, users, blogCategories } from "@/db";
 import { eq, desc, asc, and } from "drizzle-orm";
 import Link from "next/link";
 import BlogFilters from "./BlogFilters";
+import SectionLabel from "@/components/SectionLabel";
 
 export default async function PublicBlogPage({ searchParams }: { searchParams: { category?: string, sort?: string } }) {
     // 1. Fetch available categories for the filter UI
@@ -35,16 +36,11 @@ export default async function PublicBlogPage({ searchParams }: { searchParams: {
         <main className="bg-[var(--app-bg)] min-h-screen flex flex-col">
 
             <section className="pt-40 pb-20 px-6 relative flex-1">
-                <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#4353FF]/10 blur-[150px] rounded-full pointer-events-none" />
                 <div className="max-w-7xl mx-auto relative z-10">
                     <div className="mb-12 text-center max-w-3xl mx-auto">
-                        <div className="inline-flex items-center gap-3 mb-6">
-                            <div className="w-8 h-px bg-[#4353FF]" />
-                            <span className="font-body font-bold text-[#4353FF] text-xs uppercase tracking-[0.2em]">Our News</span>
-                            <div className="w-8 h-px bg-[#4353FF]" />
-                        </div>
-                        <h1 className="font-heading font-black text-[var(--text)] uppercase text-[clamp(2.5rem,5vw,4.5rem)] leading-none tracking-tight mb-6">
-                            Insights & Updates
+                        <SectionLabel className="justify-center mb-6">Our news</SectionLabel>
+                        <h1 className="font-heading font-bold text-[var(--text)] text-[clamp(2.25rem,5vw,4rem)] leading-[1.05] tracking-tight mb-6">
+                            Insights & updates
                         </h1>
                         <p className="font-body text-[var(--muted)] text-lg leading-relaxed">
                             Discover the latest strategies, case studies, and news from our team across design, engineering, and product growth.
@@ -54,43 +50,42 @@ export default async function PublicBlogPage({ searchParams }: { searchParams: {
                     <BlogFilters categories={categories} />
 
                     {posts.length === 0 ? (
-                        <div className="py-24 text-center border border-[var(--border)] bg-[var(--surface)] shadow-sm rounded-sm">
+                        <div className="py-24 text-center border border-[var(--border)] bg-[var(--surface)] rounded-lg">
                             <p className="font-heading font-bold text-[var(--text)] text-xl mb-2">No posts found</p>
                             <p className="font-body text-[var(--muted)]">Try adjusting your category filters.</p>
                         </div>
                     ) : (
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {posts.map(({ post, author, category }) => (
-                                <Link href={`/blog/${post.slug}`} key={post.id} className="group relative bg-[var(--surface)] border border-[var(--border)] hover:border-[#4353FF]/40 shadow-sm hover:shadow-md transition-all duration-500 overflow-hidden flex flex-col rounded-sm">
-                                    <div className="relative h-[240px] w-full overflow-hidden">
-                                        <div className="absolute inset-0 bg-[#4353FF]/10 group-hover:bg-transparent transition-colors z-10 pointer-events-none" />
+                                <Link href={`/blog/${post.slug}`} key={post.id} className="group relative bg-[var(--surface)] border border-[var(--border)] hover:border-accent/40 transition-colors duration-300 overflow-hidden flex flex-col rounded-lg">
+                                    <div className="relative h-[240px] w-full overflow-hidden bg-[var(--chip-bg)]">
                                         {post.image ? (
-                                            <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                            <img src={post.image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                                         ) : (
-                                            <div className="w-full h-full bg-gray-100 flex items-center justify-center font-heading text-gray-300 font-black text-4xl">NO IMAGE</div>
+                                            <div className="w-full h-full bg-accent/[0.06]" aria-hidden="true" />
                                         )}
                                         <div className="absolute top-4 left-4 z-20">
-                                            <span className="bg-[var(--surface)]/95 backdrop-blur border border-[var(--border)] text-[var(--text)] font-body text-[10px] uppercase tracking-widest px-3 py-1.5 font-bold shadow-sm">
+                                            <span className="bg-[var(--surface)] border border-[var(--border)] text-[var(--text)] font-mono text-[11px] uppercase tracking-[0.1em] px-2.5 py-1.5 rounded">
                                                 {category?.name || "General"}
                                             </span>
                                         </div>
                                     </div>
                                     <div className="p-8 flex-1 flex flex-col">
-                                        <h2 className="font-heading font-bold text-[var(--text)] text-2xl leading-tight mb-4 group-hover:text-[#4353FF] transition-colors">{post.title}</h2>
-                                        <p className="font-body text-[var(--muted)] text-sm leading-relaxed mb-6 flex-1 line-clamp-3">
+                                        <h2 className="font-heading font-bold text-[var(--text)] text-2xl leading-tight tracking-tight mb-4 group-hover:text-[var(--accent-text)] transition-colors">{post.title}</h2>
+                                        <p className="font-body text-[var(--muted)] text-[15px] leading-relaxed mb-6 flex-1 line-clamp-3">
                                             {post.excerpt || post.content.substring(0, 150) + "..."}
                                         </p>
                                         <div className="flex items-center gap-3 pt-6 border-t border-[var(--border)] mt-auto">
-                                            <div className="w-10 h-10 rounded-full bg-[#4353FF]/10 border border-[#4353FF]/25 overflow-hidden flex items-center justify-center flex-shrink-0">
+                                            <div className="w-10 h-10 rounded-md bg-accent/10 border border-accent/25 overflow-hidden flex items-center justify-center flex-shrink-0">
                                                 {author?.avatar ? (
-                                                    <img src={author.avatar} alt="Author" className="w-full h-full object-cover" />
+                                                    <img src={author.avatar} alt="" className="w-full h-full object-cover" />
                                                 ) : (
-                                                    <span className="font-heading font-black text-[#4353FF] text-lg">{author?.name?.[0] || "?"}</span>
+                                                    <span className="font-heading font-bold text-[var(--accent-text)] text-lg">{author?.name?.[0] || "?"}</span>
                                                 )}
                                             </div>
                                             <div>
                                                 <p className="font-heading font-bold text-[var(--text)] text-[13px]">{author?.name || "Unknown Author"}</p>
-                                                <p className="font-body text-gray-400 text-[10px] uppercase tracking-widest mt-0.5">{new Date(post.createdAt).toLocaleDateString()}</p>
+                                                <p className="font-mono text-[var(--text-faint)] text-[11px] mt-0.5">{new Date(post.createdAt).toLocaleDateString()}</p>
                                             </div>
                                         </div>
                                     </div>
