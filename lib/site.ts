@@ -52,6 +52,11 @@ export const site = {
     // reads "Taking projects for March 2027". Hidden while null.
     availability: null as string | null,
 
+    // [WORKING HOURS]: the studio's working day in Abuja time, as 24-hour
+    // clock hours, for example { start: 9, end: 17 }. The footer uses it to show
+    // how the working day overlaps with the visitor's. Hidden while null.
+    workingHours: null as { start: number; end: number } | null,
+
     // [CLIENT LIST]: institutions that have agreed to be named. The strip on
     // the home page needs at least three and is hidden below that.
     clients: [] as string[],

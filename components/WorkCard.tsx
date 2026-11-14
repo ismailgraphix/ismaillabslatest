@@ -1,7 +1,7 @@
 // components/WorkCard.tsx
 // One case-study card: type label, title, one line, screenshot, link.
 // Used by the home page's selected work and by /work.
-import Link from "next/link";
+import { TransitionLink } from "@/lib/view-transition";
 import type { WorkItem } from "@/lib/queries";
 import { firstSentence } from "@/lib/text";
 
@@ -9,13 +9,16 @@ export default function WorkCard({ project, headingLevel = "h3" }: { project: Wo
     const Heading = headingLevel;
 
     return (
-        <Link
+        // The screenshot morphs into the project page's header image where the browser supports it.
+        <TransitionLink
             href={`/work/${project.slug}`}
+            sharedSelector="[data-shared-image]"
             className="group flex h-full flex-col overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] hover:border-accent/40 transition-colors duration-300"
         >
             <div className="relative aspect-[16/10] overflow-hidden bg-[var(--chip-bg)] border-b border-[var(--border)]">
                 {project.image ? (
                     <img
+                        data-shared-image
                         src={project.image}
                         alt={`Screenshot of ${project.title}`}
                         loading="lazy"
@@ -45,6 +48,6 @@ export default function WorkCard({ project, headingLevel = "h3" }: { project: Wo
                     </svg>
                 </span>
             </div>
-        </Link>
+        </TransitionLink>
     );
 }

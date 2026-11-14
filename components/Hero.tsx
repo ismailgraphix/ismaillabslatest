@@ -2,7 +2,19 @@
 // components/Hero.tsx
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { site } from "@/lib/site";
+import BarLoader from "@/components/BarLoader";
+
+// The demo is its own chunk, fetched after the hero has painted.
+const HeroDemo = dynamic(() => import("@/components/hero-demo/HeroDemo"), {
+    ssr: false,
+    loading: () => (
+        <div className="h-[456px] rounded-lg border border-[var(--border)] bg-[var(--surface)] flex items-center justify-center text-accent">
+            <BarLoader label="Loading the demo" size={20} />
+        </div>
+    ),
+});
 
 // One line of the heading, rising from behind a mask.
 function HeadingLine({ children, loaded, delay }: { children: React.ReactNode; loaded: boolean; delay: number }) {
@@ -41,10 +53,19 @@ function Accent({ children, loaded, delay }: { children: React.ReactNode; loaded
 
 export default function Hero() {
     const [loaded, setLoaded] = useState(false);
+    // Whether to mount the demo, and whether its tour may play by itself.
+    const [demo, setDemo] = useState<{ autoplay: boolean } | null>(null);
 
     useEffect(() => {
         // Small delay so CSS transitions play after hydration
         const t = setTimeout(() => setLoaded(true), 80);
+
+        // Load the demo only where it is shown (md and up). Under reduced motion it
+        // still loads, but the scripted tour does not start.
+        if (window.matchMedia("(min-width: 768px)").matches) {
+            const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            setDemo({ autoplay: !reduced });
+        }
         return () => clearTimeout(t);
     }, []);
 
@@ -126,11 +147,10 @@ export default function Hero() {
                     </HeadingLine>
                 </h1>
 
-                {/* ── Bottom row ── */}
-                <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-10">
+                {/* ── Bottom row: supporting line and buttons, then the demo ── */}
+                <div className="grid gap-12 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:items-start">
                     {/* Description + CTAs */}
                     <div
-                        className="max-w-[460px]"
                         style={{
                             opacity: loaded ? 1 : 0,
                             transform: loaded ? "translateY(0)" : "translateY(20px)",
@@ -148,7 +168,7 @@ export default function Hero() {
                                 className="inline-flex items-center gap-2.5 bg-accent text-white font-body font-semibold text-sm px-6 py-3.5 rounded-md border border-accent hover:bg-[var(--text)] hover:border-[var(--text)] hover:text-[var(--app-bg)] transition-colors duration-300 group"
                             >
                                 See the work
-                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"
                                     className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 text-inherit">
                                     <path d="M1 11L11 1M11 1H4M11 1v7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
@@ -158,32 +178,46 @@ export default function Hero() {
                                 className="inline-flex items-center gap-2 font-body font-medium text-sm text-[var(--text)] border border-[var(--text)] px-6 py-3.5 rounded-md hover:border-accent hover:text-[var(--accent-text)] transition-colors duration-300 group"
                             >
                                 Start a project
-                                <svg width="11" height="11" viewBox="0 0 12 12" fill="none"
+                                <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"
                                     className="transition-transform duration-300 group-hover:translate-x-0.5">
                                     <path d="M1 6h10M7 2l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
                             </Link>
                         </div>
+
+                        {/* Stats: confirmed numbers from lib/site.ts, as static text. Hidden while there are none. */}
+                        {site.stats.length > 0 && (
+                            <dl className="flex flex-wrap gap-10 mt-12">
+                                {site.stats.map((s) => (
+                                    // dt comes first in the markup, as <dl> requires; flex-col-reverse shows the number on top.
+                                    <div key={s.label} className="flex flex-col-reverse">
+                                        <dt className="font-mono text-[var(--text-faint)] text-[11px] uppercase tracking-[0.12em] leading-snug mt-0.5 whitespace-pre-line">
+                                            {s.label}
+                                        </dt>
+                                        <dd
+                                            className="font-heading font-bold text-[var(--text)] tabular-nums"
+                                            style={{ fontSize: "clamp(2rem, 3.8vw, 3.5rem)" }}
+                                        >
+                                            {s.value}
+                                        </dd>
+                                    </div>
+                                ))}
+                            </dl>
+                        )}
                     </div>
 
-                    {/* Stats: confirmed numbers from lib/site.ts, as static text. Hidden while there are none. */}
-                    {site.stats.length > 0 && (
-                        <div className="flex items-end gap-10 md:gap-16 shrink-0">
-                            {site.stats.map((s) => (
-                                <div key={s.label} className="text-right">
-                                    <p
-                                        className="font-heading font-bold text-[var(--text)] tabular-nums"
-                                        style={{ fontSize: "clamp(2rem, 3.8vw, 3.5rem)" }}
-                                    >
-                                        {s.value}
-                                    </p>
-                                    <p className="font-mono text-[var(--text-faint)] text-[11px] uppercase tracking-[0.12em] leading-snug mt-0.5 whitespace-pre-line">
-                                        {s.label}
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                    {/* The interactive demo. Space is reserved from md up so nothing shifts when it
+                        arrives; below md it is left out, since the views need room to be usable. */}
+                    <div
+                        className="hidden md:block min-h-[456px]"
+                        style={{
+                            opacity: loaded ? 1 : 0,
+                            transform: loaded ? "translateY(0)" : "translateY(24px)",
+                            transition: "all 0.8s ease 0.75s",
+                        }}
+                    >
+                        {demo && <HeroDemo autoplay={demo.autoplay} />}
+                    </div>
                 </div>
             </div>
 

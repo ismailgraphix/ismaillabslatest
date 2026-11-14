@@ -4,6 +4,8 @@ import { getPublishedServices, hasEnoughPosts } from "@/lib/queries";
 import { site } from "@/lib/site";
 import Logo from "@/components/Logo";
 import FooterCta from "@/components/FooterCta";
+import AbujaClock from "@/components/AbujaClock";
+import BuildLine from "@/components/BuildLine";
 
 // Icons for the platforms we can draw, keyed by lowercase label. A social link
 // whose label is not listed here still renders, as a text link.
@@ -89,6 +91,9 @@ export default async function Footer() {
             <p className="font-body text-[var(--muted)] text-sm leading-relaxed mb-6 max-w-sm">
               Software for universities, hospitals and the teams that run them.
             </p>
+            <div className="mb-6">
+              <AbujaClock />
+            </div>
             {site.socials.length > 0 && (
               <div className="flex flex-wrap items-center gap-3">
                 {site.socials.map((item) => {
@@ -152,9 +157,12 @@ export default async function Footer() {
         </div>
 
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="font-body text-[var(--muted)] text-sm text-center md:text-left">
-            © {year} {site.name}. {site.location}.
-          </p>
+          <div className="flex flex-col items-center md:items-start gap-1">
+            <p className="font-body text-[var(--muted)] text-sm text-center md:text-left">
+              © {year} {site.name}. {site.location}.
+            </p>
+            <BuildLine />
+          </div>
           {legalLinks.length > 0 && (
             <ul className="flex items-center gap-6">
               {legalLinks.map((link) => (

@@ -8,6 +8,7 @@
 // the organisation and timeline are written at the top of the message, so they
 // all appear in the admin inbox without a database change.
 import { useState } from "react";
+import BarLoader from "@/components/BarLoader";
 
 const TIMELINES = ["As soon as possible", "Within 3 months", "3 to 6 months", "Not sure yet"];
 const OTHER_NEED = "Something else";
@@ -139,7 +140,7 @@ export default function ContactForm({ needs }: { needs: string[] }) {
             >
                 {state === "loading" ? (
                     <>
-                        <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                        <BarLoader label="" size={14} />
                         Sending…
                     </>
                 ) : "Send brief →"}

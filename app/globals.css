@@ -161,3 +161,66 @@ html.dark {
 .hover-line:hover::after {
   width: 100%;
 }
+
+/* ── Living logo ──────────────────────────────────────────────────────────
+   The mark's two bars and square dot, reused as interface pieces. */
+
+/* Loader: the two bars fill alternately (components/BarLoader.tsx). */
+@keyframes barFill {
+  0%, 100% { transform: scaleY(0.25); }
+  50%      { transform: scaleY(1); }
+}
+.bar-loader > span {
+  transform-origin: bottom;
+  animation: barFill 0.8s cubic-bezier(0.2, 0, 0, 1) infinite;
+}
+.bar-loader > span:last-child {
+  animation-delay: -0.4s;
+}
+
+/* 404: the fallen dot hops back onto the top of the short bar. */
+@keyframes dotHop {
+  0%   { transform: translate(0, 0); }
+  55%  { transform: translate(-16px, -40px); }
+  100% { transform: translate(-33px, -33px); }
+}
+.dot-hop {
+  animation: dotHop 0.48s cubic-bezier(0.2, 0, 0, 1) forwards;
+}
+
+/* ── Page changes ─────────────────────────────────────────────────────────
+   Where the browser supports view transitions, a work card's screenshot
+   morphs into the case-study header (lib/view-transition.tsx) and the rest of
+   the page cross-fades. Elsewhere the new page fades in (app/(main)/template.tsx). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 240ms;
+}
+::view-transition-group(work-hero) {
+  animation-duration: 240ms;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@keyframes pageFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.page-fade-in {
+  animation: pageFadeIn 240ms ease-out;
+}
+
+/* Under reduced motion, movement goes and only short fades remain. */
+@media (prefers-reduced-motion: reduce) {
+  .bar-loader > span {
+    animation: none;
+    transform: none;
+  }
+  .dot-hop {
+    animation: none;
+  }
+  ::view-transition-group(work-hero),
+  ::view-transition-old(work-hero),
+  ::view-transition-new(work-hero) {
+    animation: none;
+  }
+}

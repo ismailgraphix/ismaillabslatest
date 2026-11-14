@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import ThemeToggle from "@/components/ThemeToggle";
 import Logo from "@/components/Logo";
 import { site } from "@/lib/site";
+import CommandPalette, { OPEN_PALETTE_EVENT } from "@/components/CommandPalette";
 
 // The logo links home, so "Home" is not repeated here.
 const navLinks = [
@@ -22,6 +23,12 @@ export default function Navbar({ showNotes = false }: { showNotes?: boolean }) {
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const pathname = usePathname();
+    // The shortcut shown in the header hint; set after mount, since the server cannot know the platform.
+    const [shortcut, setShortcut] = useState<string | null>(null);
+
+    useEffect(() => {
+        setShortcut(/Mac|iPhone|iPad/.test(navigator.platform) ? "⌘K" : "Ctrl K");
+    }, []);
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 40);
@@ -80,14 +87,28 @@ export default function Navbar({ showNotes = false }: { showNotes?: boolean }) {
                                     }`}
                             >
                                 {link.label}
-                                <span className={`absolute bottom-[5px] left-1/2 -translate-x-1/2 h-[2px] bg-accent transition-all duration-300 ${isActive(link.href) ? "w-6" : "w-0 group-hover:w-5"
-                                    }`} />
+                                {/* The logo's dot marks the current page; a bar grows under the others on hover. */}
+                                {isActive(link.href) ? (
+                                    <span className="absolute bottom-[4px] left-1/2 -translate-x-1/2 h-1 w-1 bg-accent" aria-hidden="true" />
+                                ) : (
+                                    <span className="absolute bottom-[5px] left-1/2 -translate-x-1/2 h-[2px] w-0 bg-accent transition-all duration-[240ms] group-hover:w-5 group-focus-visible:w-5" aria-hidden="true" />
+                                )}
                             </Link>
                         ))}
                     </nav>
 
                     {/* ── Right side ── */}
                     <div className="flex items-center gap-3">
+                        <button
+                            type="button"
+                            onClick={() => window.dispatchEvent(new Event(OPEN_PALETTE_EVENT))}
+                            aria-label="Open the command menu"
+                            aria-keyshortcuts="Control+K Meta+K /"
+                            className="hidden lg:inline-flex items-center gap-2 h-11 rounded-md border border-[var(--border)] bg-[var(--surface)] px-3 font-mono text-[11px] text-[var(--muted)] hover:border-accent hover:text-[var(--text)] transition-colors duration-[240ms]"
+                        >
+                            <span className="h-1.5 w-1.5 bg-accent" aria-hidden="true" />
+                            {shortcut ?? "Menu"}
+                        </button>
                         <ThemeToggle />
                         <Link
                             href="/contact"
@@ -137,7 +158,10 @@ export default function Navbar({ showNotes = false }: { showNotes?: boolean }) {
                                 className={`font-body font-medium text-base py-3 border-b border-[var(--border)] transition-all duration-300 ${menuOpen ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0"
                                     } ${isActive(link.href) ? "text-[var(--accent-text)]" : "text-[var(--text)]"}`}
                             >
-                                {link.label}
+                                <span className="inline-flex items-center gap-3">
+                                    {isActive(link.href) && <span className="h-1.5 w-1.5 bg-accent" aria-hidden="true" />}
+                                    {link.label}
+                                </span>
                             </Link>
                         ))}
                         <Link
@@ -150,6 +174,8 @@ export default function Navbar({ showNotes = false }: { showNotes?: boolean }) {
                     </div>
                 </div>
             </header>
+
+            <CommandPalette showNotes={showNotes} />
 
             {/* Drawer backdrop */}
             {menuOpen && (

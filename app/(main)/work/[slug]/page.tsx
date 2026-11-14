@@ -10,6 +10,7 @@ import { unstable_noStore as noStore } from "next/cache";
 import SectionLabel from "@/components/SectionLabel";
 import { getWork } from "@/lib/queries";
 import { firstSentence } from "@/lib/text";
+import { SHARED_NAME } from "@/lib/view-transition-name";
 
 async function getProject(slug: string) {
     const work = await getWork();
@@ -70,7 +71,13 @@ export default async function WorkDetailPage({ params }: { params: { slug: strin
 
                 {screenshots[0] && (
                     <figure className="mb-16 overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--chip-bg)]">
-                        <img src={screenshots[0]} alt={`Screenshot of ${project.title}`} className="w-full h-auto" />
+                        {/* Named for the shared-element transition from the work card (lib/view-transition.tsx). */}
+                        <img
+                            src={screenshots[0]}
+                            alt={`Screenshot of ${project.title}`}
+                            className="w-full h-auto"
+                            style={{ viewTransitionName: SHARED_NAME }}
+                        />
                     </figure>
                 )}
 
