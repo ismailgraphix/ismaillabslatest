@@ -2,17 +2,19 @@
 // The brief form beside direct contact details. Phone and reply time come from
 // lib/site.ts and stay hidden until they are supplied.
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { unstable_noStore as noStore } from "next/cache";
-import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import { Clock, Mail, Phone } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import ContactForm from "@/components/ContactForm";
 import { getPublishedServices } from "@/lib/queries";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
     title: "Contact",
-    description: `Tell ${site.name} what you need built. Based in ${site.location}, working with clients anywhere.`,
-};
+    description: `Tell ${site.name} what you need built.`,
+    path: "/contact",
+});
 
 export default async function ContactPage() {
     noStore(); // the "what you need" list follows the published services
@@ -30,7 +32,6 @@ export default async function ContactPage() {
         ...(site.phone
             ? [{ icon: Phone, label: "Phone", value: site.phone, href: `tel:${site.phone.replace(/[^+\d]/g, "")}` }]
             : []),
-        { icon: MapPin, label: "Location", value: `${site.location} · ${site.timeZone}`, href: null },
         ...(site.replyTime ? [{ icon: Clock, label: "Reply time", value: `We reply ${site.replyTime}.`, href: null }] : []),
     ];
 

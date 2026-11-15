@@ -19,8 +19,11 @@ const nextConfig = {
     NEXT_PUBLIC_BUILD_COMMIT: buildCommit(),
     NEXT_PUBLIC_BUILD_DATE: new Date().toISOString(),
   },
+  // Content images are resized by Cloudinary, the account they are uploaded to
+  // (lib/cloudinary-loader.ts), not by the host.
   images: {
-    unoptimized: true,
+    loader: "custom",
+    loaderFile: "./lib/cloudinary-loader.ts",
   },
   // Old URLs keep working: the portfolio page became /about and the blog became /notes.
   async redirects() {

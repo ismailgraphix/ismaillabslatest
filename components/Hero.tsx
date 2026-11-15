@@ -103,24 +103,21 @@ export default function Hero() {
                         <span className="relative inline-flex h-2 w-2 bg-accent" />
                     </span>
                     <span className="font-mono text-xs text-[var(--text-soft)] uppercase tracking-[0.14em]">
-                        {site.availability ? `Taking projects for ${site.availability}` : `Software studio · ${site.location}`}
+                        {site.availability ? `Taking projects for ${site.availability}` : "Software studio"}
                     </span>
                 </div>
 
-                {/* ── Headline: one h1, three lines. Large display type, as the landing page had
-                       before the rebrand; the top size is the largest at which "We build the
-                       software" still fits on one line. ── */}
+                {/* ── Headline: the original landing page wording, set as it was: bold
+                       capitals at the large display size, three lines. ── */}
                 <h1
-                    className="font-heading font-bold text-[var(--text)] leading-[0.98] tracking-[-0.04em] mb-14"
-                    style={{ fontSize: "clamp(2.6rem, 7.4vw, 7.25rem)" }}
+                    className="font-heading font-bold uppercase text-[var(--text)] leading-[0.87] tracking-[-0.03em] mb-14"
+                    style={{ fontSize: "clamp(3.6rem, 10vw, 9.5rem)" }}
                 >
-                    <HeadingLine at={60}>We build the software</HeadingLine>
+                    <HeadingLine at={60}>We build</HeadingLine>
                     <HeadingLine at={120}>
-                        <Accent at={600}>universities</Accent> and
+                        your <Accent at={600}>digital</Accent>
                     </HeadingLine>
-                    <HeadingLine at={180}>
-                        <Accent at={660}>hospitals</Accent> run on.
-                    </HeadingLine>
+                    <HeadingLine at={180}>presence.</HeadingLine>
                 </h1>
 
                 {/* ── Bottom row: supporting line and buttons, then the demo ── */}
@@ -128,7 +125,7 @@ export default function Hero() {
                     <div className="hero-fade-rise" style={delay(540)}>
                         <p className="font-body text-[var(--text-soft)] text-base md:text-lg leading-relaxed">
                             Student portals, hospital records, payments and the systems
-                            behind them. Built in Abuja for clients anywhere.
+                            behind them.
                         </p>
 
                         <div className="flex flex-wrap items-center gap-4 mt-8">

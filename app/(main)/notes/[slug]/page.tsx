@@ -1,29 +1,68 @@
+// app/(main)/notes/[slug]/page.tsx
+// One note. Published posts only; a draft or unknown slug is a 404.
+import Image from "next/image";
+import type { Metadata } from "next";
 import { db, blogPosts, users, blogCategories } from "@/db";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
-import { unstable_noStore as noStore } from 'next/cache';
+import { unstable_noStore as noStore } from "next/cache";
+import JsonLd from "@/components/JsonLd";
+import { absoluteUrl, articleJsonLd, breadcrumbJsonLd, pageMeta } from "@/lib/seo";
+import { firstSentence } from "@/lib/text";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-    noStore(); // Explicitly opt out of Next.js caching so edits show immediately
-
+async function getPost(slug: string) {
     const [data] = await db
         .select({
             post: blogPosts,
             author: { name: users.name, avatar: users.avatar },
-            category: { name: blogCategories.name }
+            category: { name: blogCategories.name },
         })
         .from(blogPosts)
         .leftJoin(users, eq(users.id, blogPosts.authorId))
         .leftJoin(blogCategories, eq(blogCategories.id, blogPosts.categoryId))
-        .where(eq(blogPosts.slug, params.slug))
+        .where(eq(blogPosts.slug, slug))
         .limit(1);
+    return data && data.post.published ? data : null;
+}
 
-    if (!data || !data.post.published) return notFound();
+function describe(post: { excerpt: string | null; content: string | null; title: string }) {
+    return firstSentence(post.excerpt) || firstSentence(post.content) || post.title;
+}
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+    noStore();
+    const data = await getPost(params.slug).catch(() => null);
+    if (!data) return {};
+    const { post } = data;
+    return pageMeta({
+        title: post.title,
+        description: describe(post),
+        path: `/notes/${post.slug}`,
+        type: "article",
+        image: post.image ? { url: post.image, alt: post.title } : null,
+        publishedTime: post.createdAt.toISOString(),
+        modifiedTime: post.updatedAt.toISOString(),
+    });
+}
+
+export default async function NotePage({ params }: { params: { slug: string } }) {
+    noStore(); // admin edits must show immediately
+
+    const data = await getPost(params.slug);
+    if (!data) return notFound();
     const { post, author, category } = data;
+    const path = `/notes/${post.slug}`;
+    const url = encodeURIComponent(absoluteUrl(path));
+    const text = encodeURIComponent(post.title);
+    const shareLinks = [
+        { label: "X", href: `https://twitter.com/intent/tweet?url=${url}&text=${text}` },
+        { label: "LinkedIn", href: `https://www.linkedin.com/sharing/share-offsite/?url=${url}` },
+        { label: "Facebook", href: `https://www.facebook.com/sharer/sharer.php?u=${url}` },
+    ];
 
     const proseArticle =
         "font-body text-[var(--muted)] text-[17px] leading-relaxed prose prose-neutral max-w-none " +
@@ -37,6 +76,20 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
     return (
         <main className="bg-[var(--app-bg)] min-h-screen flex flex-col">
+            <JsonLd
+                data={[
+                    articleJsonLd({
+                        title: post.title,
+                        description: describe(post),
+                        path,
+                        image: post.image,
+                        author: author?.name,
+                        published: post.createdAt,
+                        modified: post.updatedAt,
+                    }),
+                    breadcrumbJsonLd([{ name: "Notes", path: "/notes" }, { name: post.title, path }]),
+                ]}
+            />
 
             <article className="pt-32 pb-20 flex-1 relative">
                 {/* Hero Header */}
@@ -47,7 +100,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                     <div className="flex items-center justify-center gap-3 mb-6">
                         <span className="font-mono text-[var(--muted)] text-xs uppercase tracking-[0.14em]">{category?.name || "General"}</span>
                         <div className="w-1.5 h-1.5 bg-accent" />
-                        <span className="font-mono text-[var(--muted)] text-xs uppercase tracking-[0.14em]">{new Date(post.createdAt).toLocaleDateString()}</span>
+                        <span className="font-mono text-[var(--muted)] text-xs uppercase tracking-[0.14em]"><time dateTime={post.createdAt.toISOString()}>{post.createdAt.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}</time></span>
                     </div>
                     <h1 className="font-heading font-bold text-[var(--text)] text-[clamp(2rem,4vw,3.5rem)] leading-[1.1] tracking-tight mb-10">
                         {post.title}
@@ -55,7 +108,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                     <div className="flex items-center justify-center gap-4">
                         <div className="w-12 h-12 rounded-md bg-accent/10 border border-accent/25 overflow-hidden flex items-center justify-center">
                             {author?.avatar ? (
-                                <img src={author.avatar} alt="" className="w-full h-full object-cover" />
+                                <Image src={author.avatar} alt="" width={48} height={48} className="w-full h-full object-cover" />
                             ) : (
                                 <span className="font-heading font-bold text-[var(--accent-text)] text-xl">{author?.name?.[0] || "?"}</span>
                             )}
@@ -71,7 +124,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                 {post.image && (
                     <div className="w-full max-w-6xl mx-auto px-6 mb-16">
                         <div className="w-full h-[300px] md:h-[500px] rounded-lg overflow-hidden border border-[var(--border)] bg-[var(--chip-bg)] relative">
-                            <img src={post.image} alt="" className="w-full h-full object-cover" />
+                            <Image src={post.image} alt="" fill priority sizes="(min-width: 1152px) 1104px, 100vw" className="object-cover" />
                         </div>
                     </div>
                 )}
@@ -83,11 +136,23 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                     </div>
 
                     <div className="mt-20 pt-10 border-t border-[var(--border)] flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div className="flex gap-4">
-                            <span className="font-mono text-[var(--text)] text-xs uppercase tracking-[0.14em]">Share —</span>
-                            <button type="button" className="text-[var(--text-faint)] hover:text-[var(--accent-text)] transition-colors" aria-label="Share on X"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" /></svg></button>
-                            <button type="button" className="text-[var(--text-faint)] hover:text-[var(--accent-text)] transition-colors" aria-label="Share on Facebook"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-3 7h-1.924c-.615 0-1.076.252-1.076.889v1.111h3l-.239 3h-2.761v8h-3v-8h-2v-3h2v-1.923c0-2.022 1.064-3.077 3.461-3.077h2.539v3z" /></svg></button>
-                            <button type="button" className="text-[var(--text-faint)] hover:text-[var(--accent-text)] transition-colors" aria-label="Share on LinkedIn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" /></svg></button>
+                        <div className="flex items-center gap-5">
+                            <span className="font-mono text-[var(--text)] text-xs uppercase tracking-[0.14em]">Share</span>
+                            <ul className="flex items-center gap-5">
+                                {shareLinks.map((l) => (
+                                    <li key={l.label}>
+                                        <a
+                                            href={l.href}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-body text-sm text-[var(--muted)] hover:text-[var(--accent-text)] transition-colors duration-[120ms]"
+                                        >
+                                            {l.label}
+                                            <span className="sr-only"> (opens in a new tab)</span>
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
                     </div>
                 </div>

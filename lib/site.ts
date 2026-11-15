@@ -33,10 +33,6 @@ export const site = {
     url: "https://www.ismaillabs.com",
     email: "hello@ismaillabs.com",
 
-    // Where the studio works from. Shown on the contact page.
-    location: "Abuja, Nigeria",
-    timeZone: "West Africa Time (UTC+1)",
-
     // [REAL PHONE]: a phone or WhatsApp number in international format.
     // The phone row on the contact page is hidden while this is null.
     phone: null as string | null,
@@ -52,11 +48,6 @@ export const site = {
     // reads "Taking projects for March 2027". Hidden while null.
     availability: null as string | null,
 
-    // [WORKING HOURS]: the studio's working day in Abuja time, as 24-hour
-    // clock hours, for example { start: 9, end: 17 }. The footer uses it to show
-    // how the working day overlaps with the visitor's. Hidden while null.
-    workingHours: null as { start: number; end: number } | null,
-
     // [CLIENT LIST]: institutions that have agreed to be named. The strip on
     // the home page needs at least three and is hidden below that.
     clients: [] as string[],
@@ -71,7 +62,7 @@ export const site = {
     founder: {
         name: "Ismail Muhammad Adam",
         // The founder paragraph on the About page. The plan's draft reads:
-        //   "I'm Ismail Muhammad Adam, a software engineer based in Abuja. Since
+        //   "I'm Ismail Muhammad Adam, a software engineer. Since
         //    2022 I have built and maintained [SYSTEM TYPES] for [CLIENT TYPES].
         //    Ismail Labs is how I take that work on for clients."
         // Put the finished paragraph here once the two bracketed parts are

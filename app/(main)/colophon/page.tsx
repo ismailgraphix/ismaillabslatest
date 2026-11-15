@@ -3,13 +3,15 @@
 // Everything here describes the code in this repository; update it when the
 // stack changes.
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import PageHeader from "@/components/PageHeader";
 import { legalProse } from "@/components/LegalPage";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
     title: "How this site is built",
     description: "The stack, data and measurements behind the Ismail Labs website.",
-};
+    path: "/colophon",
+});
 
 const stack = [
     { label: "Framework", value: "Next.js 14 (App Router), React 18, TypeScript" },

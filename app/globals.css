@@ -19,8 +19,11 @@
      Identical in both themes. */
   --accent: rgb(var(--accent-rgb));
   /* The accent as body-size text. It switches to the lighter "accent on dark"
-     in the dark theme, where #4353FF does not have enough contrast for text. */
-  --accent-text: rgb(var(--accent-rgb));
+     in the dark theme, where #4353FF does not have enough contrast for text.
+     In the light theme it is a shade deeper than the fill: #4353FF reaches only
+     4.49:1 on the #EBEBEB ground, just under the 4.5:1 that small text needs,
+     while #3B4BF5 gives 5.0:1 and reads as the same blue. */
+  --accent-text: #3B4BF5;
 
   /* Light theme */
   --app-bg: #EBEBEB;                        /* Ground */
@@ -31,6 +34,10 @@
   --text-soft: rgb(var(--ink-rgb) / 0.68);
   --text-faint: rgb(var(--ink-rgb) / 0.60);
   --border: rgb(var(--ink-rgb) / 0.12);
+  /* Form errors: 5.5:1 or better on the ground, cards and fields */
+  --error-text: #B42318;
+  --error-bg: rgba(180, 35, 24, 0.08);
+  --error-border: rgba(180, 35, 24, 0.35);
   --nav-bg: rgba(255, 255, 255, 0.96);
   --chip-bg: rgb(var(--ink-rgb) / 0.05);
 
@@ -49,6 +56,17 @@
 
 html {
   scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+/* Keyboard focus is always visible. Components can set their own focus style;
+   this is the fallback for any link or control that does not. :where() keeps
+   its specificity at zero so those component styles win. */
+:where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 /* The site header is fixed, so an anchor jump (#about, #services, #work ...)
@@ -77,6 +95,9 @@ html.dark {
   --text-soft: rgba(255, 255, 255, 0.72);
   --text-faint: rgba(255, 255, 255, 0.60);
   --border: rgba(255, 255, 255, 0.14);
+  --error-text: #FF8A80;
+  --error-bg: rgba(255, 138, 128, 0.10);
+  --error-border: rgba(255, 138, 128, 0.35);
   --nav-bg: rgb(var(--ink-rgb) / 0.92);
   --chip-bg: rgba(255, 255, 255, 0.06);
 }

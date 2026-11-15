@@ -1,6 +1,7 @@
 // components/WorkCard.tsx
 // One case-study card: type label, title, one line, screenshot, link.
 // Used by the home page's selected work and by /work.
+import Image from "next/image";
 import { TransitionLink } from "@/lib/view-transition";
 import type { WorkItem } from "@/lib/queries";
 import { firstSentence } from "@/lib/text";
@@ -17,12 +18,13 @@ export default function WorkCard({ project, headingLevel = "h3" }: { project: Wo
         >
             <div className="relative aspect-[16/10] overflow-hidden bg-[var(--chip-bg)] border-b border-[var(--border)]">
                 {project.image ? (
-                    <img
+                    <Image
                         data-shared-image
                         src={project.image}
                         alt={`Screenshot of ${project.title}`}
-                        loading="lazy"
-                        className="w-full h-full object-cover object-top transition-transform duration-[120ms] ease-in group-hover:scale-[1.03] group-hover:duration-[240ms] group-hover:ease-[cubic-bezier(0.2,0,0,1)] group-focus-visible:scale-[1.03]"
+                        fill
+                        sizes="(min-width: 1024px) 400px, (min-width: 768px) 50vw, 100vw"
+                        className="object-cover object-top transition-transform duration-[120ms] ease-in group-hover:scale-[1.03] group-hover:duration-[240ms] group-hover:ease-[cubic-bezier(0.2,0,0,1)] group-focus-visible:scale-[1.03]"
                     />
                 ) : (
                     <div className="w-full h-full bg-accent/[0.06]" aria-hidden="true" />

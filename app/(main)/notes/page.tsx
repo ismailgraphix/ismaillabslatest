@@ -1,13 +1,17 @@
+import Image from "next/image";
+import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { db, blogPosts, users, blogCategories } from "@/db";
 import { eq, desc, asc, and } from "drizzle-orm";
 import Link from "next/link";
 import NotesFilters from "./NotesFilters";
 import SectionLabel from "@/components/SectionLabel";
 
-export const metadata = {
+export const metadata: Metadata = pageMeta({
     title: "Notes",
     description: "Short write-ups from real projects by Ismail Labs.",
-};
+    path: "/notes",
+});
 
 export default async function NotesPage({ searchParams }: { searchParams: { category?: string, sort?: string } }) {
     // 1. Fetch available categories for the filter UI
@@ -65,7 +69,7 @@ export default async function NotesPage({ searchParams }: { searchParams: { cate
                                 <Link href={`/notes/${post.slug}`} key={post.id} className="group relative bg-[var(--surface)] border border-[var(--border)] hover:border-accent/40 transition-colors duration-[120ms] overflow-hidden flex flex-col rounded-lg">
                                     <div className="relative h-[240px] w-full overflow-hidden bg-[var(--chip-bg)]">
                                         {post.image ? (
-                                            <img src={post.image} alt="" className="w-full h-full object-cover transition-transform duration-[120ms] ease-in group-hover:scale-[1.03] group-hover:duration-[240ms] group-hover:ease-[cubic-bezier(0.2,0,0,1)]" />
+                                            <Image src={post.image} alt="" fill sizes="(min-width: 1024px) 400px, (min-width: 768px) 50vw, 100vw" className="object-cover transition-transform duration-[120ms] ease-in group-hover:scale-[1.03] group-hover:duration-[240ms] group-hover:ease-[cubic-bezier(0.2,0,0,1)]" />
                                         ) : (
                                             <div className="w-full h-full bg-accent/[0.06]" aria-hidden="true" />
                                         )}
@@ -83,7 +87,7 @@ export default async function NotesPage({ searchParams }: { searchParams: { cate
                                         <div className="flex items-center gap-3 pt-6 border-t border-[var(--border)] mt-auto">
                                             <div className="w-10 h-10 rounded-md bg-accent/10 border border-accent/25 overflow-hidden flex items-center justify-center flex-shrink-0">
                                                 {author?.avatar ? (
-                                                    <img src={author.avatar} alt="" className="w-full h-full object-cover" />
+                                                    <Image src={author.avatar} alt="" width={40} height={40} className="w-full h-full object-cover" />
                                                 ) : (
                                                     <span className="font-heading font-bold text-[var(--accent-text)] text-lg">{author?.name?.[0] || "?"}</span>
                                                 )}

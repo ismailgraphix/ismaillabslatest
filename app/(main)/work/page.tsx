@@ -1,16 +1,18 @@
 // app/(main)/work/page.tsx
 // Every published project, built on the existing projects table.
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { unstable_noStore as noStore } from "next/cache";
 import PageHeader from "@/components/PageHeader";
 import WorkCard from "@/components/WorkCard";
 import DatabaseErrorModal from "@/components/DatabaseErrorModal";
 import { getWork, type WorkItem } from "@/lib/queries";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
     title: "Work",
     description: "Systems Ismail Labs has designed, built and shipped.",
-};
+    path: "/work",
+});
 
 export default async function WorkPage() {
     noStore(); // admin edits must show immediately

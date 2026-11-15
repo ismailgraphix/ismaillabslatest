@@ -5,11 +5,15 @@
 // migration in db/pending/0001_case_study_fields.sql, which has not been applied.
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { unstable_noStore as noStore } from "next/cache";
 import SectionLabel from "@/components/SectionLabel";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, pageMeta } from "@/lib/seo";
 import { getWork } from "@/lib/queries";
 import { firstSentence } from "@/lib/text";
+import { getImageSize } from "@/lib/image-size";
 import { SHARED_NAME } from "@/lib/view-transition-name";
 
 async function getProject(slug: string) {
@@ -21,11 +25,13 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     noStore();
     const project = await getProject(params.slug).catch(() => null);
     if (!project) return {};
-    return {
+    // Shared links show the project's own screenshot.
+    return pageMeta({
         title: project.title,
-        description: firstSentence(project.description),
-        openGraph: project.image ? { images: [{ url: project.image, alt: `Screenshot of ${project.title}` }] } : undefined,
-    };
+        description: firstSentence(project.description) || `${project.title}, built by Ismail Labs.`,
+        path: `/work/${project.slug}`,
+        image: project.image ? { url: project.image, alt: `Screenshot of ${project.title}` } : null,
+    });
 }
 
 export default async function WorkDetailPage({ params }: { params: { slug: string } }) {
@@ -35,7 +41,12 @@ export default async function WorkDetailPage({ params }: { params: { slug: strin
     if (!project) return notFound();
 
     const paragraphs = project.description.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
-    const screenshots = [project.image, project.image3d].filter((src): src is string => Boolean(src));
+    const sources = [project.image, project.image3d].filter((src): src is string => Boolean(src));
+    // Real pixel sizes, so each screenshot keeps its whole height and its space is
+    // reserved before it loads. 16:10 is the fallback if the size is unavailable.
+    const screenshots = await Promise.all(
+        sources.map(async (src) => ({ src, size: (await getImageSize(src)) ?? { width: 1600, height: 1000 } })),
+    );
     const facts = [
         { label: "Type", value: project.typeLabel },
         { label: "Year", value: String(project.year) },
@@ -43,6 +54,7 @@ export default async function WorkDetailPage({ params }: { params: { slug: strin
 
     return (
         <main className="bg-[var(--app-bg)] min-h-screen">
+            <JsonLd data={breadcrumbJsonLd([{ name: "Work", path: "/work" }, { name: project.title, path: `/work/${project.slug}` }])} />
             <article className="max-w-[1300px] mx-auto px-6 md:px-10 pt-36 pb-24">
                 <Link
                     href="/work"
@@ -72,9 +84,13 @@ export default async function WorkDetailPage({ params }: { params: { slug: strin
                 {screenshots[0] && (
                     <figure className="mb-16 overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--chip-bg)]">
                         {/* Named for the shared-element transition from the work card (lib/view-transition.tsx). */}
-                        <img
-                            src={screenshots[0]}
+                        <Image
+                            src={screenshots[0].src}
                             alt={`Screenshot of ${project.title}`}
+                            width={screenshots[0].size.width}
+                            height={screenshots[0].size.height}
+                            priority
+                            sizes="(min-width: 1300px) 1220px, calc(100vw - 48px)"
                             className="w-full h-auto"
                             style={{ viewTransitionName: SHARED_NAME }}
                         />
@@ -123,9 +139,16 @@ export default async function WorkDetailPage({ params }: { params: { slug: strin
 
                 {screenshots.length > 1 && (
                     <div className="mt-16 grid gap-6 md:grid-cols-2">
-                        {screenshots.slice(1).map((src) => (
+                        {screenshots.slice(1).map(({ src, size }) => (
                             <figure key={src} className="overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--chip-bg)]">
-                                <img src={src} alt={`Another screen from ${project.title}`} loading="lazy" className="w-full h-auto" />
+                                <Image
+                                    src={src}
+                                    alt={`Another screen from ${project.title}`}
+                                    width={size.width}
+                                    height={size.height}
+                                    sizes="(min-width: 768px) 600px, calc(100vw - 48px)"
+                                    className="w-full h-auto"
+                                />
                             </figure>
                         ))}
                     </div>

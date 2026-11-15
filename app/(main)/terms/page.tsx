@@ -4,19 +4,21 @@
 // per project. Bracketed items need a real answer. The page returns 404 until
 // `legalReviewed` in lib/site.ts is true.
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import LegalPage from "@/components/LegalPage";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
     title: "Terms",
     description: `Terms for using the ${site.name} website.`,
-};
+    path: "/terms",
+});
 
 export default function TermsPage() {
     return (
         <LegalPage title="Terms" updated="[DATE OF REVIEW]">
             <p>
-                These terms cover your use of www.ismaillabs.com, run by {site.name} in {site.location}. By using the
+                These terms cover your use of www.ismaillabs.com, run by {site.name}. By using the
                 site you accept them. They do not cover client projects: each project is governed by its own written
                 agreement.
             </p>

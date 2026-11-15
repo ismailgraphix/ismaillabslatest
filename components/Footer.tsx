@@ -4,7 +4,6 @@ import { getPublishedServices, hasEnoughPosts } from "@/lib/queries";
 import { site } from "@/lib/site";
 import Logo from "@/components/Logo";
 import FooterCta from "@/components/FooterCta";
-import AbujaClock from "@/components/AbujaClock";
 import BuildLine from "@/components/BuildLine";
 
 // Icons for the platforms we can draw, keyed by lowercase label. A social link
@@ -91,9 +90,6 @@ export default async function Footer() {
             <p className="font-body text-[var(--muted)] text-sm leading-relaxed mb-6 max-w-sm">
               Software for universities, hospitals and the teams that run them.
             </p>
-            <div className="mb-6">
-              <AbujaClock />
-            </div>
             {site.socials.length > 0 && (
               <div className="flex flex-wrap items-center gap-3">
                 {site.socials.map((item) => {
@@ -127,7 +123,7 @@ export default async function Footer() {
 
           {/* Company */}
           <div>
-            <h4 className="font-mono text-xs uppercase tracking-[0.14em] text-[var(--muted)] mb-5">Company</h4>
+            <h2 className="font-mono text-xs uppercase tracking-[0.14em] text-[var(--muted)] mb-5">Company</h2>
             <ul className="space-y-3">
               {companyLinks.map((link) => (
                 <li key={link.href}>
@@ -142,7 +138,7 @@ export default async function Footer() {
           {/* Services, from the database */}
           {serviceLinks.length > 0 && (
             <div>
-              <h4 className="font-mono text-xs uppercase tracking-[0.14em] text-[var(--muted)] mb-5">Services</h4>
+              <h2 className="font-mono text-xs uppercase tracking-[0.14em] text-[var(--muted)] mb-5">Services</h2>
               <ul className="space-y-3">
                 {serviceLinks.map((service) => (
                   <li key={service.slug}>
@@ -159,7 +155,7 @@ export default async function Footer() {
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex flex-col items-center md:items-start gap-1">
             <p className="font-body text-[var(--muted)] text-sm text-center md:text-left">
-              © {year} {site.name}. {site.location}.
+              © {year} {site.name}.
             </p>
             <BuildLine />
           </div>

@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     template: `%s · ${site.name}`,
   },
   description:
-    "We build the software universities and hospitals run on: student portals, hospital records, payments and the systems behind them. Built in Abuja for clients anywhere.",
+    "We build the software universities and hospitals run on: student portals, hospital records, payments and the systems behind them.",
   // Icons come from the logo kit in public/brand/. /favicon.ico is a copy at
   // the site root because browsers and crawlers request that path directly.
   icons: {

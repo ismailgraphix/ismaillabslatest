@@ -2,7 +2,9 @@
 // The studio and its founder. Replaces /portfolio, which redirects here.
 // The founder section reads the profile edited at /admin/portfolio; every
 // section that has nothing to show is left out.
+import Image from "next/image";
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { unstable_noStore as noStore } from "next/cache";
 import PageHeader from "@/components/PageHeader";
 import SectionLabel from "@/components/SectionLabel";
@@ -11,10 +13,11 @@ import { getProfile } from "@/lib/queries";
 import { site } from "@/lib/site";
 import { unshout } from "@/lib/text";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
     title: "About",
-    description: `${site.name} is a software studio in Abuja building systems for universities, hospitals and the teams that run them.`,
-};
+    description: `${site.name} is a software studio building systems for universities, hospitals and the teams that run them.`,
+    path: "/about",
+});
 
 const sectionHeading = "font-heading font-bold text-[var(--text)] text-[clamp(1.6rem,2.8vw,2.4rem)] leading-tight tracking-tight";
 
@@ -63,7 +66,7 @@ export default async function AboutPage() {
             {/* ── The studio. Draft copy from the rebuild plan; Ismail confirms it. ── */}
             <PageHeader label="About" title={`About ${site.name}`}>
                 <p>
-                    {site.name} is a software studio in {site.location}. We build and maintain the systems
+                    {site.name} is a software studio. We build and maintain the systems
                     universities, hospitals and growing organisations run on: student portals, hospital records,
                     payments and the back-office tools behind them, for clients anywhere.
                 </p>
@@ -90,8 +93,8 @@ export default async function AboutPage() {
 
                         {hero?.image && (
                             <div className="relative mx-auto w-full max-w-[380px]">
-                                <div className="aspect-[3/4] overflow-hidden rounded-lg bg-[var(--chip-bg)]">
-                                    <img src={hero.image} alt={`Portrait of ${site.founder.name}`} className="w-full h-full object-cover" />
+                                <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-[var(--chip-bg)]">
+                                    <Image src={hero.image} alt={`Portrait of ${site.founder.name}`} fill sizes="380px" className="object-cover" />
                                 </div>
                                 <div className="absolute bottom-0 left-0 right-0 h-1 bg-accent rounded-b-lg" aria-hidden="true" />
                             </div>

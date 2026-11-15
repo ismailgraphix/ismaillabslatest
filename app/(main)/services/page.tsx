@@ -1,16 +1,18 @@
 // app/(main)/services/page.tsx
 // Every published service, with one sentence each and a link to its page.
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { unstable_noStore as noStore } from "next/cache";
 import PageHeader from "@/components/PageHeader";
 import { ServiceGrid } from "@/components/Services";
 import DatabaseErrorModal from "@/components/DatabaseErrorModal";
 import { getPublishedServices } from "@/lib/queries";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
     title: "Services",
     description: "What Ismail Labs builds: web and mobile applications, SaaS products, APIs and the design and advice around them.",
-};
+    path: "/services",
+});
 
 export default async function ServicesPage() {
     noStore(); // admin edits must show immediately

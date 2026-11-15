@@ -13,8 +13,17 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   return (
     <>
       <ViewTransitionProvider>
+        {/* First stop for keyboard users: jumps past the header to the page content. */}
+        <a
+          href="#content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-accent focus:px-4 focus:py-3 focus:font-body focus:text-sm focus:font-semibold focus:text-white focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[var(--text)]"
+        >
+          Skip to content
+        </a>
         <Header />
-        {children}
+        <div id="content" tabIndex={-1} className="outline-none">
+          {children}
+        </div>
         <Footer />
         <RevealObserver />
       </ViewTransitionProvider>

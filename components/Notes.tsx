@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { unstable_noStore as noStore } from 'next/cache';
 import DatabaseErrorModal from "./DatabaseErrorModal";
@@ -38,10 +39,12 @@ export default async function Notes() {
             <Link href={`/notes/${post.slug}`} className="group rounded-lg overflow-hidden border border-[var(--border)] hover:border-accent/40 transition-colors duration-[120ms] cursor-pointer block h-full bg-[var(--surface)]">
               <div className="relative aspect-video overflow-hidden bg-[var(--chip-bg)]">
                 {post.image ? (
-                  <img
+                  <Image
                     src={post.image}
                     alt=""
-                    className="w-full h-full object-cover transition-transform duration-[120ms] ease-in group-hover:scale-[1.03] group-hover:duration-[240ms] group-hover:ease-[cubic-bezier(0.2,0,0,1)]"
+                    fill
+                    sizes="(min-width: 768px) 400px, 100vw"
+                    className="object-cover transition-transform duration-[120ms] ease-in group-hover:scale-[1.03] group-hover:duration-[240ms] group-hover:ease-[cubic-bezier(0.2,0,0,1)]"
                   />
                 ) : (
                   <div className="w-full h-full bg-accent/[0.06]" aria-hidden="true" />

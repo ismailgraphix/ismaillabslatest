@@ -2,11 +2,14 @@ import { db, services } from "@/db";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import ReactMarkdown from "react-markdown";
 import { unstable_noStore as noStore } from 'next/cache';
 import SectionLabel from "@/components/SectionLabel";
 import type { Metadata } from "next";
 import { firstSentence } from "@/lib/text";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, pageMeta } from "@/lib/seo";
 
 async function getService(slug: string) {
     const [service] = await db.select().from(services).where(eq(services.slug, slug)).limit(1);
@@ -17,7 +20,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     noStore();
     const service = await getService(params.slug).catch(() => null);
     if (!service) return {};
-    return { title: service.title, description: firstSentence(service.description) };
+    return pageMeta({
+        title: service.title,
+        description: firstSentence(service.description) || `${service.title} from Ismail Labs.`,
+        path: `/services/${service.slug}`,
+    });
 }
 
 export default async function ServiceDetailsPage({ params }: { params: { slug: string } }) {
@@ -38,6 +45,7 @@ export default async function ServiceDetailsPage({ params }: { params: { slug: s
 
     return (
         <main className="bg-[var(--app-bg)] min-h-screen flex flex-col">
+            <JsonLd data={breadcrumbJsonLd([{ name: "Services", path: "/services" }, { name: service.title, path: `/services/${service.slug}` }])} />
 
             <article className="pt-32 pb-20 flex-1 relative">
                 {/* Hero Header */}
@@ -63,7 +71,7 @@ export default async function ServiceDetailsPage({ params }: { params: { slug: s
                 {service.image && (
                     <div className="w-full max-w-5xl mx-auto px-6 mb-20 relative">
                         <div className="w-full h-[300px] md:h-[450px] rounded-lg overflow-hidden relative border border-[var(--border)] bg-[var(--chip-bg)]">
-                            <img src={service.image} alt="" className="w-full h-full object-cover" />
+                            <Image src={service.image} alt="" fill sizes="(min-width: 1024px) 976px, 100vw" className="object-cover" />
                         </div>
                     </div>
                 )}

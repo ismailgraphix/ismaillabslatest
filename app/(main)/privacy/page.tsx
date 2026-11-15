@@ -3,20 +3,22 @@
 // the code actually collects as of the Phase 3 rebuild. Bracketed items need a
 // real answer. The page returns 404 until `legalReviewed` in lib/site.ts is true.
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import LegalPage from "@/components/LegalPage";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
     title: "Privacy",
     description: `How ${site.name} handles information collected through this website.`,
-};
+    path: "/privacy",
+});
 
 export default function PrivacyPage() {
     return (
         <LegalPage title="Privacy" updated="[DATE OF REVIEW]">
             <p>
                 This page explains what {site.name} collects through www.ismaillabs.com, why, and what you can ask us
-                to do with it. {site.name} is based in {site.location}. Questions go to{" "}
+                to do with it. Questions go to{" "}
                 <a href={`mailto:${site.email}`}>{site.email}</a>.
             </p>
 

@@ -6,7 +6,11 @@ import ThemeToggle from "@/components/ThemeToggle";
 import HeaderLogo from "@/components/HeaderLogo";
 import BarLoader from "@/components/BarLoader";
 import { site } from "@/lib/site";
-import CommandPalette, { OPEN_PALETTE_EVENT, NAVIGATION_START_EVENT } from "@/components/CommandPalette";
+import dynamic from "next/dynamic";
+import { OPEN_PALETTE_EVENT, NAVIGATION_START_EVENT } from "@/lib/palette-events";
+
+// The palette is its own chunk, fetched once the page has painted.
+const CommandPalette = dynamic(() => import("@/components/CommandPalette"), { ssr: false });
 
 // The logo links home, so "Home" is not repeated here.
 const navLinks = [
