@@ -409,4 +409,17 @@ html.logo-intro .logo-wordmark  { animation: fadeIn 280ms ease-out 320ms both; }
   .btn-wipe .btn-arrow {
     transition: none;
   }
+
+  /* Catch-all, so no component can slip movement through: only colour and
+     opacity may transition. A bar or square that grows on hover simply
+     appears, and the screenshot zoom on cards is dropped altogether. */
+  *,
+  *::before,
+  *::after {
+    transition-property: opacity, color, background-color, border-color, text-decoration-color, fill, stroke, outline-color !important;
+  }
+  .group:hover [class*="group-hover:scale-[1.03]"],
+  .group:focus-visible [class*="group-focus-visible:scale-[1.03]"] {
+    transform: none !important;
+  }
 }
