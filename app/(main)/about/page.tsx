@@ -15,7 +15,7 @@ import { unshout } from "@/lib/text";
 
 export const metadata: Metadata = pageMeta({
     title: "About",
-    description: `${site.name} is a software studio building systems for universities, hospitals and the teams that run them.`,
+    description: `${site.name} is a software studio building websites, apps and systems for businesses, institutions and the teams that run them.`,
     path: "/about",
 });
 
@@ -67,8 +67,8 @@ export default async function AboutPage() {
             <PageHeader label="About" title={`About ${site.name}`}>
                 <p>
                     {site.name} is a software studio. We build and maintain the systems
-                    universities, hospitals and growing organisations run on: student portals, hospital records,
-                    payments and the back-office tools behind them, for clients anywhere.
+                    businesses, institutions and growing organisations run on: websites, customer and staff portals,
+                    records, payments and the back-office tools behind them, for clients anywhere.
                 </p>
             </PageHeader>
 

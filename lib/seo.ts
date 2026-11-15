@@ -25,7 +25,7 @@ interface PageMetaInput {
 }
 
 export function pageMeta({ title, description, path, image, type = "website", publishedTime, modifiedTime }: PageMetaInput): Metadata {
-    const shareTitle = title ? `${title} · ${site.name}` : `${site.name}: software for universities and hospitals`;
+    const shareTitle = title ? `${title} · ${site.name}` : `${site.name}: websites, apps and the systems behind them`;
     const images = image ? [{ url: image.url, alt: image.alt }] : [DEFAULT_SHARE_IMAGE];
     return {
         ...(title ? { title } : {}),
@@ -63,7 +63,7 @@ export function organizationJsonLd() {
         url: site.url,
         logo: absoluteUrl("/brand/icon-512.png"),
         email: site.email,
-        description: "Software for universities, hospitals and the teams that run them.",
+        description: "Software for businesses, institutions and the teams that run them.",
         ...(site.phone ? { telephone: site.phone } : {}),
         ...(site.socials.length > 0 ? { sameAs: site.socials.map((s) => s.href) } : {}),
     };

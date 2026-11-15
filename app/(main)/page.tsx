@@ -22,7 +22,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = pageMeta({
     description:
-        "We build the software universities and hospitals run on: student portals, hospital records, payments and the systems behind them.",
+        "We build the websites, apps and systems organisations run on: portals, records, payments and the tools behind them.",
     path: "/",
 });
 

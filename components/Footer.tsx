@@ -88,7 +88,7 @@ export default async function Footer() {
               <Logo height={36} />
             </Link>
             <p className="font-body text-[var(--muted)] text-sm leading-relaxed mb-6 max-w-sm">
-              Software for universities, hospitals and the teams that run them.
+              Software for businesses, institutions and the teams that run them.
             </p>
             {site.socials.length > 0 && (
               <div className="flex flex-wrap items-center gap-3">

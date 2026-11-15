@@ -1,7 +1,7 @@
 "use client";
 // components/hero-demo/HeroDemo.tsx
 // The hero's working mini-product: a framed app window with three tabs
-// (student portal, hospital records, payments), each a real, clickable view
+// (customers, requests, payments), each a real, clickable view
 // over the invented records in ./data.ts.
 //
 // Until the visitor touches it, a scripted cursor runs one short task per tab
@@ -12,21 +12,20 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import BarLoader from "@/components/BarLoader";
 import {
-    classFor,
-    gpaFor,
-    gradeFor,
+    customers,
     invoice,
     naira,
-    patients,
-    students,
+    requests,
+    totalSpend,
+    type OrderStatus,
 } from "./data";
 
-type TabId = "students" | "hospital" | "payments";
+type TabId = "customers" | "requests" | "payments";
 type PayState = "pending" | "processing" | "paid";
 
 const TABS: { id: TabId; label: string }[] = [
-    { id: "students", label: "Student portal" },
-    { id: "hospital", label: "Hospital records" },
+    { id: "customers", label: "Customers" },
+    { id: "requests", label: "Requests" },
     { id: "payments", label: "Payments" },
 ];
 
@@ -36,13 +35,13 @@ class Aborted extends Error {}
 
 export default function HeroDemo({ autoplay }: { autoplay: boolean }) {
     const frameRef = useRef<HTMLDivElement>(null);
-    const tabRefs = useRef<Record<TabId, HTMLButtonElement | null>>({ students: null, hospital: null, payments: null });
+    const tabRefs = useRef<Record<TabId, HTMLButtonElement | null>>({ customers: null, requests: null, payments: null });
     const visibleRef = useRef(true);
 
-    const [tab, setTab] = useState<TabId>("students");
+    const [tab, setTab] = useState<TabId>("customers");
     const [query, setQuery] = useState("");
-    const [studentId, setStudentId] = useState<string | null>(null);
-    const [patientId, setPatientId] = useState<string | null>(null);
+    const [customerId, setCustomerId] = useState<string | null>(null);
+    const [requestId, setRequestId] = useState<string | null>(null);
     const [payState, setPayState] = useState<PayState>("pending");
     const [receipt, setReceipt] = useState<{ number: string; paidAt: string } | null>(null);
 
@@ -130,31 +129,31 @@ export default function HeroDemo({ autoplay }: { autoplay: boolean }) {
         async function run() {
             await sleep(900); // let the hero heading land first
             for (;;) {
-                // Student portal: find a student and open the result sheet.
-                await moveTo("tab-students");
+                // Customers: find a customer and open their account.
+                await moveTo("tab-customers");
                 await click();
-                setTab("students");
-                setStudentId(null);
+                setTab("customers");
+                setCustomerId(null);
                 setQuery("");
                 await sleep(300);
-                await moveTo("student-search");
+                await moveTo("customer-search");
                 await click();
                 await type("Fat");
                 await sleep(350);
-                await moveTo("student-s3");
+                await moveTo("customer-c3");
                 await click();
-                setStudentId("s3");
+                setCustomerId("c3");
                 await sleep(2400);
 
-                // Hospital records: open a patient's visit and prescription.
-                await moveTo("tab-hospital");
+                // Requests: open a request's timeline and follow-up tasks.
+                await moveTo("tab-requests");
                 await click();
-                setTab("hospital");
-                setPatientId(null);
+                setTab("requests");
+                setRequestId(null);
                 await sleep(400);
-                await moveTo("patient-p1");
+                await moveTo("request-r1");
                 await click();
-                setPatientId("p1");
+                setRequestId("r1");
                 await sleep(2600);
 
                 // Payments: pay a pending invoice and show the receipt.
@@ -193,14 +192,14 @@ export default function HeroDemo({ autoplay }: { autoplay: boolean }) {
         tabRefs.current[id]?.focus();
     }
 
-    const filteredStudents = useMemo(() => {
+    const filteredCustomers = useMemo(() => {
         const q = query.trim().toLowerCase();
-        if (!q) return students;
-        return students.filter((s) => s.name.toLowerCase().includes(q) || s.matric.toLowerCase().includes(q));
+        if (!q) return customers;
+        return customers.filter((c) => c.name.toLowerCase().includes(q) || c.ref.toLowerCase().includes(q));
     }, [query]);
 
-    const student = students.find((s) => s.id === studentId) ?? null;
-    const patient = patients.find((p) => p.id === patientId) ?? null;
+    const customer = customers.find((c) => c.id === customerId) ?? null;
+    const request = requests.find((r) => r.id === requestId) ?? null;
 
     const listButton = (active: boolean) =>
         `w-full text-left px-3 py-2 rounded border transition-colors duration-[120ms] ${
@@ -215,7 +214,7 @@ export default function HeroDemo({ autoplay }: { autoplay: boolean }) {
             onFocusCapture={playing ? takeOver : undefined}
             className="relative w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] shadow-[0_24px_60px_-30px_rgb(15_15_15/0.35)] overflow-hidden text-left"
             role="region"
-            aria-label="Interactive demo with invented records: student portal, hospital records and payments"
+            aria-label="Interactive demo with invented records: customers, requests and payments"
         >
             {/* Title bar */}
             <div className="flex items-center justify-between gap-3 px-4 h-9 border-b border-[var(--border)] bg-[var(--chip-bg)]">
@@ -224,7 +223,7 @@ export default function HeroDemo({ autoplay }: { autoplay: boolean }) {
                     <span className="h-2 w-2 bg-[var(--border)]" />
                     <span className="h-2 w-2 bg-accent" />
                 </div>
-                <span className="font-mono text-[11px] text-[var(--muted)] truncate">Demo University · Demo Hospital</span>
+                <span className="font-mono text-[11px] text-[var(--muted)] truncate">Demo Company · Back office</span>
                 <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--text)] border border-[var(--border)] rounded px-1.5 py-0.5 shrink-0">
                     Demo data
                 </span>
@@ -259,68 +258,68 @@ export default function HeroDemo({ autoplay }: { autoplay: boolean }) {
 
             {/* Panels: fixed height so nothing below the hero moves while the demo plays */}
             <div className="h-[340px] font-body text-[13px] text-[var(--text)]">
-                {/* ── Student portal ── */}
-                {tab === "students" && (
-                    <div role="tabpanel" id="demo-panel-students" aria-labelledby="demo-tab-students" className="grid h-full grid-cols-[190px_1fr]">
+                {/* ── Customers ── */}
+                {tab === "customers" && (
+                    <div role="tabpanel" id="demo-panel-customers" aria-labelledby="demo-tab-customers" className="grid h-full grid-cols-[190px_1fr]">
                         <div className="border-r border-[var(--border)] p-3 overflow-y-auto">
-                            <label htmlFor="demo-student-search" className="sr-only">Search students by name or matric number</label>
+                            <label htmlFor="demo-customer-search" className="sr-only">Search customers by name or customer number</label>
                             <input
-                                id="demo-student-search"
-                                data-demo="student-search"
+                                id="demo-customer-search"
+                                data-demo="customer-search"
                                 type="search"
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
-                                placeholder="Search students"
+                                placeholder="Search customers"
                                 autoComplete="off"
                                 className="w-full mb-2 rounded border border-[var(--border)] bg-[var(--app-bg)] px-2.5 py-1.5 text-[13px] placeholder:text-[var(--text-faint)] focus:outline-none focus:border-accent"
                             />
                             <ul className="space-y-1">
-                                {filteredStudents.map((s) => (
-                                    <li key={s.id}>
+                                {filteredCustomers.map((c) => (
+                                    <li key={c.id}>
                                         <button
                                             type="button"
-                                            data-demo={`student-${s.id}`}
-                                            onClick={() => setStudentId(s.id)}
-                                            aria-pressed={studentId === s.id}
-                                            className={listButton(studentId === s.id)}
+                                            data-demo={`customer-${c.id}`}
+                                            onClick={() => setCustomerId(c.id)}
+                                            aria-pressed={customerId === c.id}
+                                            className={listButton(customerId === c.id)}
                                         >
-                                            <span className="block font-medium leading-tight">{s.name}</span>
-                                            <span className="block font-mono text-[11px] text-[var(--muted)]">{s.matric}</span>
+                                            <span className="block font-medium leading-tight">{c.name}</span>
+                                            <span className="block font-mono text-[11px] text-[var(--muted)]">{c.ref}</span>
                                         </button>
                                     </li>
                                 ))}
-                                {filteredStudents.length === 0 && (
-                                    <li className="px-3 py-2 text-[var(--muted)]">No student matches.</li>
+                                {filteredCustomers.length === 0 && (
+                                    <li className="px-3 py-2 text-[var(--muted)]">No customer matches.</li>
                                 )}
                             </ul>
                         </div>
 
                         <div className="p-4 overflow-y-auto">
-                            {student ? (
-                                <ResultSheet student={student} />
+                            {customer ? (
+                                <CustomerAccount customer={customer} />
                             ) : (
-                                <EmptyState>Pick a student to open their result sheet.</EmptyState>
+                                <EmptyState>Pick a customer to open their account and orders.</EmptyState>
                             )}
                         </div>
                     </div>
                 )}
 
-                {/* ── Hospital records ── */}
-                {tab === "hospital" && (
-                    <div role="tabpanel" id="demo-panel-hospital" aria-labelledby="demo-tab-hospital" className="grid h-full grid-cols-[190px_1fr]">
+                {/* ── Requests ── */}
+                {tab === "requests" && (
+                    <div role="tabpanel" id="demo-panel-requests" aria-labelledby="demo-tab-requests" className="grid h-full grid-cols-[190px_1fr]">
                         <ul className="border-r border-[var(--border)] p-3 space-y-1 overflow-y-auto">
-                            {patients.map((p) => (
-                                <li key={p.id}>
+                            {requests.map((r) => (
+                                <li key={r.id}>
                                     <button
                                         type="button"
-                                        data-demo={`patient-${p.id}`}
-                                        onClick={() => setPatientId(p.id)}
-                                        aria-pressed={patientId === p.id}
-                                        className={listButton(patientId === p.id)}
+                                        data-demo={`request-${r.id}`}
+                                        onClick={() => setRequestId(r.id)}
+                                        aria-pressed={requestId === r.id}
+                                        className={listButton(requestId === r.id)}
                                     >
-                                        <span className="block font-medium leading-tight">{p.name}</span>
+                                        <span className="block font-medium leading-tight">{r.title}</span>
                                         <span className="block font-mono text-[11px] text-[var(--muted)]">
-                                            {p.hospitalNo} · {p.age}{p.sex}
+                                            {r.ref} · {r.priority}
                                         </span>
                                     </button>
                                 </li>
@@ -328,13 +327,15 @@ export default function HeroDemo({ autoplay }: { autoplay: boolean }) {
                         </ul>
 
                         <div className="p-4 overflow-y-auto">
-                            {patient ? (
+                            {request ? (
                                 <div>
-                                    <p className="font-heading font-bold text-[15px] leading-tight">{patient.name}</p>
-                                    <p className="font-mono text-[11px] text-[var(--muted)] mb-3">{patient.clinic} · today</p>
+                                    <p className="font-heading font-bold text-[15px] leading-tight">{request.title}</p>
+                                    <p className="font-mono text-[11px] text-[var(--muted)] mb-3">
+                                        {request.team} · {request.customer} · today
+                                    </p>
 
                                     <ol className="relative mb-4 space-y-2 pl-4 before:absolute before:left-[3px] before:top-1 before:bottom-1 before:w-px before:bg-[var(--border)]">
-                                        {patient.visits.map((v) => (
+                                        {request.events.map((v) => (
                                             <li key={v.time} className="relative">
                                                 <span className="absolute -left-4 top-[5px] h-[7px] w-[7px] bg-accent" aria-hidden="true" />
                                                 <span className="font-mono text-[11px] text-[var(--muted)] mr-2">{v.time}</span>
@@ -344,20 +345,18 @@ export default function HeroDemo({ autoplay }: { autoplay: boolean }) {
                                         ))}
                                     </ol>
 
-                                    <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted)] mb-1.5">Prescription</p>
+                                    <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted)] mb-1.5">Next steps</p>
                                     <ul className="space-y-1.5">
-                                        {patient.prescriptions.map((rx) => (
-                                            <li key={rx.drug} className="rounded border border-[var(--border)] px-3 py-2">
-                                                <span className="block font-medium">{rx.drug}</span>
-                                                <span className="block text-[12px] text-[var(--muted)]">
-                                                    {rx.dose} · {rx.frequency} · {rx.duration}
-                                                </span>
+                                        {request.tasks.map((task) => (
+                                            <li key={task.title} className="rounded border border-[var(--border)] px-3 py-2">
+                                                <span className="block font-medium">{task.title}</span>
+                                                <span className="block text-[12px] text-[var(--muted)]">{task.detail}</span>
                                             </li>
                                         ))}
                                     </ul>
                                 </div>
                             ) : (
-                                <EmptyState>Pick a patient to see today&apos;s visit and prescription.</EmptyState>
+                                <EmptyState>Pick a request to see what happened today and what comes next.</EmptyState>
                             )}
                         </div>
                     </div>
@@ -368,7 +367,7 @@ export default function HeroDemo({ autoplay }: { autoplay: boolean }) {
                     <div role="tabpanel" id="demo-panel-payments" aria-labelledby="demo-tab-payments" className="h-full p-4 overflow-y-auto">
                         <div className="flex items-start justify-between gap-4 mb-3">
                             <div>
-                                <p className="font-heading font-bold text-[15px] leading-tight">School fees · {invoice.session}</p>
+                                <p className="font-heading font-bold text-[15px] leading-tight">Invoice · {invoice.period}</p>
                                 <p className="font-mono text-[11px] text-[var(--muted)]">
                                     {invoice.number} · {invoice.payer} · {invoice.reference}
                                 </p>
@@ -418,7 +417,7 @@ export default function HeroDemo({ autoplay }: { autoplay: boolean }) {
                             <div data-demo="receipt" className="rounded-md border border-accent/40 bg-accent/[0.06] px-3 py-2.5">
                                 <p className="font-medium">Receipt {receipt.number}</p>
                                 <p className="text-[12px] text-[var(--muted)]">
-                                    Paid {receipt.paidAt} · Card (demo) · sent to the student&apos;s email
+                                    Paid {receipt.paidAt} · Card (demo) · sent to the customer&apos;s email
                                 </p>
                                 <button
                                     type="button"
@@ -467,45 +466,49 @@ function EmptyState({ children }: { children: React.ReactNode }) {
     );
 }
 
-function ResultSheet({ student }: { student: (typeof students)[number] }) {
-    const gpa = gpaFor(student.results);
-    const units = student.results.reduce((sum, r) => sum + r.units, 0);
+const statusStyle: Record<OrderStatus, string> = {
+    Delivered: "text-[var(--muted)]",
+    "In transit": "text-[var(--accent-text)]",
+    Processing: "text-[var(--text)]",
+    Refunded: "text-[var(--text-faint)] line-through",
+};
+
+function CustomerAccount({ customer }: { customer: (typeof customers)[number] }) {
+    const spend = totalSpend(customer.orders);
+    const counted = customer.orders.filter((o) => o.status !== "Refunded").length;
     return (
         <div>
-            <p className="font-heading font-bold text-[15px] leading-tight">{student.name}</p>
+            <p className="font-heading font-bold text-[15px] leading-tight">{customer.name}</p>
             <p className="font-mono text-[11px] text-[var(--muted)] mb-3">
-                {student.programme} · {student.level} level · {student.session}
+                {customer.account} account · {customer.city} · customer since {customer.since}
             </p>
             <table className="w-full mb-3">
-                <caption className="sr-only">Result sheet for {student.name}</caption>
+                <caption className="sr-only">Recent orders for {customer.name}</caption>
                 <thead>
                     <tr className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--muted)] border-b border-[var(--border)]">
-                        <th scope="col" className="pb-1.5 text-left font-normal">Course</th>
-                        <th scope="col" className="pb-1.5 text-right font-normal">Units</th>
-                        <th scope="col" className="pb-1.5 text-right font-normal">Score</th>
-                        <th scope="col" className="pb-1.5 text-right font-normal">Grade</th>
+                        <th scope="col" className="pb-1.5 text-left font-normal">Order</th>
+                        <th scope="col" className="pb-1.5 text-right font-normal">Items</th>
+                        <th scope="col" className="pb-1.5 text-right font-normal">Amount</th>
+                        <th scope="col" className="pb-1.5 text-right font-normal">Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {student.results.map((r) => (
-                        <tr key={r.code} className="border-b border-[var(--border)]">
+                    {customer.orders.map((o) => (
+                        <tr key={o.number} className="border-b border-[var(--border)]">
                             <td className="py-1.5">
-                                <span className="font-mono text-[11px] text-[var(--muted)] mr-2">{r.code}</span>
-                                {r.title}
+                                <span className="font-mono text-[11px] text-[var(--muted)] mr-2">{o.date}</span>
+                                {o.number}
                             </td>
-                            <td className="py-1.5 text-right font-mono tabular-nums">{r.units}</td>
-                            <td className="py-1.5 text-right font-mono tabular-nums">{r.score}</td>
-                            <td className="py-1.5 text-right font-mono font-medium">{gradeFor(r.score).grade}</td>
+                            <td className="py-1.5 text-right font-mono tabular-nums">{o.items}</td>
+                            <td className="py-1.5 text-right font-mono tabular-nums">{naira.format(o.amount)}</td>
+                            <td className={`py-1.5 text-right text-[12px] font-medium ${statusStyle[o.status]}`}>{o.status}</td>
                         </tr>
                     ))}
                 </tbody>
             </table>
             <div className="flex items-baseline justify-between rounded border border-[var(--border)] px-3 py-2">
-                <span className="text-[var(--muted)]">GPA, from {units} units</span>
-                <span>
-                    <span className="font-mono font-medium text-[15px] tabular-nums">{gpa.toFixed(2)}</span>
-                    <span className="text-[var(--muted)]"> · {classFor(gpa)}</span>
-                </span>
+                <span className="text-[var(--muted)]">Total spend, from {counted} orders</span>
+                <span className="font-mono font-medium text-[15px] tabular-nums">{naira.format(spend)}</span>
             </div>
         </div>
     );

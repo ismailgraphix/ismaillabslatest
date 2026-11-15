@@ -49,7 +49,7 @@ export default function ColophonPage() {
                     </p>
                     <h2>The demo on the home page</h2>
                     <p>
-                        The student portal, hospital records and payments views are working React components fed by a
+                        The customers, requests and payments views are working React components fed by a
                         small file of invented records. No client data is involved. The demo loads after the rest of
                         the page, and its guided tour does not play if your system asks for reduced motion.
                     </p>

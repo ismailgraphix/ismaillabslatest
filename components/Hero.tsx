@@ -124,8 +124,8 @@ export default function Hero() {
                 <div className="grid gap-12 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:items-start">
                     <div className="hero-fade-rise" style={delay(540)}>
                         <p className="font-body text-[var(--text-soft)] text-base md:text-lg leading-relaxed">
-                            Student portals, hospital records, payments and the systems
-                            behind them.
+                            Websites, web apps, portals, payments and the systems
+                            behind them, for any kind of organisation.
                         </p>
 
                         <div className="flex flex-wrap items-center gap-4 mt-8">

@@ -41,7 +41,7 @@ export default function TermsPage() {
 
             <h2>Messages you send</h2>
             <p>
-                Do not send passwords, patient records, student records or other confidential data through the contact
+                Do not send passwords, customer records, personal data or other confidential information through the contact
                 form. We will arrange a secure channel if a project needs it. See the <a href="/privacy">privacy page</a>{" "}
                 for how messages are handled.
             </p>

@@ -34,11 +34,11 @@ export const metadata: Metadata = {
   // Pages set a short title of their own ("Work", "About", ...) and the
   // template adds the studio name.
   title: {
-    default: `${site.name}: software for universities and hospitals`,
+    default: `${site.name}: websites, apps and the systems behind them`,
     template: `%s · ${site.name}`,
   },
   description:
-    "We build the software universities and hospitals run on: student portals, hospital records, payments and the systems behind them.",
+    "We build the websites, apps and systems organisations run on: portals, records, payments and the tools behind them.",
   // Icons come from the logo kit in public/brand/. /favicon.ico is a copy at
   // the site root because browsers and crawlers request that path directly.
   icons: {
